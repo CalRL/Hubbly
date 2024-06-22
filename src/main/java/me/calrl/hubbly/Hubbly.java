@@ -21,7 +21,7 @@ public final class Hubbly extends JavaPlugin {
         this.saveDefaultConfig();
         logger.info("Hubbly has been enabled!");
         getServer().getPluginManager().registerEvents(new CompassListener(logger, getConfig(), this), this);
-        getServer().getPluginManager().registerEvents(new PlayerVisibilityListener(getInstance(), getConfig()), this);
+        getServer().getPluginManager().registerEvents(new PlayerVisibilityListener(this, getConfig()), this);
         getServer().getPluginManager().registerEvents(new LaunchpadListener(logger, getInstance(), getConfig()), this);
         getServer().getPluginManager().registerEvents(new ShopListener(logger, getConfig()), this);
         getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, getConfig(), getInstance()), this);
@@ -37,6 +37,7 @@ public final class Hubbly extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         logger.info("Hubbly has been disabled!");
+        saveConfig();
     }
 
     public static Hubbly getInstance() {

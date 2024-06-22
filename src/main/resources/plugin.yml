@@ -2,3 +2,36 @@ name: Hubbly
 version: '${project.version}'
 main: me.calrl.hubbly.Hubbly
 api-version: '1.21'
+
+prefix: Hubbly
+load: STARTUP
+authors: [cal]
+website: cal.ceo
+commands:
+  hubbly:
+    description: main command
+    usage: /hubbly
+    permission: hubbly.hubbly
+
+permissions:
+  hubbly.hubbly:
+    default: true
+  hubbly.compass.use:
+    default: true
+  hubbly.launchpad.use:
+    default: true
+  hubbly.playervisibility.use:
+    default: true
+  hubbly.socials.use:
+    default: true
+  hubbly.shop.use:
+    default: true
+  hubbly.command.use:
+    default: op
+  hubbly.items.bypass:
+    default: op
+
+
+
+softdepend:
+  - PlaceholderAPI

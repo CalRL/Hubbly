@@ -1,6 +1,6 @@
 package me.calrl.hubbly.listeners;
 
-import me.calrl.hubbly.functions.;
+import me.calrl.hubbly.functions.ParsePlaceholders;
 import org.bukkit.event.EventHandler;
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;

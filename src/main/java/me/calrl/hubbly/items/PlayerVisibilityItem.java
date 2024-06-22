@@ -1,6 +1,6 @@
-package com.caldev.items;
+package me.calrl.hubbly.items;
 
-import com.caldev.interfaces.CustomItem;
+import me.calrl.hubbly.interfaces.CustomItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;

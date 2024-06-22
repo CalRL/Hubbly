@@ -1,4 +1,4 @@
-package com.caldev.functions;
+package me.calrl.hubbly.functions;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;

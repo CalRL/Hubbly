@@ -1,8 +1,8 @@
-package com.caldev.items;
+package me.calrl.hubbly.items;
 
-import com.caldev.functions.CreateCustomHead;
-import com.caldev.functions.ParsePlaceholders;
-import com.caldev.interfaces.CustomItem;
+import me.calrl.hubbly.functions.CreateCustomHead;
+import me.calrl.hubbly.functions.ParsePlaceholders;
+import me.calrl.hubbly.interfaces.CustomItem;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.ChatColor;

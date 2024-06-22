@@ -1,0 +1,79 @@
+compass:
+  enabled: true  # Whether the compass functionality is enabled
+  name: "&6Server Selector"  # Name displayed in chat messages
+  gui:  # Configuration for the compass GUI
+    size: 27  # Number of slots in the GUI
+    title: "Server Selector"  # Title displayed in the GUI
+    items: # List of items displayed in the GUI (each item requires its own key)
+      example_item: # Key for this item
+        material: DIAMOND  # Material for the item (check Bukkit documentation for materials)
+        name: "%player_name%'s Server"  # Display name of the item with placeholder
+        lore: # Lore for the item
+          - "This is line 1"
+          - "This is line 2 with %player_name%"
+        command: "server example"  # Command to execute when the item is clicked (replace "example" with your actual server name)
+  fill:
+    name: " "
+    type: "BLACK_STAINED_GLASS_PANE"
+  messages: # Compass-related chat messages
+    compass_give: "You have been given a Compass!"
+    no_permission_use: "You do not have permission to use the Compass!"
+launchpad:
+  enabled: true
+  type: "SLIME_BLOCK"
+shop:
+  enabled: true
+  command: "buy"
+  item:
+    name: "&aShop"
+    type: "EMERALD"
+socials:
+  enabled: true
+  size: 27
+  title: "Socials"
+  item:
+    type: "PLAYER_HEAD"
+    value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzU1ZTJkYzQ2Mzk5YjdiOTI3NTIyMWZjZGM4N2M2NmU1OGQwZDMwNDRkY2Y2MmFmMDQ2NTEyMmMxY2Q3ZTBiYyJ9fX0=" # Leave empty if item isnt SKULL
+    name: "&6Socials"
+  items:
+    tiktok: # Key for this item
+      slot: 13 # Slot for this item (0-based index)
+      material: PLAYER_HEAD  # Material for the item
+      name: "&dTik&bTok"  # Display name of the item with placeholder
+      lore: # Lore for the item/
+      value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmNmMjEwNWJiNzM3NjM4ODMzMDMzZGQ4MjQ0MDcxZTc1ODcwZTJlMTFjMjYxN2U1NDJlODkyNGZiMmI5MDE4MCJ9fX0="
+      message: "tiktok.com"
+    youtube: # Key for this item
+      slot: 15 # Slot for this item (0-based index)
+      material: PLAYER_HEAD  # Material for the item
+      name: "&cYoutube"  # Display name of the item with placeholder
+      lore: # Lore for the item
+      value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWM1NmRkYmVmMWI4MWJkNTdjOWIxYzZkNWQxYjc4YjU0NzM3YjcxOTkyOWIyOWMyYTkzMGE1ZjdjMmFlNGE4NiJ9fX0="
+      message: "youtube.com"
+    close:
+      slot: 23
+      material: "BARRIER"
+      name: "close"
+  fill:
+    name: " "
+    type: "BLACK_STAINED_GLASS_PANE"
+item_on_join:
+  enabled: true
+  forceinventory: true
+  features:
+    compass:
+      enabled: true
+      slot: 5
+    shop:
+      enabled: true
+      slot: 9
+    socials:
+      enabled: true
+      slot: 1
+    playervisibility:
+      enabled: true
+      slot: 8
+messages:
+  no_console: "Only players can use this command!"
+  no_permission_command: "You do not have permission to use this command!"
+  no_permission_use: "You do not have permission to use this!"

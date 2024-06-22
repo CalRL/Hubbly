@@ -1,12 +1,12 @@
-package com.caldev.listeners;
+package me.calrl.hubbly.listeners;
 
 import java.util.Objects;
 import java.util.logging.Logger;
 
-import com.caldev.items.CompassItem;
-import com.caldev.items.PlayerVisibilityItem;
-import com.caldev.items.ShopItem;
-import com.caldev.items.SocialsItem;
+import me.calrl.hubbly.items.CompassItem;
+import me.calrl.hubbly.items.PlayerVisibilityItem;
+import me.calrl.hubbly.items.ShopItem;
+import me.calrl.hubbly.items.SocialsItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;

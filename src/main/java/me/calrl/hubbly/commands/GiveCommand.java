@@ -1,11 +1,11 @@
-package com.caldev.commands;
+package me.calrl.hubbly.commands;
 
-import com.caldev.interfaces.CustomItem;
-import com.caldev.interfaces.SubCommand;
-import com.caldev.items.CompassItem;
-import com.caldev.items.PlayerVisibilityItem;
-import com.caldev.items.ShopItem;
-import com.caldev.items.SocialsItem;
+import me.calrl.hubbly.interfaces.CustomItem;
+import me.calrl.hubbly.interfaces.SubCommand;
+import me.calrl.hubbly.items.CompassItem;
+import me.calrl.hubbly.items.PlayerVisibilityItem;
+import me.calrl.hubbly.items.ShopItem;
+import me.calrl.hubbly.items.SocialsItem;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;

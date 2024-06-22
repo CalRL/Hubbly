@@ -1,6 +1,6 @@
-package com.caldev.listeners;
+package me.calrl.hubbly.listeners;
 
-import com.caldev.Hubbly;
+import me.calrl.hubbly.Hubbly;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -32,14 +32,11 @@ public class PlayerVisibilityListener implements Listener {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         if (itemInHand.getType() == Material.LIME_DYE || itemInHand.getType() == Material.GRAY_DYE) {
             if(event.getAction() != Action.PHYSICAL && player.hasPermission("hubbly.playervisibility.use") || player.isOp()) {
-                if(player.hasPermission("hubbly.playervisibility.use")) {
-                    event.setCancelled(true);
-                    swapDye(player, itemInHand);
-                } else {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.no_permission_use")));
-                }
+                event.setCancelled(true);
+                swapDye(player, itemInHand);
+            } else {
+                player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.no_permission_use")));
             }
-
         }
     }
     private void swapDye(Player player, ItemStack itemInHand) {
@@ -67,3 +64,4 @@ public class PlayerVisibilityListener implements Listener {
         player.getInventory().setItemInMainHand(newItem);
     }
 }
+

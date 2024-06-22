@@ -1,4 +1,4 @@
-package com.caldev.listeners;
+package me.calrl.hubbly.listeners;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;

@@ -1,4 +1,4 @@
-package com.caldev.functions;
+package me.calrl.hubbly.functions;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import org.bukkit.ChatColor;

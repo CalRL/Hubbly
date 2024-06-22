@@ -1,7 +1,7 @@
-package com.caldev.commands;
+package me.calrl.hubbly.commands;
 
-import com.caldev.Hubbly;
-import com.caldev.interfaces.SubCommand;
+import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.interfaces.SubCommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

@@ -1,4 +1,4 @@
-package com.caldev.interfaces;
+package me.calrl.hubbly.interfaces;
 
 import org.bukkit.entity.Player;
 

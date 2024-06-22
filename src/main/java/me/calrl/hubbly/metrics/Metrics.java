@@ -12,7 +12,7 @@
  *
  * Violations will result in a ban of your plugin and account from bStats.
  */
-package com.caldev.metrics;
+package me.calrl.hubbly.metrics;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;

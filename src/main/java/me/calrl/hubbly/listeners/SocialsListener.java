@@ -1,7 +1,7 @@
-package com.caldev.listeners;
+package me.calrl.hubbly.listeners;
 
-import com.caldev.functions.CreateCustomHead;
-import com.caldev.functions.ParsePlaceholders;
+import me.calrl.hubbly.functions.CreateCustomHead;
+import me.calrl.hubbly.functions.ParsePlaceholders;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -38,6 +38,9 @@ public class SocialsListener implements Listener {
             if (item.getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("socials.item.name"))))) {
                 if(event.getPlayer().hasPermission("hubbly." + "socials.use") || event.getPlayer().isOp()) {
                     openSocialsGUI(event.getPlayer());
+                } else {
+                    event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.no_permission_use")));
+
                 }
             }
         }
@@ -84,6 +87,7 @@ public class SocialsListener implements Listener {
                 if (message != null) {
                     message = ParsePlaceholders.parsePlaceholders(player, message);
                     player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
+                    player.closeInventory();
                 }
                 break;
             }
