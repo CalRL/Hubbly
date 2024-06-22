@@ -9,6 +9,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+import java.io.File;
 import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
@@ -18,6 +19,9 @@ public final class Hubbly extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
+//        if (!new File(getDataFolder(), "config.yml").exists()) {
+//            saveDefaultConfig();
+//        }
         this.saveDefaultConfig();
         logger.info("Hubbly has been enabled!");
         getServer().getPluginManager().registerEvents(new CompassListener(logger, getConfig(), this), this);
@@ -37,7 +41,6 @@ public final class Hubbly extends JavaPlugin {
     public void onDisable() {
         // Plugin shutdown logic
         logger.info("Hubbly has been disabled!");
-        saveConfig();
     }
 
     public static Hubbly getInstance() {

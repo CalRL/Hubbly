@@ -2,6 +2,7 @@ package me.calrl.hubbly.listeners;
 
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
+import me.calrl.hubbly.functions.CreateCloseItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -73,7 +74,7 @@ public class SocialsListener implements Listener {
             return;
         }
 
-        if(clickedItem.getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("socials.items.close.name"))))) {
+        if(clickedItem.getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("close_button.name"))))) {
             event.getView().close();
         }
 
@@ -96,6 +97,9 @@ public class SocialsListener implements Listener {
 
     private void openSocialsGUI(Player player) {
         Inventory gui = Bukkit.createInventory(null, config.getInt("socials.size"), Objects.requireNonNull(config.getString("socials.title")));
+        CreateCloseItem closeItemCreator = new CreateCloseItem(config);
+        gui.setItem(config.getInt("close_button.slot")-1, closeItemCreator.createItem());
+
         for (String itemKey : Objects.requireNonNull(config.getConfigurationSection("socials.items")).getKeys(false)) {
             int slot = config.getInt("socials.items." + itemKey + ".slot", -1) - 1; // Adjusted the slot calculation
             if (slot >= 0 && slot < gui.getSize()) {
@@ -105,6 +109,7 @@ public class SocialsListener implements Listener {
                 }
             }
         }
+
         if (config.isConfigurationSection("socials.fill")) {
             ItemStack fillItem = createFillItem(player);
             if (fillItem != null) {
@@ -194,4 +199,5 @@ public class SocialsListener implements Listener {
 
         return item;
     }
+
 }

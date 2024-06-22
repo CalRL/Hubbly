@@ -50,10 +50,6 @@ socials:
       lore: # Lore for the item
       value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWM1NmRkYmVmMWI4MWJkNTdjOWIxYzZkNWQxYjc4YjU0NzM3YjcxOTkyOWIyOWMyYTkzMGE1ZjdjMmFlNGE4NiJ9fX0="
       message: "youtube.com"
-    close:
-      slot: 23
-      material: "BARRIER"
-      name: "close"
   fill:
     name: " "
     type: "BLACK_STAINED_GLASS_PANE"
@@ -73,6 +69,10 @@ item_on_join:
     playervisibility:
       enabled: true
       slot: 8
+close_button:
+  slot: 23
+  material: "BARRIER"
+  name: "&aClose"
 messages:
   no_console: "Only players can use this command!"
   no_permission_command: "You do not have permission to use this command!"

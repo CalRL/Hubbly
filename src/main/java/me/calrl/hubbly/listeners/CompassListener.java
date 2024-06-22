@@ -1,5 +1,6 @@
 package me.calrl.hubbly.listeners;
 
+import me.calrl.hubbly.functions.CreateCloseItem;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import org.bukkit.event.EventHandler;
 import me.clip.placeholderapi.PlaceholderAPI;
@@ -98,11 +99,20 @@ public class CompassListener implements Listener {
                 }
             }
         }
+        ItemStack clickedItem = event.getCurrentItem();
+        if(clickedItem == null || clickedItem.getType() == Material.AIR) {
+            return;
+        }
+        if(clickedItem.getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("close_button.name"))))) {
+            event.getView().close();
+        }
     }
 
     private void openCompassGUI(Player player) {
         if(Objects.equals(config.getString("compass.enabled"), "true")) {
             Inventory gui = Bukkit.createInventory(null, config.getInt("compass.gui.size"), Objects.requireNonNull(config.getString("compass.gui.title")));
+            CreateCloseItem closeItemCreator = new CreateCloseItem(config);
+            gui.setItem(config.getInt("close_button.slot")-1, closeItemCreator.createItem());
 
             for (String itemKey : Objects.requireNonNull(config.getConfigurationSection("compass.gui.items")).getKeys(false)) {
                 ItemStack item = createItemFromConfig(player, itemKey);
