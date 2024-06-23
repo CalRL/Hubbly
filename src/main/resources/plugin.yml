@@ -20,6 +20,10 @@ commands:
     description: set the spawnpoint
     usage: /setspawn
     permission: hubbly.command.spawn
+  fly:
+    description: fly
+    usage: /fly
+    permission: hubbly.command.fly
 
 
 permissions:
@@ -43,6 +47,10 @@ permissions:
     default: op
   hubbly.command.spawn:
     default: true
+  hubbly.command.fly:
+    default: op
+  hubbly.bypass:
+    default: op
 
 
 softdepend:

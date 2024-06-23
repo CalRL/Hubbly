@@ -31,10 +31,13 @@ public final class Hubbly extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, getConfig(), this), this);
         getServer().getPluginManager().registerEvents(new SocialsListener(logger, getConfig()), this);
         getServer().getPluginManager().registerEvents(new VoidDamageListener(logger, getConfig()), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(logger, getConfig()), this);
+        getServer().getPluginManager().registerEvents(new WorldEventListeners(logger, getConfig()), this);
 
         getCommand("hubbly").setExecutor(new HubblyCommand(logger, getConfig(), this));
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this, getConfig()));
         getCommand("spawn").setExecutor(new SpawnCommand(this, getConfig()));
+        getCommand("fly").setExecutor(new FlyCommand(logger, getConfig()));
 
 
         int pluginId = 22219;

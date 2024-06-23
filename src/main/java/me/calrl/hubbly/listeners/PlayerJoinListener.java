@@ -1,0 +1,93 @@
+package me.calrl.hubbly.listeners;
+
+import me.calrl.hubbly.functions.ParsePlaceholders;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
+import org.bukkit.boss.BarColor;
+import org.bukkit.boss.BarStyle;
+import org.bukkit.boss.BossBar;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Firework;
+import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.inventory.meta.FireworkMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Objects;
+import java.util.logging.Logger;
+
+public class PlayerJoinListener implements Listener {
+
+    private final Logger logger;
+    private final FileConfiguration config;
+    public PlayerJoinListener(Logger logger, FileConfiguration config) {
+        this.logger = logger;
+        this.config = config;
+    }
+
+    private FireworkEffect fireworkEffect() {
+        FireworkEffect fireworkEffect;
+        FireworkEffect.Builder builder = FireworkEffect.builder()
+                .withColor(Color.WHITE)
+                .with(FireworkEffect.Type.valueOf(config.getString("player.join_firework.type")))
+                .withTrail();
+
+        return builder.build();
+    }
+    private BossBar bossBar(Player player) {
+        BarColor color = BarColor.valueOf(config.getString("player.bossbar.color"));
+        String text = config.getString("player.bossbar.text");
+        BossBar bar = Bukkit.createBossBar(text, color, BarStyle.SOLID);
+        bar.addPlayer(player);
+        bar.setVisible(true);
+        return bar;
+    }
+
+    @EventHandler
+    private void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        if(config.getBoolean("player.join_message.enabled")) {
+            String joinMessage = config.getString("player.join_message.message");
+            joinMessage = joinMessage.replace("%name%", player.getName());
+            joinMessage = ParsePlaceholders.parsePlaceholders(player, joinMessage);
+            event.setJoinMessage(ChatColor.translateAlternateColorCodes('&', joinMessage));
+        }
+        if(config.getBoolean("player.fly.default")) {
+            event.getPlayer().setAllowFlight(true);
+        }
+        if(config.getBoolean("player.join_firework.enabled")) {
+            Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
+            FireworkMeta meta = firework.getFireworkMeta();
+            meta.addEffect(fireworkEffect());
+            firework.setFireworkMeta(meta);
+        }
+        if(config.getBoolean("player.bossbar.enabled")) {
+            bossBar(player);
+        }
+        if(config.getBoolean("player.title.enabled")) {
+            String text = ChatColor.translateAlternateColorCodes('&', config.getString("player.title.text"));
+            String subtitle = ChatColor.translateAlternateColorCodes('&', config.getString("player.title.subtitle"));
+            int fadeIn = config.getInt("player.title.fadein");
+            int stay = config.getInt("player.title.stay");
+            int fadeOut = config.getInt("player.title.fadeout");
+            player.sendTitle(text, subtitle, fadeIn, stay, fadeOut);
+        }
+    }
+
+    @EventHandler
+    private void onPlayerLeave(PlayerQuitEvent event) {
+        if(config.getBoolean("player.leave_message")) {
+            Player player = event.getPlayer();
+            String quitMessage = config.getString("player.leave_message.message");
+            quitMessage = quitMessage.replace("%name%", player.getName());
+            quitMessage = ParsePlaceholders.parsePlaceholders(player, quitMessage);
+            event.setQuitMessage(ChatColor.translateAlternateColorCodes('&', quitMessage));
+        }
+    }
+}

@@ -83,7 +83,47 @@ spawn:
   pitch: 0
 antivoid:
   enabled: true
+player:
+  fly:
+    enabled: true
+    default: true
+  join_message:
+    enabled: true
+    message: "%name% joined"
+  leave_message:
+    enabled: true
+    message: "%name% left"
+  join_firework:
+    enabled: true
+    type: "BALL"
+  bossbar:
+    enabled: true
+    text: "BossBar"
+    color: "PURPLE"
+  title:
+    enabled: true
+    text: "&6Hubbly&r title not configured"
+    subtitle: "Configure me :)"
+    # ANIMATIONS IN TICKS
+    fadein: 10
+    stay: 70
+    fadeout: 10
+cancel_events:
+  block_place: true
+  block_break: true
+  damage: true
+  weather: true
+  item_drop: true
+  item_pickup: true
+  hunger: true
+  mob_spawn: true
+  block_burn: true
+  death_messages: true
+  leaf_decay: true
 messages:
   no_console: "Only players can use this command!"
   no_permission_command: "You do not have permission to use this command!"
   no_permission_use: "You do not have permission to use this!"
+  fly:
+    enable: "Flight mode enabled."
+    disable: "Flight mode disabled."
