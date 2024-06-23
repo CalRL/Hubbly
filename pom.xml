@@ -6,7 +6,7 @@
 
   <groupId>me.calrl</groupId>
   <artifactId>Hubbly</artifactId>
-  <version>1.4</version>
+  <version>1.4.1</version>
   <packaging>jar</packaging>
 
   <name>Hubbly</name>

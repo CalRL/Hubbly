@@ -73,6 +73,16 @@ close_button:
   slot: 23
   material: "BARRIER"
   name: "&aClose"
+spawn:
+  world: "world"
+  x: 0
+  y: 200
+  z: 0
+  #YAW AND PITCH WILL ROUND TO {-135, -90, -45, 0, 45, 90, 135}, YOU CAN MANUALLY OVERRIDE THIS HERE
+  yaw: 0
+  pitch: 0
+antivoid:
+  enabled: true
 messages:
   no_console: "Only players can use this command!"
   no_permission_command: "You do not have permission to use this command!"

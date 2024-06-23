@@ -30,6 +30,7 @@ public class HubblyCommand implements CommandExecutor {
     }
 
     private void registerSubCommands() {
+
         subCommands.put("give", new GiveCommand(plugin, config));
     }
 

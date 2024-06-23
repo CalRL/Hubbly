@@ -12,6 +12,15 @@ commands:
     description: main command
     usage: /hubbly
     permission: hubbly.hubbly
+  spawn:
+    description: spawn command
+    usage: /spawn
+    permission: hubbly.command.spawn
+  setspawn:
+    description: set the spawnpoint
+    usage: /setspawn
+    permission: hubbly.command.spawn
+
 
 permissions:
   hubbly.hubbly:
@@ -30,7 +39,10 @@ permissions:
     default: op
   hubbly.items.bypass:
     default: op
-
+  hubbly.command.setspawn:
+    default: op
+  hubbly.command.spawn:
+    default: true
 
 
 softdepend:
