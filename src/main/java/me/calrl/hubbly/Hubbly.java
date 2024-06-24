@@ -33,14 +33,17 @@ import java.util.logging.Logger;
 public final class Hubbly extends JavaPlugin {
 
     private final Logger logger = getLogger();
-    @Override
-    public void onEnable() {
-        // Plugin startup logic
-//        if (!new File(getDataFolder(), "config.yml").exists()) {
-//            saveDefaultConfig();
-//        }
-        this.saveDefaultConfig();
-        logger.info("Hubbly has been enabled!");
+    private FileConfiguration config;
+    private static Hubbly instance;
+
+    public void reloadConfiguration() {
+        this.reloadConfig();
+        this.saveConfig();
+        config = this.getConfig();
+        this.loadComponents();
+    }
+
+    public void loadComponents() {
         getServer().getPluginManager().registerEvents(new CompassListener(logger, getConfig(), this), this);
         getServer().getPluginManager().registerEvents(new PlayerVisibilityListener(this, getConfig()), this);
         getServer().getPluginManager().registerEvents(new LaunchpadListener(logger, this, getConfig()), this);
@@ -55,6 +58,18 @@ public final class Hubbly extends JavaPlugin {
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this, getConfig()));
         getCommand("spawn").setExecutor(new SpawnCommand(this, getConfig()));
         getCommand("fly").setExecutor(new FlyCommand(logger, getConfig()));
+    }
+    @Override
+    public void onEnable() {
+        instance = this;
+        // Plugin startup logic
+//        if (!new File(getDataFolder(), "config.yml").exists()) {
+//            saveDefaultConfig();
+//        }
+        this.saveDefaultConfig();
+        loadComponents();
+        logger.info("Hubbly has been enabled!");
+
 
 
         int pluginId = 22219;
@@ -67,11 +82,15 @@ public final class Hubbly extends JavaPlugin {
         logger.info("Hubbly has been disabled!");
     }
 
+
 //    public static Hubbly getInstance() {
 //        return getPlugin(Hubbly.class);
 //    }
     @Override
     public @NotNull FileConfiguration getConfig() {
         return super.getConfig();
+    }
+    public static Hubbly getInstance() {
+        return instance;
     }
 }

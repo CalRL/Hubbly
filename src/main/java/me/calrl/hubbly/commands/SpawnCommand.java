@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.commands;
 
+import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.interfaces.SubCommand;
 import org.bukkit.Bukkit;

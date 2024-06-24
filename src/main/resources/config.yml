@@ -124,6 +124,7 @@ messages:
   no_console: "Only players can use this command!"
   no_permission_command: "You do not have permission to use this command!"
   no_permission_use: "You do not have permission to use this!"
+  reload: "Reloaded Hubbly plugin"
   fly:
     enable: "Flight mode enabled."
     disable: "Flight mode disabled."

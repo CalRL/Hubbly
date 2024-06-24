@@ -47,8 +47,8 @@ public class HubblyCommand implements CommandExecutor {
     }
 
     private void registerSubCommands() {
-
         subCommands.put("give", new GiveCommand(plugin, config));
+        subCommands.put("reload", new ReloadCommand(logger, config, plugin));
     }
 
     @Override
