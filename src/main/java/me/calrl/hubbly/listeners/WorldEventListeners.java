@@ -20,6 +20,7 @@ import me.calrl.hubbly.Hubbly;
 import net.minecraft.world.level.levelgen.structure.templatesystem.DefinedStructure;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -32,6 +33,8 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 
+import java.util.EnumSet;
+import java.util.Set;
 import java.util.logging.Logger;
 
 public class WorldEventListeners implements Listener {
@@ -41,6 +44,19 @@ public class WorldEventListeners implements Listener {
     public WorldEventListeners(Logger logger) {
         this.logger = logger;
     }
+    private static final Set<EntityType> HOSTILE_MOBS = EnumSet.of(
+            EntityType.ZOMBIE, EntityType.SKELETON, EntityType.CREEPER,
+            EntityType.SPIDER, EntityType.ENDERMAN, EntityType.WITCH,
+            EntityType.WITHER, EntityType.BLAZE, EntityType.GHAST
+            // Add other hostile mobs as needed
+    );
+
+    private static final Set<EntityType> FRIENDLY_MOBS = EnumSet.of(
+            EntityType.COW, EntityType.SHEEP, EntityType.PIG,
+            EntityType.CHICKEN, EntityType.HORSE, EntityType.VILLAGER
+            // Add other friendly mobs as needed
+    );
+
     @EventHandler
     private void onBlockPlace(BlockPlaceEvent event) {
         if(config.getBoolean("cancel_events.block_place")) {
@@ -106,9 +122,11 @@ public class WorldEventListeners implements Listener {
         }
     }
     @EventHandler
-    private void onMobSpawn(EntitySpawnEvent event) {
-        if(config.getBoolean("cancel_events.mob_spawn")) {
-            if(!(event.getEntity() instanceof Player player)) {
+    private void onMobSpawn(CreatureSpawnEvent event) {
+        if (config.getBoolean("cancel_events.mob_spawn")) {
+            EntityType entityType = event.getEntityType();
+
+            if (HOSTILE_MOBS.contains(entityType) || FRIENDLY_MOBS.contains(entityType)) {
                 event.setCancelled(true);
             }
         }

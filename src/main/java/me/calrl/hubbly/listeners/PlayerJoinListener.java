@@ -19,25 +19,18 @@ package me.calrl.hubbly.listeners;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.ParsePlaceholders;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
+import org.bukkit.*;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
-import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class PlayerJoinListener implements Listener {
@@ -49,7 +42,6 @@ public class PlayerJoinListener implements Listener {
     }
 
     private FireworkEffect fireworkEffect() {
-        FireworkEffect fireworkEffect;
         FireworkEffect.Builder builder = FireworkEffect.builder()
                 .withColor(Color.WHITE)
                 .with(FireworkEffect.Type.valueOf(config.getString("player.join_firework.type")))
@@ -68,21 +60,28 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
+//        config = Hubbly.getInstance().getConfig();
         Player player = event.getPlayer();
+        logger.info("Player " + player.getName() + " joined the game.");
         if(config.getBoolean("player.join_message.enabled")) {
             String joinMessage = config.getString("player.join_message.message");
             joinMessage = joinMessage.replace("%name%", player.getName());
             joinMessage = ParsePlaceholders.parsePlaceholders(player, joinMessage);
             event.setJoinMessage(ChatColor.translateAlternateColorCodes('&', joinMessage));
         }
-        if(config.getBoolean("player.fly.default")) {
+        if(config.getBoolean("player.fly.enabled") && config.getBoolean("player.fly.default")) {
             event.getPlayer().setAllowFlight(true);
         }
         if(config.getBoolean("player.join_firework.enabled")) {
-            Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
-            FireworkMeta meta = firework.getFireworkMeta();
-            meta.addEffect(fireworkEffect());
-            firework.setFireworkMeta(meta);
+            try {
+                Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
+                FireworkMeta meta = firework.getFireworkMeta();
+                meta.addEffect(fireworkEffect());
+                meta.setPower(config.getInt("player.join_firework.power"));
+                firework.setFireworkMeta(meta);
+            } catch (Exception e) {
+                logger.warning("Failed to launch firework: " + e.getMessage());
+            }
         }
         if(config.getBoolean("player.bossbar.enabled")) {
             bossBar(player);
@@ -94,6 +93,16 @@ public class PlayerJoinListener implements Listener {
             int stay = config.getInt("player.title.stay");
             int fadeOut = config.getInt("player.title.fadeout");
             player.sendTitle(text, subtitle, fadeIn, stay, fadeOut);
+        }
+        if(config.getBoolean("player.spawn_on_join")) {
+            String worldName = config.getString("spawn.world");
+            World world = Bukkit.getWorld(worldName);
+            double x = config.getDouble("spawn.x");
+            double y = config.getDouble("spawn.y");
+            double z = config.getDouble("spawn.z");
+            float yaw = (float) config.getDouble("spawn.yaw");
+            float pitch = (float) config.getDouble("spawn.pitch");
+            player.teleport(new Location(world, x, y, z, yaw, pitch));
         }
     }
 

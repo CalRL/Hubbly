@@ -84,6 +84,7 @@ spawn:
 antivoid:
   enabled: true
 player:
+  spawn_on_join: true
   fly:
     enabled: true
     default: true
@@ -96,6 +97,8 @@ player:
   join_firework:
     enabled: true
     type: "BALL"
+    #POWER 1-3
+    power: 1
   bossbar:
     enabled: true
     text: "BossBar"
