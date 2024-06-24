@@ -29,17 +29,16 @@ public class ReloadCommand implements SubCommand {
 
 
     private final Logger logger;
-    private FileConfiguration config;
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final JavaPlugin plugin;
 
-    public ReloadCommand(Logger logger, FileConfiguration config, JavaPlugin plugin) {
+    public ReloadCommand(Logger logger, JavaPlugin plugin) {
         this.logger = logger;
-        this.config = config;
         this.plugin = plugin;
     }
     @Override
     public void execute(Player player, String[] args) {
-        Hubbly.getInstance().reloadConfiguration();
+        Hubbly.getInstance().reloadPlugin();
         player.sendMessage(config.getString("messages.reload"));
 
     }

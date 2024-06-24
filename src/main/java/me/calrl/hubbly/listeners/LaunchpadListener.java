@@ -34,12 +34,11 @@ public class LaunchpadListener implements Listener {
 
     private final Logger logger;
     private final Hubbly plugin;
-    private final FileConfiguration config;
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
 
-    public LaunchpadListener(Logger logger, Hubbly plugin, FileConfiguration config) {
+    public LaunchpadListener(Logger logger, Hubbly plugin) {
         this.logger = logger;
         this.plugin = plugin;
-        this.config = config;
     }
 
     @EventHandler

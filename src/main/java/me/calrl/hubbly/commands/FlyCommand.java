@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.commands;
 
+import me.calrl.hubbly.Hubbly;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -31,10 +32,10 @@ import java.util.logging.Logger;
 public class FlyCommand implements CommandExecutor {
 
     private final Logger logger;
-    private final FileConfiguration config;
-    public FlyCommand(Logger logger, FileConfiguration config) {
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
+
+    public FlyCommand(Logger logger) {
         this.logger = logger;
-        this.config = config;
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {

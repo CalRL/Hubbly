@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.listeners;
 
+import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -42,10 +43,9 @@ import java.util.logging.Logger;
 public class PlayerJoinListener implements Listener {
 
     private final Logger logger;
-    private final FileConfiguration config;
-    public PlayerJoinListener(Logger logger, FileConfiguration config) {
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    public PlayerJoinListener(Logger logger) {
         this.logger = logger;
-        this.config = config;
     }
 
     private FireworkEffect fireworkEffect() {

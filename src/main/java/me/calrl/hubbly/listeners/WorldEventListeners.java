@@ -16,6 +16,7 @@
  */
 package me.calrl.hubbly.listeners;
 
+import me.calrl.hubbly.Hubbly;
 import net.minecraft.world.level.levelgen.structure.templatesystem.DefinedStructure;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
@@ -36,10 +37,9 @@ import java.util.logging.Logger;
 public class WorldEventListeners implements Listener {
 
     private final Logger logger;
-    private final FileConfiguration config;
-    public WorldEventListeners(Logger logger, FileConfiguration config) {
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    public WorldEventListeners(Logger logger) {
         this.logger = logger;
-        this.config = config;
     }
     @EventHandler
     private void onBlockPlace(BlockPlaceEvent event) {

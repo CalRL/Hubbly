@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.commands;
 
+import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.AngleRounder;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.interfaces.SubCommand;
@@ -36,12 +37,11 @@ import java.util.Map;
 public class SetSpawnCommand implements CommandExecutor {
 
     private final JavaPlugin plugin;
-    private final FileConfiguration config;
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final Map<String, CustomItem> items = new HashMap<>();
 
-    public SetSpawnCommand(JavaPlugin plugin, FileConfiguration config) {
+    public SetSpawnCommand(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.config = config;
     }
 
     public double spawnRound(double value) {

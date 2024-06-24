@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.listeners;
 
+import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.CreateCloseItem;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import org.bukkit.event.EventHandler;
@@ -49,14 +50,13 @@ import java.util.logging.Logger;
 public class CompassListener implements Listener {
 
     private final Logger logger;
-    private final FileConfiguration config;
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final NamespacedKey itemKey;
     private final JavaPlugin plugin;
     //private final boolean papiInstalled;
 
-    public CompassListener(Logger logger, FileConfiguration config, JavaPlugin plugin) {
+    public CompassListener(Logger logger, JavaPlugin plugin) {
         this.logger = logger;
-        this.config = config;
         this.plugin = plugin;
         this.itemKey = new NamespacedKey(plugin, "compassItemKey");
 

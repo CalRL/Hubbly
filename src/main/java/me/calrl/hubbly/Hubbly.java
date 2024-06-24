@@ -20,14 +20,10 @@ package me.calrl.hubbly;
 import me.calrl.hubbly.commands.*;
 import me.calrl.hubbly.listeners.*;
 import me.calrl.hubbly.metrics.Metrics;
-import me.calrl.hubbly.metrics.Metrics.CustomChart;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.io.File;
-import java.util.concurrent.Callable;
 import java.util.logging.Logger;
 
 public final class Hubbly extends JavaPlugin {
@@ -36,28 +32,36 @@ public final class Hubbly extends JavaPlugin {
     private FileConfiguration config;
     private static Hubbly instance;
 
-    public void reloadConfiguration() {
+    public void reloadPlugin() {
         this.reloadConfig();
         this.saveConfig();
+
         config = this.getConfig();
-        this.loadComponents();
+        try {
+            logger.info("Loading Components");
+            loadComponents();
+            logger.info("Loaded!");
+        } catch(Error e) {
+            e.printStackTrace();
+        }
+
     }
 
     public void loadComponents() {
-        getServer().getPluginManager().registerEvents(new CompassListener(logger, getConfig(), this), this);
-        getServer().getPluginManager().registerEvents(new PlayerVisibilityListener(this, getConfig()), this);
-        getServer().getPluginManager().registerEvents(new LaunchpadListener(logger, this, getConfig()), this);
-        getServer().getPluginManager().registerEvents(new ShopListener(logger, getConfig()), this);
-        getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, getConfig(), this), this);
-        getServer().getPluginManager().registerEvents(new SocialsListener(logger, getConfig()), this);
-        getServer().getPluginManager().registerEvents(new VoidDamageListener(logger, getConfig()), this);
-        getServer().getPluginManager().registerEvents(new PlayerJoinListener(logger, getConfig()), this);
-        getServer().getPluginManager().registerEvents(new WorldEventListeners(logger, getConfig()), this);
+        getServer().getPluginManager().registerEvents(new CompassListener(logger, this), this);
+        getServer().getPluginManager().registerEvents(new PlayerVisibilityListener(this), this);
+        getServer().getPluginManager().registerEvents(new LaunchpadListener(logger, this), this);
+        getServer().getPluginManager().registerEvents(new ShopListener(logger), this);
+        getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, this), this);
+        getServer().getPluginManager().registerEvents(new SocialsListener(logger),this);
+        getServer().getPluginManager().registerEvents(new VoidDamageListener(logger), this);
+        getServer().getPluginManager().registerEvents(new PlayerJoinListener(logger), this);
+        getServer().getPluginManager().registerEvents(new WorldEventListeners(logger), this);
 
-        getCommand("hubbly").setExecutor(new HubblyCommand(logger, getConfig(), this));
-        getCommand("setspawn").setExecutor(new SetSpawnCommand(this, getConfig()));
-        getCommand("spawn").setExecutor(new SpawnCommand(this, getConfig()));
-        getCommand("fly").setExecutor(new FlyCommand(logger, getConfig()));
+        getCommand("hubbly").setExecutor(new HubblyCommand(logger, this));
+        getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
+        getCommand("spawn").setExecutor(new SpawnCommand(this));
+        getCommand("fly").setExecutor(new FlyCommand(logger));
     }
     @Override
     public void onEnable() {

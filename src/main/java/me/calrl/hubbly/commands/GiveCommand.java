@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.commands;
 
+import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.items.CompassItem;
@@ -32,23 +33,23 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 public class GiveCommand implements SubCommand {
 
     private final JavaPlugin plugin;
-    private final FileConfiguration config;
+    private FileConfiguration config = Hubbly.getInstance().getConfig();;
     private final Map<String, CustomItem> items = new HashMap<>();
 
-    public GiveCommand(JavaPlugin plugin, FileConfiguration config) {
+    public GiveCommand(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.config = config;
         registerItems();
     }
 
     private void registerItems() {
-        items.put("compass", new CompassItem(config));
-        items.put("socials", new SocialsItem(config));
-        items.put("shop", new ShopItem(config));
+        items.put("compass", new CompassItem());
+        items.put("socials", new SocialsItem());
+        items.put("shop", new ShopItem());
         items.put("playervisibility", new PlayerVisibilityItem());
     }
     @Override

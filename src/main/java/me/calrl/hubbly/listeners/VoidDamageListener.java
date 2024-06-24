@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.listeners;
 
+import me.calrl.hubbly.Hubbly;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -31,11 +32,10 @@ import java.util.logging.Logger;
 
 public class VoidDamageListener implements Listener {
 
-    private final FileConfiguration config;
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final Logger logger;
-    public VoidDamageListener(Logger logger, FileConfiguration config) {
+    public VoidDamageListener(Logger logger) {
         this.logger = logger;
-        this.config = config;
     }
 
     @EventHandler

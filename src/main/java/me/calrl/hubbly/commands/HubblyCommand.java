@@ -35,20 +35,20 @@ import java.util.logging.Logger;
 public class HubblyCommand implements CommandExecutor {
 
     private Logger logger;
-    private final FileConfiguration config;
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
+
     private final JavaPlugin plugin;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
 
-    public HubblyCommand(Logger logger, FileConfiguration config, Hubbly plugin) {
+    public HubblyCommand(Logger logger, Hubbly plugin) {
         this.logger = logger;
-        this.config = config;
         this.plugin = plugin;
         registerSubCommands();
     }
 
     private void registerSubCommands() {
-        subCommands.put("give", new GiveCommand(plugin, config));
-        subCommands.put("reload", new ReloadCommand(logger, config, plugin));
+        subCommands.put("give", new GiveCommand(plugin));
+        subCommands.put("reload", new ReloadCommand(logger, plugin));
     }
 
     @Override

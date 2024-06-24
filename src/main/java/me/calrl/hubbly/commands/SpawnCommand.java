@@ -37,12 +37,11 @@ import java.util.Map;
 public class SpawnCommand implements CommandExecutor {
 
     private final JavaPlugin plugin;
-    private final FileConfiguration config;
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final Map<String, CustomItem> items = new HashMap<>();
 
-    public SpawnCommand(JavaPlugin plugin, FileConfiguration config) {
+    public SpawnCommand(JavaPlugin plugin) {
         this.plugin = plugin;
-        this.config = config;
     }
 
     @Override

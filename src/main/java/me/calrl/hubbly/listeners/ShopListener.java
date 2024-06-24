@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.listeners;
 
+import me.calrl.hubbly.Hubbly;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,9 +32,9 @@ import java.util.logging.Logger;
 
 public class ShopListener implements Listener {
     private final Logger logger;
-    private final FileConfiguration config;
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
 
-    public ShopListener(Logger logger, FileConfiguration config) {
+    public ShopListener(Logger logger) {
         this.logger = logger;
         this.config = config;
     }

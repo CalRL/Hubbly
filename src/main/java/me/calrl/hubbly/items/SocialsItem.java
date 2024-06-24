@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.items;
 
+import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.interfaces.CustomItem;
@@ -38,11 +39,7 @@ import java.util.logging.Logger;
 
 public class SocialsItem implements CustomItem {
 
-    private final FileConfiguration config;
-    public SocialsItem(FileConfiguration config) {
-        this.config = config;
-
-    }
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
 
     public final ItemStack createItem() {
         ItemStack item;

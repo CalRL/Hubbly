@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.items;
 
+import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.CustomItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -28,10 +29,7 @@ import java.util.Objects;
 
 public class ShopItem implements CustomItem {
 
-    private final FileConfiguration config;
-    public ShopItem(FileConfiguration config) {
-        this.config = config;
-    }
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
 
     public final ItemStack createItem() {
         ItemStack item = new ItemStack(Material.EMERALD);

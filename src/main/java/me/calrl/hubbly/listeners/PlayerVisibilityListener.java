@@ -35,11 +35,10 @@ import org.w3c.dom.Text;
 public class PlayerVisibilityListener implements Listener {
 
     private final Hubbly plugin;
-    private final FileConfiguration config;
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
 
-    public PlayerVisibilityListener(Hubbly plugin, FileConfiguration config) {
+    public PlayerVisibilityListener(Hubbly plugin) {
         this.plugin = plugin;
-        this.config = config;
     }
     @EventHandler
     public void onItemClick(PlayerInteractEvent event) {

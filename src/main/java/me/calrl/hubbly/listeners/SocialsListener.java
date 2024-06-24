@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.listeners;
 
+import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.functions.CreateCloseItem;
@@ -43,10 +44,9 @@ import java.util.logging.Logger;
 public class SocialsListener implements Listener {
 
     private Logger logger;
-    private FileConfiguration config;
-    public SocialsListener(Logger logger, FileConfiguration config) {
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    public SocialsListener(Logger logger) {
         this.logger = logger;
-        this.config = config;
     }
 
     @EventHandler

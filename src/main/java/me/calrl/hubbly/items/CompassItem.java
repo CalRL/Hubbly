@@ -18,6 +18,7 @@
 package me.calrl.hubbly.items;
 
 
+import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.CustomItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -31,10 +32,8 @@ import java.util.logging.Logger;
 public class CompassItem implements CustomItem {
 
 
-    private final FileConfiguration config;
-    public CompassItem(FileConfiguration config) {
-        this.config = config;
-    }
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
+
 
     public final ItemStack createItem() {
         ItemStack compass = new ItemStack(Material.COMPASS);
