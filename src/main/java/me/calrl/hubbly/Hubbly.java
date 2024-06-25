@@ -18,6 +18,7 @@
 package me.calrl.hubbly;
 
 import me.calrl.hubbly.commands.*;
+import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.listeners.*;
 import me.calrl.hubbly.metrics.Metrics;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -44,7 +45,6 @@ public final class Hubbly extends JavaPlugin {
         } catch(Error e) {
             e.printStackTrace();
         }
-
     }
 
     public void loadComponents() {
@@ -73,7 +73,8 @@ public final class Hubbly extends JavaPlugin {
         this.saveDefaultConfig();
         loadComponents();
         logger.info("Hubbly has been enabled!");
-
+        BossBarManager.initialize(Hubbly.getInstance().getConfig());
+        BossBarManager.getInstance().reAddAllBossBars();
 
 
         int pluginId = 22219;
@@ -83,6 +84,7 @@ public final class Hubbly extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        BossBarManager.getInstance().removeAllBossBars();
         logger.info("Hubbly has been disabled!");
     }
 

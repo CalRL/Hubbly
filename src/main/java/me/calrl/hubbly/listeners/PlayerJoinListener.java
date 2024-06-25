@@ -18,11 +18,9 @@
 package me.calrl.hubbly.listeners;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import org.bukkit.*;
-import org.bukkit.boss.BarColor;
-import org.bukkit.boss.BarStyle;
-import org.bukkit.boss.BossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
@@ -31,14 +29,17 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
+
 import java.util.logging.Logger;
 
 public class PlayerJoinListener implements Listener {
 
     private final Logger logger;
-    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private final FileConfiguration config;
+
     public PlayerJoinListener(Logger logger) {
         this.logger = logger;
+        this.config = Hubbly.getInstance().getConfig();
     }
 
     private FireworkEffect fireworkEffect() {
@@ -49,30 +50,23 @@ public class PlayerJoinListener implements Listener {
 
         return builder.build();
     }
-    private BossBar bossBar(Player player) {
-        BarColor color = BarColor.valueOf(config.getString("player.bossbar.color"));
-        String text = config.getString("player.bossbar.text");
-        BossBar bar = Bukkit.createBossBar(text, color, BarStyle.SOLID);
-        bar.addPlayer(player);
-        bar.setVisible(true);
-        return bar;
-    }
 
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
-//        config = Hubbly.getInstance().getConfig();
         Player player = event.getPlayer();
-        logger.info("Player " + player.getName() + " joined the game.");
-        if(config.getBoolean("player.join_message.enabled")) {
+
+        if (config.getBoolean("player.join_message.enabled")) {
             String joinMessage = config.getString("player.join_message.message");
             joinMessage = joinMessage.replace("%name%", player.getName());
             joinMessage = ParsePlaceholders.parsePlaceholders(player, joinMessage);
             event.setJoinMessage(ChatColor.translateAlternateColorCodes('&', joinMessage));
         }
-        if(config.getBoolean("player.fly.enabled") && config.getBoolean("player.fly.default")) {
+
+        if (config.getBoolean("player.fly.enabled") && config.getBoolean("player.fly.default")) {
             event.getPlayer().setAllowFlight(true);
         }
-        if(config.getBoolean("player.join_firework.enabled")) {
+
+        if (config.getBoolean("player.join_firework.enabled")) {
             try {
                 Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
                 FireworkMeta meta = firework.getFireworkMeta();
@@ -83,10 +77,12 @@ public class PlayerJoinListener implements Listener {
                 logger.warning("Failed to launch firework: " + e.getMessage());
             }
         }
-        if(config.getBoolean("player.bossbar.enabled")) {
-            bossBar(player);
+
+        if (config.getBoolean("player.bossbar.enabled")) {
+            BossBarManager.getInstance().createBossBar(player);
         }
-        if(config.getBoolean("player.title.enabled")) {
+
+        if (config.getBoolean("player.title.enabled")) {
             String text = ChatColor.translateAlternateColorCodes('&', config.getString("player.title.text"));
             String subtitle = ChatColor.translateAlternateColorCodes('&', config.getString("player.title.subtitle"));
             int fadeIn = config.getInt("player.title.fadein");
@@ -94,7 +90,8 @@ public class PlayerJoinListener implements Listener {
             int fadeOut = config.getInt("player.title.fadeout");
             player.sendTitle(text, subtitle, fadeIn, stay, fadeOut);
         }
-        if(config.getBoolean("player.spawn_on_join")) {
+
+        if (config.getBoolean("player.spawn_on_join")) {
             String worldName = config.getString("spawn.world");
             World world = Bukkit.getWorld(worldName);
             double x = config.getDouble("spawn.x");
@@ -108,8 +105,9 @@ public class PlayerJoinListener implements Listener {
 
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
-        if(config.getBoolean("player.leave_message")) {
-            Player player = event.getPlayer();
+        Player player = event.getPlayer();
+        BossBarManager.getInstance().removeBossBar(player);
+        if (config.getBoolean("player.leave_message")) {
             String quitMessage = config.getString("player.leave_message.message");
             quitMessage = quitMessage.replace("%name%", player.getName());
             quitMessage = ParsePlaceholders.parsePlaceholders(player, quitMessage);

@@ -134,7 +134,13 @@ public class CompassListener implements Listener {
             for (String itemKey : Objects.requireNonNull(config.getConfigurationSection("compass.gui.items")).getKeys(false)) {
                 ItemStack item = createItemFromConfig(player, itemKey);
                 if (item != null) {
-                    gui.addItem(item);
+                    int slot = config.getInt("compass.gui.items." + itemKey + ".slot");
+                    if(slot >= 0 && slot < gui.getSize()) {
+                        gui.setItem( slot-1, item);
+                    } else {
+                        logger.warning("Invalid slot on item" + itemKey.toString());
+                    }
+
                 }
             }
             if (config.isConfigurationSection("compass.fill")) {

@@ -54,9 +54,8 @@ public class GiveCommand implements SubCommand {
     }
     @Override
     public void execute(Player player, String[] args) {
-        if (args.length < 2 && player.hasPermission("hubbly.command.give") || player.isOp()) {
+        if (args.length < 2 && (player.hasPermission("hubbly.command.give") || player.isOp())) {
             player.sendMessage(ChatColor.YELLOW + "Usage: /hubbly give <item>");
-            return;
         }
         if(player.hasPermission("hubbly.command.give") || player.isOp()) {
             String itemName = args[1].toLowerCase();
@@ -70,7 +69,7 @@ public class GiveCommand implements SubCommand {
                 player.sendMessage(ChatColor.RED + "Unknown item.");
             }
         } else {
-            player.sendMessage(Objects.requireNonNull(config.getString("messages.no_permission_use/")));
+            player.sendMessage(Objects.requireNonNull(config.getString("messages.no_permission_use")));
         }
 
     }

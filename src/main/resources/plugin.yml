@@ -51,6 +51,8 @@ permissions:
     default: op
   hubbly.bypass:
     default: op
+  hubbly.reload:
+    default: op
 
 
 softdepend:

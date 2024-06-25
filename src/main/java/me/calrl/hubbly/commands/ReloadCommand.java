@@ -18,7 +18,9 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
+import me.calrl.hubbly.listeners.PlayerJoinListener;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -31,6 +33,7 @@ public class ReloadCommand implements SubCommand {
     private final Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final JavaPlugin plugin;
+    private PlayerJoinListener playerJoinListener;
 
     public ReloadCommand(Logger logger, JavaPlugin plugin) {
         this.logger = logger;
@@ -38,8 +41,22 @@ public class ReloadCommand implements SubCommand {
     }
     @Override
     public void execute(Player player, String[] args) {
-        Hubbly.getInstance().reloadPlugin();
-        player.sendMessage(config.getString("messages.reload"));
+        if(player.hasPermission("hubbly.reload") || player.isOp()) {
 
+            try {
+                BossBarManager bossBarManager = BossBarManager.getInstance();
+                if (bossBarManager != null) {
+                    bossBarManager.removeAllBossBars();
+                }
+                Hubbly.getInstance().reloadPlugin();
+                player.sendMessage(config.getString("messages.reload"));
+                BossBarManager.initialize(Hubbly.getInstance().getConfig());
+                bossBarManager = BossBarManager.getInstance();
+                bossBarManager.reAddAllBossBars();
+            } catch (Exception e) {
+                logger.info(String.valueOf(e));
+            }
+
+        }
     }
 }
