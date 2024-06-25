@@ -47,8 +47,9 @@ public class PlayerVisibilityListener implements Listener {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         if (itemInHand.getType() == Material.LIME_DYE || itemInHand.getType() == Material.GRAY_DYE) {
             if(event.getAction() != Action.PHYSICAL && (player.hasPermission("hubbly.playervisibility.use") || player.isOp())) {
-                event.setCancelled(true);
                 swapDye(player, itemInHand);
+                event.setCancelled(true);
+
             } else {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.no_permission_use")));
             }
