@@ -125,9 +125,8 @@ public class WorldEventListeners implements Listener {
     private void onMobSpawn(CreatureSpawnEvent event) {
         if (config.getBoolean("cancel_events.mob_spawn")) {
             EntityType entityType = event.getEntityType();
-
-            if (HOSTILE_MOBS.contains(entityType) || FRIENDLY_MOBS.contains(entityType)) {
-                event.setCancelled(true);
+            if(!(event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.COMMAND || event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM)) {
+                    event.setCancelled(true);
             }
         }
     }
