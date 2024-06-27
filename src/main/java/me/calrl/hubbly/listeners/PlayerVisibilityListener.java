@@ -30,6 +30,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.w3c.dom.Text;
 
 public class PlayerVisibilityListener implements Listener {
@@ -47,7 +48,9 @@ public class PlayerVisibilityListener implements Listener {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         if (itemInHand.getType() == Material.LIME_DYE || itemInHand.getType() == Material.GRAY_DYE) {
             if(event.getAction() != Action.PHYSICAL && (player.hasPermission("hubbly.playervisibility.use") || player.isOp())) {
-                swapDye(player, itemInHand);
+                Bukkit.getScheduler().runTaskLaterAsynchronously(Hubbly.getInstance(), () -> swapDye(player, itemInHand), 1L);
+
+
                 event.setCancelled(true);
 
             } else {

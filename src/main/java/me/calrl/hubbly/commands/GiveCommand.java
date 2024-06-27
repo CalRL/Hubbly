@@ -20,10 +20,7 @@ package me.calrl.hubbly.commands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.interfaces.SubCommand;
-import me.calrl.hubbly.items.CompassItem;
-import me.calrl.hubbly.items.PlayerVisibilityItem;
-import me.calrl.hubbly.items.ShopItem;
-import me.calrl.hubbly.items.SocialsItem;
+import me.calrl.hubbly.items.*;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -33,16 +30,16 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 public class GiveCommand implements SubCommand {
 
     private final JavaPlugin plugin;
-    private FileConfiguration config = Hubbly.getInstance().getConfig();;
+    private final FileConfiguration config;
     private final Map<String, CustomItem> items = new HashMap<>();
 
     public GiveCommand(JavaPlugin plugin) {
         this.plugin = plugin;
+        this.config = Hubbly.getInstance().getConfig();
         registerItems();
     }
 
@@ -51,14 +48,21 @@ public class GiveCommand implements SubCommand {
         items.put("socials", new SocialsItem());
         items.put("shop", new ShopItem());
         items.put("playervisibility", new PlayerVisibilityItem());
+
+        for (String itemKey : config.getConfigurationSection("items").getKeys(false)) {
+            items.put(ChatColor.stripColor(itemKey.toLowerCase()), new ConfigItems(itemKey));
+        }
     }
+
     @Override
     public void execute(Player player, String[] args) {
         if (args.length < 2 && (player.hasPermission("hubbly.command.give") || player.isOp())) {
             player.sendMessage(ChatColor.YELLOW + "Usage: /hubbly give <item>");
+            return;
         }
-        if(player.hasPermission("hubbly.command.give") || player.isOp()) {
-            String itemName = args[1].toLowerCase();
+
+        if (player.hasPermission("hubbly.command.give") || player.isOp()) {
+            String itemName = ChatColor.stripColor(args[1].toLowerCase());
             CustomItem customItem = items.get(itemName);
 
             if (customItem != null) {
@@ -71,6 +75,5 @@ public class GiveCommand implements SubCommand {
         } else {
             player.sendMessage(Objects.requireNonNull(config.getString("messages.no_permission_use")));
         }
-
     }
 }

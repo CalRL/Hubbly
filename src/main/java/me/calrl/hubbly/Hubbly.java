@@ -57,6 +57,7 @@ public final class Hubbly extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new VoidDamageListener(logger), this);
         getServer().getPluginManager().registerEvents(new PlayerJoinListener(logger), this);
         getServer().getPluginManager().registerEvents(new WorldEventListeners(logger), this);
+        getServer().getPluginManager().registerEvents(new ConfigItemListener(this), this);
 
         getCommand("hubbly").setExecutor(new HubblyCommand(logger, this));
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
@@ -66,6 +67,7 @@ public final class Hubbly extends JavaPlugin {
     @Override
     public void onEnable() {
         instance = this;
+
         // Plugin startup logic
 //        if (!new File(getDataFolder(), "config.yml").exists()) {
 //            saveDefaultConfig();
