@@ -59,7 +59,7 @@ public class PlayerJoinListener implements Listener {
             String joinMessage = config.getString("player.join_message.message");
             joinMessage = joinMessage.replace("%name%", player.getName());
             joinMessage = ParsePlaceholders.parsePlaceholders(player, joinMessage);
-            event.setJoinMessage(joinMessage);
+            event.setJoinMessage(ChatColor.translateAlternateColorCodes('&', joinMessage));
         }
 
         if (config.getBoolean("player.fly.enabled") && config.getBoolean("player.fly.default")) {

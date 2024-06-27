@@ -49,8 +49,6 @@ public class PlayerVisibilityListener implements Listener {
         if (itemInHand.getType() == Material.LIME_DYE || itemInHand.getType() == Material.GRAY_DYE) {
             if(event.getAction() != Action.PHYSICAL && (player.hasPermission("hubbly.playervisibility.use") || player.isOp())) {
                 Bukkit.getScheduler().runTaskLaterAsynchronously(Hubbly.getInstance(), () -> swapDye(player, itemInHand), 1L);
-
-
                 event.setCancelled(true);
 
             } else {
