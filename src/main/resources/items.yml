@@ -1,0 +1,22 @@
+# Custom Items that you make myself, please follow the format.
+# To get these items use /hubbly give <item>
+# For item1, I would use /hubbly give item1
+items:
+  item1:
+    name: ''
+    type: REDSTONE_BLOCK
+    lore:
+      - 'line 1'
+      - 'line 2'
+    commands:
+      - '[player] spawn'
+      - '[console] broadcast item1'
+  item2:
+    name: 'not a block'
+    type: COMPASS
+    lore:
+      - 'not line 1'
+      - 'DEFINITELY not line 2'
+    commands:
+      - '[player] spawn'
+      - '[console] broadcast item2'

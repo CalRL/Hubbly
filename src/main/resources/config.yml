@@ -16,9 +16,31 @@ compass:
   fill:
     name: " "
     type: "BLACK_STAINED_GLASS_PANE"
+
+
+disabled-worlds:
+  - 'world_nether'
+
 launchpad:
   enabled: true
   type: "SLIME_BLOCK"
+  power: 2
+  power_y: 2
+  actions:
+    - '[]'
+
+double_jump:
+  enabled: true
+  power: 1.5
+  power_y: 0.5
+  # INTEGERSE ONLY
+  cooldown: 2
+
+
+antivoid:
+  enabled: true
+
+
 shop:
   enabled: true
   command: "buy"
@@ -67,10 +89,13 @@ item_on_join:
     playervisibility:
       enabled: true
       slot: 8
+
+      
 close_button:
   slot: 23
   material: "BARRIER"
   name: "&aClose"
+
 spawn:
   world: "world"
   x: 0
@@ -79,8 +104,12 @@ spawn:
   #YAW AND PITCH WILL ROUND TO {-135, -90, -45, 0, 45, 90, 135}, YOU CAN MANUALLY OVERRIDE THIS HERE
   yaw: 0
   pitch: 0
-antivoid:
-  enabled: true
+
+
+#-----------------#
+# PLAYER SETTINGS #
+#-----------------#
+
 player:
   spawn_on_join: true
   fly:
@@ -130,6 +159,11 @@ player:
     fadein: 10
     stay: 70
     fadeout: 10
+
+#---------------------#
+# WORLD EVENT MANAGER #
+#---------------------#
+
 cancel_events:
   block_place: true
   block_break: true
@@ -142,6 +176,11 @@ cancel_events:
   block_burn: true
   death_messages: true
   leaf_decay: true
+
+#----------#
+# MESSAGES #
+#----------#
+
 messages:
   no_console: "Only players can use this command!"
   no_permission_command: "You do not have permission to use this command!"
@@ -151,25 +190,3 @@ messages:
     enable: "Flight mode enabled."
     disable: "Flight mode disabled."
 
-# Custom Items that you make myself, please follow the format.
-# To get these items use /hubbly give <item>
-# For item1, I would use /hubbly give item1
-items:
-  item1:
-    name: ''
-    type: REDSTONE_BLOCK
-    lore:
-      - 'line 1'
-      - 'line 2'
-    commands:
-      - '[player] spawn'
-      - '[console] broadcast item1'
-  item2:
-    name: 'not a block'
-    type: COMPASS
-    lore:
-      - 'not line 1'
-      - 'DEFINITELY not line 2'
-    commands:
-      - '[player] spawn'
-      - '[console] broadcast item2'

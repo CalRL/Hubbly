@@ -15,10 +15,11 @@
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.calrl.hubbly.listeners;
+package me.calrl.hubbly.listeners.items;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.items.ConfigItems;
+import me.calrl.hubbly.action.ActionManager;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -36,15 +37,18 @@ import java.util.logging.Logger;
 public class ConfigItemListener implements Listener {
 
     private final Logger logger;
-    private final NamespacedKey customCommandsKey;
+    private final NamespacedKey customActionsKey;
+    private final ActionManager actionManager;
 
     public ConfigItemListener(JavaPlugin plugin) {
         this.logger = plugin.getLogger();
-        this.customCommandsKey = new NamespacedKey(plugin, "customCommands");
+        this.customActionsKey = new NamespacedKey(plugin, "customActions");
+        this.actionManager = Hubbly.getInstance().getActionManager();
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
@@ -57,16 +61,11 @@ public class ConfigItemListener implements Listener {
             return;
         }
 
-        String nbtData = meta.getPersistentDataContainer().get(customCommandsKey, PersistentDataType.STRING);
-
         if (event.getAction() != Action.PHYSICAL) {
-            if (meta.getPersistentDataContainer().has(customCommandsKey, PersistentDataType.STRING)) {
-                // Display NBT data in chat for testing purposes
-                player.sendMessage("NBT Data: " + nbtData);
-
-                // Execute commands
-                ConfigItems configItems = new ConfigItems("");
-                configItems.executeCommands(player, item);
+            if (meta.getPersistentDataContainer().has(customActionsKey, PersistentDataType.STRING)) {
+                // Execute actions
+                ConfigItems configItems = new ConfigItems("", actionManager);
+                configItems.executeActions(player, item);
                 event.setCancelled(true);
             }
         }

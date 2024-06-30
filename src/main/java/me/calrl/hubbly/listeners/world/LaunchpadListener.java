@@ -15,10 +15,10 @@
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.calrl.hubbly.listeners;
+package me.calrl.hubbly.listeners.world;
 
 import me.calrl.hubbly.Hubbly;
-import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,13 +36,16 @@ public class LaunchpadListener implements Listener {
     private final Hubbly plugin;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
 
-    public LaunchpadListener(Logger logger, Hubbly plugin) {
-        this.logger = logger;
+    public LaunchpadListener(Hubbly plugin) {
+        this.logger = plugin.getLogger();
         this.plugin = plugin;
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
+        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
+
+        if(!config.getBoolean("launchpad.enabled")) return;
         Player player = event.getPlayer();
         Block blockStandingOn = player.getLocation().getBlock(); // Get the block the player is standing on
         Block blockBelow = player.getLocation().subtract(0, 1, 0).getBlock(); // Get the block directly below the player

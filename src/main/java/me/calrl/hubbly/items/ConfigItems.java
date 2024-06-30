@@ -18,6 +18,8 @@
 package me.calrl.hubbly.items;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.action.ActionManager;
+import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.interfaces.CustomItem;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,20 +40,23 @@ public class ConfigItems implements CustomItem {
     private final JavaPlugin plugin;
     private final Logger logger;
     private final String itemKey;
+    private final ActionManager actionManager;
+    private Player player;
 
-    public ConfigItems(String itemKey) {
+    public ConfigItems(String itemKey, ActionManager actionManager) {
         this.plugin = Hubbly.getInstance();
         this.logger = plugin.getLogger();
         this.itemKey = itemKey;
+        this.actionManager = actionManager;
     }
 
     @Override
     public ItemStack createItem() {
-        return createConfigItem(itemKey);
+        return createConfigItem(itemKey, player);
     }
 
-    public ItemStack createConfigItem(String itemKey) {
-        FileConfiguration config = plugin.getConfig();
+    public ItemStack createConfigItem(String itemKey, Player player) {
+        FileConfiguration config = Hubbly.getInstance().getItemsConfig(); // Use itemsConfig for the items.yml
         String path = "items." + itemKey;
         Material material = null;
 
@@ -73,13 +78,20 @@ public class ConfigItems implements CustomItem {
             if (config.contains(path + ".lore")) {
                 List<String> lore = new ArrayList<>();
                 for (String line : config.getStringList(path + ".lore")) {
-                    lore.add(ChatColor.translateAlternateColorCodes('&', line));
+                    lore.add(ChatColor.translateAlternateColorCodes('&', ParsePlaceholders.parsePlaceholders(player, line)));
                 }
                 meta.setLore(lore);
             }
-            List<String> commands = config.getStringList(path + ".commands");
-            if (!commands.isEmpty()) {
-                meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "customCommands"), PersistentDataType.STRING, String.join(";", commands));
+            if(config.contains(path + ".value")) {
+
+            }
+
+            List<String> actions = config.getStringList(path + ".actions");
+            if (!actions.isEmpty()) {
+
+                String actionsString = String.join(";", actions);
+                meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "customActions"), PersistentDataType.STRING, String.join(";", actions));
+                logger.info("Set actions for item " + itemKey + ": " + actionsString);
             }
 
             item.setItemMeta(meta);
@@ -87,21 +99,16 @@ public class ConfigItems implements CustomItem {
         return item;
     }
 
-    public void executeCommands(Player player, ItemStack item) {
+    public void executeActions(Player player, ItemStack item) {
         if (item == null || !item.hasItemMeta()) return;
         ItemMeta meta = item.getItemMeta();
-        String commandsString = meta.getPersistentDataContainer().get(new NamespacedKey(plugin, "customCommands"), PersistentDataType.STRING);
-        if (commandsString == null || commandsString.isEmpty()) return;
+        String actionsString = meta.getPersistentDataContainer().get(new NamespacedKey(plugin, "customActions"), PersistentDataType.STRING);
+        if (actionsString == null || actionsString.isEmpty()) return;
 
-        String[] commands = commandsString.split(";");
-        for (String command : commands) {
-            if (command.startsWith("[player]")) {
-                String playerCommand = command.substring(8).trim();
-                player.performCommand(playerCommand);
-            } else if (command.startsWith("[console]")) {
-                String consoleCommand = command.substring(9).trim();
-                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), consoleCommand);
-            }
+        String[] actions = actionsString.split(";");
+        for (String actionData : actions) {
+            actionManager.executeAction(Hubbly.getInstance(), player, actionData);
+            logger.info("Executing actions: " + actionsString);
         }
     }
 }

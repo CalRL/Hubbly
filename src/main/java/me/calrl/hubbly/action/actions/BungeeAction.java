@@ -15,21 +15,26 @@
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.calrl.hubbly.functions;
+package me.calrl.hubbly.action.actions;
 
-import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
+import com.google.common.io.ByteArrayDataOutput;
+import com.google.common.io.ByteStreams;
+import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.action.Action;
 import org.bukkit.entity.Player;
 
-public class ParsePlaceholders {
+public class BungeeAction implements Action {
+    @Override
+    public String getIdentifier() {
+        return "BUNGEE";
+    }
 
-    public static String parsePlaceholders(Player player, String text) {
-        if(text.contains("%player%") && player != null) {
-            text = text.replace("%player%", player.getName());
-        }
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            return PlaceholderAPI.setPlaceholders(player, text);
-        }
-        return text;
+    @Override
+    public void execute(Hubbly plugin, Player player, String data) {
+        ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("ConnectOther");
+        out.writeUTF(player.getName());
+        out.writeUTF(data);
+        player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
     }
 }

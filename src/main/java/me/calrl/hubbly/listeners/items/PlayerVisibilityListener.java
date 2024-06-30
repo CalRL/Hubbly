@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.calrl.hubbly.listeners;
+package me.calrl.hubbly.listeners.items;
 
 import me.calrl.hubbly.Hubbly;
 import net.md_5.bungee.api.ChatMessageType;
@@ -43,7 +43,9 @@ public class PlayerVisibilityListener implements Listener {
     }
     @EventHandler
     public void onItemClick(PlayerInteractEvent event) {
+        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
         Player player = event.getPlayer();
+
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         if (itemInHand.getType() == Material.LIME_DYE || itemInHand.getType() == Material.GRAY_DYE) {

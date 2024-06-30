@@ -15,13 +15,15 @@
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.calrl.hubbly.listeners;
+package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,12 +36,20 @@ public class VoidDamageListener implements Listener {
 
     private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final Logger logger;
-    public VoidDamageListener(Logger logger) {
-        this.logger = logger;
+    private Hubbly plugin;
+    public VoidDamageListener(Hubbly plugin) {
+        this.plugin = plugin;
+        this.logger = plugin.getLogger();
     }
 
     @EventHandler
     private void onEntityDamage(EntityDamageEvent event) {
+        Entity entity = event.getEntity();
+        if (!(entity instanceof Player)) return;
+        Player player = (Player) event.getEntity();
+        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+        else if(player.getGameMode() != GameMode.SURVIVAL) return;
+
         if(event.getEntity() instanceof Player && config.getBoolean("antivoid.enabled")) {
             if(event.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 event.setCancelled(true);

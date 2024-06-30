@@ -18,9 +18,12 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.action.Action;
+import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.items.*;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -36,10 +39,15 @@ public class GiveCommand implements SubCommand {
     private final JavaPlugin plugin;
     private final FileConfiguration config;
     private final Map<String, CustomItem> items = new HashMap<>();
+    private FileConfiguration itemsConfig;
+    private ActionManager actionManager;
+    private Map<String, Action> actions;
 
     public GiveCommand(JavaPlugin plugin) {
         this.plugin = plugin;
+        this.itemsConfig = Hubbly.getInstance().getItemsConfig();
         this.config = Hubbly.getInstance().getConfig();
+        this.actionManager = new ActionManager();
         registerItems();
     }
 
@@ -49,31 +57,55 @@ public class GiveCommand implements SubCommand {
         items.put("shop", new ShopItem());
         items.put("playervisibility", new PlayerVisibilityItem());
 
-        for (String itemKey : config.getConfigurationSection("items").getKeys(false)) {
-            items.put(ChatColor.stripColor(itemKey.toLowerCase()), new ConfigItems(itemKey));
+        if (itemsConfig.getConfigurationSection("items") != null) {
+            for (String itemKey : itemsConfig.getConfigurationSection("items").getKeys(false)) {
+                items.put(ChatColor.stripColor(itemKey.toLowerCase()), new ConfigItems(itemKey, actionManager));
+            }
+        } else {
+            plugin.getLogger().warning("No items found in items.yml");
         }
     }
 
     @Override
-    public void execute(Player player, String[] args) {
-        if (args.length < 2 && (player.hasPermission("hubbly.command.give") || player.isOp())) {
-            player.sendMessage(ChatColor.YELLOW + "Usage: /hubbly give <item>");
+    public void execute(Player sender, String[] args) {
+        if (args.length < 3) {
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /hubbly give <player> <item> [slot]");
             return;
         }
 
-        if (player.hasPermission("hubbly.command.give") || player.isOp()) {
-            String itemName = ChatColor.stripColor(args[1].toLowerCase());
+        if (sender.hasPermission("hubbly.command.give") || sender.isOp()) {
+            Player targetPlayer = Bukkit.getPlayer(args[1]);
+            if (targetPlayer == null) {
+                sender.sendMessage(ChatColor.RED + "Player not found: " + args[1]);
+                return;
+            }
+
+            String itemName = ChatColor.stripColor(args[2].toLowerCase());
             CustomItem customItem = items.get(itemName);
 
             if (customItem != null) {
                 ItemStack item = customItem.createItem();
-                player.getInventory().addItem(item);
-                player.sendMessage(ChatColor.YELLOW + "Given " + itemName);
+                if (args.length > 3) {
+                    try {
+                        int slot = Integer.parseInt(args[3]);
+                        if (slot < 0 || slot >= targetPlayer.getInventory().getSize()) {
+                            sender.sendMessage(ChatColor.RED + "Invalid slot: " + args[3]);
+                            return;
+                        }
+                        targetPlayer.getInventory().setItem(slot, item);
+                        sender.sendMessage(ChatColor.YELLOW + "Given " + itemName + " to " + targetPlayer.getName() + " in slot " + slot);
+                    } catch (NumberFormatException e) {
+                        sender.sendMessage(ChatColor.RED + "Slot must be a number: " + args[3]);
+                    }
+                } else {
+                    targetPlayer.getInventory().addItem(item);
+                    sender.sendMessage(ChatColor.YELLOW + "Given " + itemName + " to " + targetPlayer.getName());
+                }
             } else {
-                player.sendMessage(ChatColor.RED + "Unknown item.");
+                sender.sendMessage(ChatColor.RED + "Unknown item: " + itemName); // Debugging
             }
         } else {
-            player.sendMessage(Objects.requireNonNull(config.getString("messages.no_permission_use")));
+            sender.sendMessage(Objects.requireNonNull(config.getString("messages.no_permission_use")));
         }
     }
 }

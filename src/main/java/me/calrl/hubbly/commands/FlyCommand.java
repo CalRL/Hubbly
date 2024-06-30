@@ -24,6 +24,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -33,25 +34,47 @@ public class FlyCommand implements CommandExecutor {
 
     private final Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private static final String FLY_METADATA_KEY = "hubbly.canFly";
+
 
     public FlyCommand(Logger logger) {
         this.logger = logger;
     }
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if(sender instanceof Player && config.getBoolean("player.fly.enabled")) {
-            if(sender.hasPermission("hubbly.command.fly") || sender.isOp()) {
-                Player player = (Player) sender;
-                if (player.getAllowFlight()) {
-                    player.setAllowFlight(false);
-                    player.setFlying(false);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("messages.fly.disable"))));
-                } else {
-                    player.setAllowFlight(true);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("messages.fly.enable"))));
-                }
-            }
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
+            return true;
+        }
 
+        Player player = (Player) sender;
+
+        if (!config.getBoolean("player.fly.enabled")) {
+            return true;
+        }
+
+        if(!player.getAllowFlight()) {
+            player.setAllowFlight(true);
+        }
+
+        if (!player.hasPermission("hubbly.command.fly") && !player.isOp()) {
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "messages.no_permission"));
+            return true;
+        }
+
+        boolean canFly = false;
+        if (player.hasMetadata(FLY_METADATA_KEY)) {
+            canFly = player.getMetadata(FLY_METADATA_KEY).get(0).asBoolean();
+        } else {
+            player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
+        }
+
+        if (canFly) {
+            player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("messages.fly.disable"))));
+        } else {
+            player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), true));
+            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("messages.fly.enable"))));
         }
 
         return true;

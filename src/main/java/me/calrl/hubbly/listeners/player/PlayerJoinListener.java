@@ -15,7 +15,7 @@
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.calrl.hubbly.listeners;
+package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.BossBarManager;
@@ -31,11 +31,14 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.util.logging.Logger;
+import me.calrl.hubbly.managers.DisabledWorlds;
+import org.bukkit.metadata.FixedMetadataValue;
 
 public class PlayerJoinListener implements Listener {
 
     private final Logger logger;
     private final FileConfiguration config;
+    private static final String FLY_METADATA_KEY = "hubbly.canFly";
 
     public PlayerJoinListener(Logger logger) {
         this.logger = logger;
@@ -54,6 +57,12 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
+
+        // Checks
+        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+        else if(player.getGameMode() != GameMode.SURVIVAL) return;
+
 
         if (config.getBoolean("player.join_message.enabled")) {
             String joinMessage = config.getString("player.join_message.message");

@@ -20,7 +20,7 @@ package me.calrl.hubbly.commands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
-import me.calrl.hubbly.listeners.PlayerJoinListener;
+import me.calrl.hubbly.listeners.player.PlayerJoinListener;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;

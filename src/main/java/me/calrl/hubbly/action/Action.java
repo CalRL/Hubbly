@@ -15,21 +15,13 @@
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.calrl.hubbly.functions;
+package me.calrl.hubbly.action;
 
-import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
+import me.calrl.hubbly.Hubbly;
 import org.bukkit.entity.Player;
 
-public class ParsePlaceholders {
+public interface Action {
+    String getIdentifier();
+    void execute(Hubbly plugin, Player player, String data);
 
-    public static String parsePlaceholders(Player player, String text) {
-        if(text.contains("%player%") && player != null) {
-            text = text.replace("%player%", player.getName());
-        }
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            return PlaceholderAPI.setPlaceholders(player, text);
-        }
-        return text;
-    }
 }

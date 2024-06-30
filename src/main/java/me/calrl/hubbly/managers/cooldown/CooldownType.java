@@ -15,21 +15,11 @@
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.calrl.hubbly.functions;
+package me.calrl.hubbly.managers.cooldown;
 
-import me.clip.placeholderapi.PlaceholderAPI;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
-
-public class ParsePlaceholders {
-
-    public static String parsePlaceholders(Player player, String text) {
-        if(text.contains("%player%") && player != null) {
-            text = text.replace("%player%", player.getName());
-        }
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            return PlaceholderAPI.setPlaceholders(player, text);
-        }
-        return text;
-    }
+public enum CooldownType {
+    DOUBLE_JUMP,
+    LAUNCHPAD,
+    PLAYER_VISIBILITY,
+    OPEN_GUI,
 }
