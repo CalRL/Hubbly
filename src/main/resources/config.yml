@@ -51,6 +51,9 @@ socials:
   fill:
     name: " "
     type: "BLACK_STAINED_GLASS_PANE"
+playervisibility:
+  visible_text: '&rPlayers: &aVisible'
+  hidden_text: '&rPlayers: &cHidden'
 item_on_join:
   enabled: true
   forceinventory: true

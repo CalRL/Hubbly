@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.items;
 
+import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.CustomItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -30,12 +31,14 @@ import java.util.Objects;
 public class PlayerVisibilityItem implements CustomItem {
 
     public final ItemStack createItem() {
+        FileConfiguration config = Hubbly.getInstance().getConfig();
         ItemStack item = new ItemStack(Material.LIME_DYE);
         ItemMeta meta = item.getItemMeta();
         if(meta != null) {
-            String itemName = ChatColor.translateAlternateColorCodes('&', "&rPlayers: &aVisible&r");
-            meta.setDisplayName(itemName);
-            item.setItemMeta(meta);
+                String itemName = ChatColor.translateAlternateColorCodes('&', config.getString("playervisibility.visible_text"));
+                meta.setDisplayName(itemName);
+                item.setItemMeta(meta);
+
         }
         return item;
     }
