@@ -17,9 +17,16 @@ compass:
     name: " "
     type: "BLACK_STAINED_GLASS_PANE"
 
+#----------------#
+# Disable Worlds #
+#----------------#
 
 disabled-worlds:
   - 'world_nether'
+
+#----------#
+# Movement #
+#----------#
 
 launchpad:
   enabled: true
@@ -28,17 +35,15 @@ launchpad:
   power_y: 2
   actions:
     - '[]'
+  # INTEGERS ONLY
+  cooldown: 2
 
 double_jump:
   enabled: true
   power: 1.5
   power_y: 0.5
-  # INTEGERSE ONLY
+  # INTEGERS ONLY
   cooldown: 2
-
-
-antivoid:
-  enabled: true
 
 
 shop:
@@ -90,11 +95,18 @@ item_on_join:
       enabled: true
       slot: 8
 
-      
+
 close_button:
   slot: 23
   material: "BARRIER"
   name: "&aClose"
+
+#---------------#
+# Teleportation #
+#---------------#
+
+antivoid:
+  enabled: true
 
 spawn:
   world: "world"

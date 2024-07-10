@@ -24,6 +24,7 @@ import me.calrl.hubbly.listeners.*;
 import me.calrl.hubbly.listeners.items.ConfigItemListener;
 import me.calrl.hubbly.listeners.items.PlayerVisibilityListener;
 import me.calrl.hubbly.listeners.player.DoubleJumpListener;
+import me.calrl.hubbly.listeners.player.PlayerOffHandListener;
 import me.calrl.hubbly.listeners.world.LaunchpadListener;
 import me.calrl.hubbly.listeners.player.PlayerJoinListener;
 import me.calrl.hubbly.listeners.player.VoidDamageListener;
@@ -35,6 +36,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
@@ -79,6 +81,7 @@ public final class Hubbly extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new WorldEventListeners(logger), this);
         getServer().getPluginManager().registerEvents(new ConfigItemListener(this), this);
         getServer().getPluginManager().registerEvents(new DoubleJumpListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerOffHandListener(), this);
 
         getCommand("hubbly").setExecutor(new HubblyCommand(logger, this));
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
@@ -139,6 +142,11 @@ public final class Hubbly extends JavaPlugin {
         }
         itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
     }
+
+// todo:
+//    private void registerListener(Listener listener, String isEnabledPath) {
+//
+//    }
 
     public FileConfiguration getItemsConfig() {
         return itemsConfig;

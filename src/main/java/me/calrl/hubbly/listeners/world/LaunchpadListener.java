@@ -18,6 +18,7 @@
 package me.calrl.hubbly.listeners.world;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.managers.cooldown.CooldownType;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -51,6 +52,7 @@ public class LaunchpadListener implements Listener {
         Block blockBelow = player.getLocation().subtract(0, 1, 0).getBlock(); // Get the block directly below the player
 
         Material launchpadMaterial = Material.valueOf(config.getString("launchpad.type"));
+        if(!Hubbly.getInstance().getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, config.getLong("launchpad.cooldown")))
         if (blockStandingOn.getType() == launchpadMaterial || blockBelow.getType() == launchpadMaterial) {
             if (player.hasPermission("hubbly.launchpad.use") || player.isOp()) {
                 //logger.info("Player is on a launchpad!");
