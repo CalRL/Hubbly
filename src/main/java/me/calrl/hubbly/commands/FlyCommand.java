@@ -36,7 +36,6 @@ public class FlyCommand implements CommandExecutor {
     private FileConfiguration config = Hubbly.getInstance().getConfig();
     private static final String FLY_METADATA_KEY = "hubbly.canFly";
 
-
     public FlyCommand(Logger logger) {
         this.logger = logger;
     }

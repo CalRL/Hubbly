@@ -19,6 +19,7 @@ package me.calrl.hubbly.items;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
+import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.interfaces.CustomItem;
 import org.bukkit.Bukkit;
@@ -34,6 +35,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class ConfigItems implements CustomItem {
@@ -82,8 +84,8 @@ public class ConfigItems implements CustomItem {
                 }
                 meta.setLore(lore);
             }
-            if(config.contains(path + ".value")) {
-
+            if(config.contains(path + ".value") && Objects.equals(material, Material.valueOf(config.getString(path + ".type")))) {
+                CreateCustomHead.createCustomHead(config.getString(path + ".value"), config.getString(".name"));
             }
 
             List<String> actions = config.getStringList(path + ".actions");

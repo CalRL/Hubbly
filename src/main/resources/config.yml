@@ -17,6 +17,11 @@ compass:
     name: " "
     type: "BLACK_STAINED_GLASS_PANE"
 
+#---------------#
+#
+#---------------#
+
+
 #----------------#
 # Disable Worlds #
 #----------------#
@@ -60,6 +65,7 @@ shop:
   item:
     name: "&aShop"
     type: "EMERALD"
+
 socials:
   enabled: true
   size: 27
@@ -83,6 +89,7 @@ socials:
       lore: # Lore for the item
       value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWM1NmRkYmVmMWI4MWJkNTdjOWIxYzZkNWQxYjc4YjU0NzM3YjcxOTkyOWIyOWMyYTkzMGE1ZjdjMmFlNGE4NiJ9fX0="
       message: "youtube.com"
+
   fill:
     name: " "
     type: "BLACK_STAINED_GLASS_PANE"

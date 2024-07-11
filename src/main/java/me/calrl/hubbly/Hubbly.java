@@ -42,6 +42,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Logger;
 
 public final class Hubbly extends JavaPlugin {
@@ -54,6 +55,7 @@ public final class Hubbly extends JavaPlugin {
     private ActionManager actionManager;
     private DisabledWorlds disabledWorlds;
     private CooldownManager cooldownManager;
+    private List<Listener> listeners;
 
     public void reloadPlugin() {
         this.reloadConfig();
@@ -87,6 +89,10 @@ public final class Hubbly extends JavaPlugin {
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
         getCommand("spawn").setExecutor(new SpawnCommand(this));
         getCommand("fly").setExecutor(new FlyCommand(logger));
+    }
+
+    private void registerListeners(Listener listener, String enabledPath) {
+
     }
     @Override
     public void onEnable() {
