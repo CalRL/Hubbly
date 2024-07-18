@@ -70,6 +70,7 @@ public class FlyCommand implements CommandExecutor {
 
         if (canFly) {
             player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
+            player.setFlying(false);
             player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("messages.fly.disable"))));
         } else {
             player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), true));

@@ -115,7 +115,7 @@ public class SocialsListener implements Listener {
     private void openSocialsGUI(Player player) {
         Inventory gui = Bukkit.createInventory(null, config.getInt("socials.size"), Objects.requireNonNull(config.getString("socials.title")));
         CreateCloseItem closeItemCreator = new CreateCloseItem(config);
-        gui.setItem(config.getInt("close_button.slot")-1, closeItemCreator.createItem());
+        gui.setItem(config.getInt("close_button.slot")-1, closeItemCreator.createItem(config, "close_button"));
 
         for (String itemKey : Objects.requireNonNull(config.getConfigurationSection("socials.items")).getKeys(false)) {
             int slot = config.getInt("socials.items." + itemKey + ".slot", -1) - 1; // Adjusted the slot calculation

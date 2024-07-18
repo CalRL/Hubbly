@@ -30,6 +30,7 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
+import java.io.File;
 import java.util.logging.Logger;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import org.bukkit.metadata.FixedMetadataValue;
@@ -38,11 +39,13 @@ public class PlayerJoinListener implements Listener {
 
     private final Logger logger;
     private final FileConfiguration config;
+    private final FileConfiguration serverSelectorConfig;
     private static final String FLY_METADATA_KEY = "hubbly.canFly";
 
     public PlayerJoinListener(Logger logger) {
         this.logger = logger;
         this.config = Hubbly.getInstance().getConfig();
+        this.serverSelectorConfig = Hubbly.getInstance().getServerSelectorConfig();
     }
 
     private FireworkEffect fireworkEffect() {

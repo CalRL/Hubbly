@@ -27,20 +27,24 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Objects;
-import java.util.logging.Logger;
 
 public class CompassItem implements CustomItem {
 
 
-    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private final FileConfiguration config = Hubbly.getInstance().getServerSelectorConfig();
 
 
     public final ItemStack createItem() {
-        ItemStack compass = new ItemStack(Material.COMPASS);
+        ItemStack compass = new ItemStack(Material.valueOf(config.getString("selector.material")));
         ItemMeta meta = compass.getItemMeta();
         if(meta != null) {
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("compass.name"))));
-            compass.setItemMeta(meta);
+            try {
+                String displayName = config.getString("selector.name");
+                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
+                compass.setItemMeta(meta);
+            } catch (NullPointerException e) {
+                e.printStackTrace();
+            }
         }
         return compass;
     }

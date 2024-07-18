@@ -52,6 +52,7 @@ public final class Hubbly extends JavaPlugin {
     private static Hubbly instance;
     private static final String FLY_METADATA_KEY = "hubbly.canFly";
     private FileConfiguration itemsConfig;
+    private FileConfiguration serverSelectorConfig;
     private ActionManager actionManager;
     private DisabledWorlds disabledWorlds;
     private CooldownManager cooldownManager;
@@ -103,7 +104,7 @@ public final class Hubbly extends JavaPlugin {
 
         this.saveDefaultConfig();
         try{
-            loadItemsFile();
+            loadFiles();
             loadComponents();
             BossBarManager.initialize(Hubbly.getInstance().getConfig());
             BossBarManager.getInstance().reAddAllBossBars();
@@ -141,13 +142,21 @@ public final class Hubbly extends JavaPlugin {
         return super.getConfig();
     }
 
-    private void loadItemsFile() {
+    private void loadFiles() {
         File itemsFile = new File(getDataFolder(), "items.yml");
+        File serverSelectorFile = new File(getDataFolder(), "serverselector.yml");
         if(!itemsFile.exists()) {
             saveResource("items.yml", false);
         }
         itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
+
+        if(!serverSelectorFile.exists()) {
+            saveResource("serverselector.yml", false);
+        }
+        serverSelectorConfig = YamlConfiguration.loadConfiguration(serverSelectorFile);
     }
+
+
 
 // todo:
 //    private void registerListener(Listener listener, String isEnabledPath) {
@@ -157,6 +166,7 @@ public final class Hubbly extends JavaPlugin {
     public FileConfiguration getItemsConfig() {
         return itemsConfig;
     }
+    public FileConfiguration getServerSelectorConfig() { return serverSelectorConfig; }
     public ActionManager getActionManager() {
         return actionManager;
     }
