@@ -29,6 +29,7 @@ import me.calrl.hubbly.listeners.world.LaunchpadListener;
 import me.calrl.hubbly.listeners.player.PlayerJoinListener;
 import me.calrl.hubbly.listeners.player.VoidDamageListener;
 import me.calrl.hubbly.listeners.world.WorldEventListeners;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.metrics.Metrics;
@@ -57,6 +58,8 @@ public final class Hubbly extends JavaPlugin {
     private ActionManager actionManager;
     private DisabledWorlds disabledWorlds;
     private CooldownManager cooldownManager;
+    private DebugMode debugMode;
+
     private List<Listener> listeners;
 
     public void reloadPlugin() {
@@ -109,8 +112,8 @@ public final class Hubbly extends JavaPlugin {
         registerListener(listener, "null");
     }
     private void loadListeners() {
-        registerListener(new CompassListener());
-        registerListener(new PlayerVisibilityListener(), "player_visibility.enabled");
+        registerListener(new CompassListener(this));
+        registerListener(new PlayerVisibilityListener(), "playervisibility.enabled");
         registerListener(new LaunchpadListener(), "launchpad.enabled");
     }
     @Override
@@ -119,6 +122,7 @@ public final class Hubbly extends JavaPlugin {
         disabledWorlds = new DisabledWorlds();
         cooldownManager = new CooldownManager();
         actionManager = new ActionManager();
+        debugMode = new DebugMode();
 
         this.saveDefaultConfig();
         config = this.getConfig();
@@ -133,17 +137,14 @@ public final class Hubbly extends JavaPlugin {
             e.printStackTrace();
         }
 
-
-        logger.info("Hubbly has been enabled!");
-
-
-
         int pluginId = 22219;
         Metrics metrics = new Metrics(this, pluginId);
 
         for(Player player : Bukkit.getOnlinePlayers()) {
             player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
         }
+
+        logger.info("Hubbly has been enabled!");
     }
 
     @Override
@@ -196,4 +197,5 @@ public final class Hubbly extends JavaPlugin {
     public CooldownManager getCooldownManager() {
         return cooldownManager;
     }
+    public DebugMode getDebugMode() { return debugMode; }
 }

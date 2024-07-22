@@ -30,6 +30,6 @@ public class PlayerCommandAction implements Action {
 
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
-        player.performCommand(data);
+        player.chat(data.contains("/") ? data : "/" + data);
     }
 }

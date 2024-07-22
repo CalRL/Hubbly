@@ -17,6 +17,7 @@
 package me.calrl.hubbly.listeners.items;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.managers.DebugMode;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -38,10 +39,12 @@ public class PlayerVisibilityListener implements Listener {
 
     private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final Hubbly plugin = Hubbly.getInstance();
+    private final DebugMode debugMode = plugin.getDebugMode();
 
     @EventHandler
     public void onItemClick(PlayerInteractEvent event) {
-        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
+
         Player player = event.getPlayer();
 
 
@@ -54,6 +57,7 @@ public class PlayerVisibilityListener implements Listener {
             } else {
                 player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.no_permission_use")));
             }
+            debugMode.info("Holding: " + player.getInventory().getItemInMainHand());
         }
     }
     private void swapDye(Player player, ItemStack itemInHand) {

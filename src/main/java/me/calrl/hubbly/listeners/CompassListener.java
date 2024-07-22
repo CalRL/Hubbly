@@ -18,12 +18,11 @@
 package me.calrl.hubbly.listeners;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.functions.CreateCloseItem;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.action.ActionManager;
+import me.calrl.hubbly.managers.DebugMode;
 import org.bukkit.event.EventHandler;
-import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -39,11 +38,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
-
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -54,15 +48,20 @@ public class CompassListener implements Listener {
     private final Logger logger;
     private FileConfiguration config;
     private final NamespacedKey itemKey;
-    private final JavaPlugin plugin;
+    private final Hubbly plugin;
     private final ActionManager actionManager;
+    private final NamespacedKey actionsKey;
+    private DebugMode debugMode;
 
-    public CompassListener() {
-        this.plugin = Hubbly.getInstance();
+    public CompassListener(Hubbly plugin) {
+        this.plugin = plugin;
         this.logger = plugin.getLogger();
-        this.config = Hubbly.getInstance().getServerSelectorConfig();
-        this.actionManager = Hubbly.getInstance().getActionManager();
+        this.config = plugin.getServerSelectorConfig();
+        this.actionManager = plugin.getActionManager();
         this.itemKey = new NamespacedKey(plugin, "compassItemKey");
+        this.actionsKey = new NamespacedKey(plugin, "customActions");
+        this.debugMode = plugin.getDebugMode();
+
 
         // Register the BungeeCord channel
         plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
@@ -70,6 +69,8 @@ public class CompassListener implements Listener {
 
     @EventHandler
     public void onPlayerRightClick(PlayerInteractEvent event) {
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
+        
         if (event.getAction() != Action.PHYSICAL) {
             Player player = event.getPlayer();
             ItemStack item = player.getInventory().getItemInMainHand();
@@ -81,7 +82,7 @@ public class CompassListener implements Listener {
             String itemName = config.getString("selector.name");
 
             if (materialName == null || itemName == null) {
-                logger.warning("Configuration for selector.material or selector.name is missing.");
+                debugMode.warn("Configuration for selector.material or selector.name is missing.");
                 return;
             }
 
@@ -89,7 +90,7 @@ public class CompassListener implements Listener {
             try {
                 material = Material.valueOf(materialName.toUpperCase());
             } catch (IllegalArgumentException e) {
-                logger.warning("Invalid material specified for selector: " + materialName);
+                debugMode.warn("Invalid material specified for selector: " + materialName);
                 return;
             }
 
@@ -105,9 +106,9 @@ public class CompassListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {
+    public void onInventoryClick(InventoryClickEvent event) {;
         if (config == null || !config.contains("selector.gui.title")) {
-            logger.warning("Configuration for selector.gui.title is missing.");
+            debugMode.warn("Configuration for selector.gui.title is missing.");
             return;
         }
 
@@ -117,17 +118,20 @@ public class CompassListener implements Listener {
             ItemStack clickedItem = event.getCurrentItem();
             if (clickedItem != null && clickedItem.hasItemMeta()) {
                 ItemMeta meta = clickedItem.getItemMeta();
-                assert meta != null;
                 PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-                String actionsString = dataContainer.get(itemKey, PersistentDataType.STRING);
+                String actionsString = dataContainer.get(actionsKey, PersistentDataType.STRING);
+
                 if (actionsString != null) {
+                    debugMode.info("Actions string found: " + actionsString);  // Debug log
                     String[] actions = actionsString.split(";");
                     for (String actionData : actions) {
-                        actionManager.executeAction(Hubbly.getInstance(), player, actionData);
-                        logger.info("Executing actions: " + actionData);
+                        actionManager.executeAction(plugin, player, actionData);
+                        debugMode.info("Executing action: " + actionData);
                     }
-                    logger.info(Arrays.toString(actions));
+                     debugMode.info(Arrays.toString(actions)); // Log the array contents properly
+                } else {
                 }
+            } else {
             }
         }
 
@@ -135,17 +139,11 @@ public class CompassListener implements Listener {
         if (clickedItem == null || clickedItem.getType() == Material.AIR) {
             return;
         }
-        if (clickedItem.getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("selector.close_button.name"))))) {
-            event.getView().close();
-        }
     }
 
     private void openCompassGUI(Player player) {
         if (Objects.equals(config.getString("selector.enabled"), "true")) {
             Inventory gui = Bukkit.createInventory(null, config.getInt("selector.gui.size"), Objects.requireNonNull(config.getString("selector.gui.title")));
-            CreateCloseItem closeItemCreator = new CreateCloseItem(config);
-            gui.setItem(config.getInt("selector.close_button.slot") - 1, closeItemCreator.createItem(config, "selector.close_button"));
-
             for (String itemKey : Objects.requireNonNull(config.getConfigurationSection("selector.gui.items")).getKeys(false)) {
                 ItemStack item = createItemFromConfig(player, itemKey);
                 if (item != null) {
@@ -153,7 +151,7 @@ public class CompassListener implements Listener {
                     if (slot >= 0 && slot < gui.getSize()) {
                         gui.setItem(slot - 1, item);
                     } else {
-                        logger.warning("Invalid slot on item " + itemKey);
+                        debugMode.warn("Invalid slot on item " + itemKey);
                     }
                 }
             }
@@ -183,7 +181,7 @@ public class CompassListener implements Listener {
         try {
             material = Material.valueOf(Objects.requireNonNull(config.getString(path + ".material")).toUpperCase());
         } catch (IllegalArgumentException | NullPointerException e) {
-            logger.warning("Invalid material specified for selector: " + config.getString(path + ".material"));
+            debugMode.warn("Invalid material specified for selector: " + config.getString(path + ".material"));
             return null;
         }
 
@@ -198,7 +196,7 @@ public class CompassListener implements Listener {
             if (config.contains(path + ".lore")) {
                 List<String> loreList = config.getStringList(path + ".lore");
                 for (int i = 0; i < loreList.size(); i++) {
-                    loreList.set(i, ParsePlaceholders.parsePlaceholders(player, loreList.get(i)));
+                    loreList.set(i, ChatColor.translateAlternateColorCodes('&', ParsePlaceholders.parsePlaceholders(player, loreList.get(i))));
                 }
                 meta.setLore(loreList);
             }
@@ -210,9 +208,9 @@ public class CompassListener implements Listener {
             List<String> actions = config.getStringList(path + ".actions");
             if (!actions.isEmpty()) {
                 String actionsString = String.join(";", actions);
-                meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "customActions"), PersistentDataType.STRING, actionsString);
-                logger.info("Set actions for item " + itemKey + ": " + actionsString);
-                logger.info(actions.toString());
+                meta.getPersistentDataContainer().set(actionsKey, PersistentDataType.STRING, actionsString);
+                debugMode.info("Set actions for item " + itemKey + ": " + actionsString);
+                debugMode.info(actions.toString());
             }
 
             PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
@@ -227,13 +225,13 @@ public class CompassListener implements Listener {
     private ItemStack createFillItem(Player player) {
         String materialName = config.getString("selector.fill.type");
         if (materialName == null) {
-            logger.warning("Material not set for fill item in configuration.");
+            debugMode.warn("Material not set for fill item in configuration.");
             return null;
         }
 
         Material material = Material.getMaterial(materialName.toUpperCase());
         if (material == null) {
-            logger.warning("Invalid material " + materialName + " for fill item in configuration.");
+            debugMode.warn("Invalid material " + materialName + " for fill item in configuration.");
             return null;
         }
 
