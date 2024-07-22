@@ -167,7 +167,7 @@ public class CompassListener implements Listener {
 
         Material material;
         try {
-            material = Material.valueOf(Objects.requireNonNull(config.getString(path + ".material")));
+            material = Material.valueOf(Objects.requireNonNull(config.getString(path + ".material")).toUpperCase());
         } catch (IllegalArgumentException e) {
             logger.warning("Invalid material: " + config.getString(path + ".material"));
             return null;
@@ -178,6 +178,7 @@ public class CompassListener implements Listener {
         if (meta != null) {
             if (config.contains(path + ".name")) {
                 String itemName = parsePlaceholders(player, config.getString(path + ".name"));
+                itemName = ChatColor.translateAlternateColorCodes('&', itemName);
                 meta.setDisplayName(itemName);
             }
 
