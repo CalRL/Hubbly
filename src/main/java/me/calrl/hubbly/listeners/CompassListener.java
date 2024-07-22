@@ -44,6 +44,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -56,9 +57,9 @@ public class CompassListener implements Listener {
     private final JavaPlugin plugin;
     private final ActionManager actionManager;
 
-    public CompassListener(Logger logger, JavaPlugin plugin) {
-        this.logger = logger;
-        this.plugin = plugin;
+    public CompassListener() {
+        this.plugin = Hubbly.getInstance();
+        this.logger = plugin.getLogger();
         this.config = Hubbly.getInstance().getServerSelectorConfig();
         this.actionManager = Hubbly.getInstance().getActionManager();
         this.itemKey = new NamespacedKey(plugin, "compassItemKey");
@@ -76,7 +77,7 @@ public class CompassListener implements Listener {
                 return;
             }
 
-            String materialName = config.getString("selector.material");
+            String materialName = config.getString("selector.material").toUpperCase();
             String itemName = config.getString("selector.name");
 
             if (materialName == null || itemName == null) {
@@ -123,8 +124,9 @@ public class CompassListener implements Listener {
                     String[] actions = actionsString.split(";");
                     for (String actionData : actions) {
                         actionManager.executeAction(Hubbly.getInstance(), player, actionData);
-                        logger.info("Executing actions: " + actionsString);
+                        logger.info("Executing actions: " + actionData);
                     }
+                    logger.info(Arrays.toString(actions));
                 }
             }
         }
@@ -189,14 +191,14 @@ public class CompassListener implements Listener {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             if (config.contains(path + ".name")) {
-                String itemName = parsePlaceholders(player, config.getString(path + ".name"));
-                meta.setDisplayName(itemName);
+                String itemName = ParsePlaceholders.parsePlaceholders(player, config.getString(path + ".name"));
+                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', itemName));
             }
 
             if (config.contains(path + ".lore")) {
                 List<String> loreList = config.getStringList(path + ".lore");
                 for (int i = 0; i < loreList.size(); i++) {
-                    loreList.set(i, parsePlaceholders(player, loreList.get(i)));
+                    loreList.set(i, ParsePlaceholders.parsePlaceholders(player, loreList.get(i)));
                 }
                 meta.setLore(loreList);
             }
@@ -210,6 +212,7 @@ public class CompassListener implements Listener {
                 String actionsString = String.join(";", actions);
                 meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "customActions"), PersistentDataType.STRING, actionsString);
                 logger.info("Set actions for item " + itemKey + ": " + actionsString);
+                logger.info(actions.toString());
             }
 
             PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
@@ -220,12 +223,6 @@ public class CompassListener implements Listener {
         return item;
     }
 
-    private String parsePlaceholders(Player player, String text) {
-        if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            return PlaceholderAPI.setPlaceholders(player, text);
-        }
-        return text;
-    }
 
     private ItemStack createFillItem(Player player) {
         String materialName = config.getString("selector.fill.type");

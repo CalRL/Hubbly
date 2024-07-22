@@ -30,17 +30,15 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.w3c.dom.Text;
 
 public class PlayerVisibilityListener implements Listener {
 
-    private final Hubbly plugin;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private final Hubbly plugin = Hubbly.getInstance();
 
-    public PlayerVisibilityListener(Hubbly plugin) {
-        this.plugin = plugin;
-    }
     @EventHandler
     public void onItemClick(PlayerInteractEvent event) {
         if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;

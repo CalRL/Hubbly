@@ -43,6 +43,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public final class Hubbly extends JavaPlugin {
@@ -73,10 +74,9 @@ public final class Hubbly extends JavaPlugin {
     }
 
     public void loadComponents() {
-        getServer().getPluginManager().registerEvents(new CompassListener(logger, this), this);
-        getServer().getPluginManager().registerEvents(new PlayerVisibilityListener(this), this);
-        getServer().getPluginManager().registerEvents(new LaunchpadListener(this), this);
-        getServer().getPluginManager().registerEvents(new ShopListener(logger), this);
+        loadListeners();
+
+        getServer().getPluginManager().registerEvents(new ShopListener(), this);
         getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, this), this);
         getServer().getPluginManager().registerEvents(new SocialsListener(logger),this);
         getServer().getPluginManager().registerEvents(new VoidDamageListener(this), this);
@@ -92,8 +92,26 @@ public final class Hubbly extends JavaPlugin {
         getCommand("fly").setExecutor(new FlyCommand(logger));
     }
 
-    private void registerListeners(Listener listener, String enabledPath) {
+    private void registerListener(Listener listener, String enabledPath) {
+        if(config.getBoolean(enabledPath) || enabledPath.equals("null")) {
+            try {
+                getServer().getPluginManager().registerEvents(listener, this);
+            } catch(Exception e) {
+                logger.severe("PLEASE REPORT TO DEVELOPER");
+                logger.severe(listener  + " failed to load, printing stacktrace...");
+                e.printStackTrace();
+            }
 
+        }
+    }
+
+    private void registerListener(Listener listener) {
+        registerListener(listener, "null");
+    }
+    private void loadListeners() {
+        registerListener(new CompassListener());
+        registerListener(new PlayerVisibilityListener(), "player_visibility.enabled");
+        registerListener(new LaunchpadListener(), "launchpad.enabled");
     }
     @Override
     public void onEnable() {
@@ -103,7 +121,9 @@ public final class Hubbly extends JavaPlugin {
         actionManager = new ActionManager();
 
         this.saveDefaultConfig();
-        try{
+        config = this.getConfig();
+        try {
+
             loadFiles();
             loadComponents();
             BossBarManager.initialize(Hubbly.getInstance().getConfig());

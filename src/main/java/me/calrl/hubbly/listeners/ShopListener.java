@@ -33,10 +33,10 @@ import java.util.logging.Logger;
 public class ShopListener implements Listener {
     private final Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private Hubbly plugin = Hubbly.getInstance();
 
-    public ShopListener(Logger logger) {
-        this.logger = logger;
-        this.config = config;
+    public ShopListener() {
+        this.logger = plugin.getLogger();
     }
 
     @EventHandler

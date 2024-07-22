@@ -19,8 +19,6 @@ launchpad:
   type: "SLIME_BLOCK"
   power: 2
   power_y: 2
-  actions:
-    - '[]'
   # INTEGERS ONLY
   cooldown: 2
 

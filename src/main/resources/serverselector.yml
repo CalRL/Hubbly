@@ -1,6 +1,6 @@
 selector:
   enabled: true
-  material: CLOCK
+  material: COMPASS
   name: '&6Server Selector'
   gui:
     size: 27 # Number of slots in the GUI

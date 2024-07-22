@@ -36,10 +36,12 @@ public class LaunchpadListener implements Listener {
     private final Logger logger;
     private final Hubbly plugin;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private double powerY = config.getDouble("launchpad.power_y");
+    private double power = config.getDouble("launchpad.power");
 
-    public LaunchpadListener(Hubbly plugin) {
+    public LaunchpadListener() {
+        this.plugin = Hubbly.getInstance();
         this.logger = plugin.getLogger();
-        this.plugin = plugin;
     }
 
     @EventHandler
@@ -52,7 +54,7 @@ public class LaunchpadListener implements Listener {
         Block blockBelow = player.getLocation().subtract(0, 1, 0).getBlock(); // Get the block directly below the player
 
         Material launchpadMaterial = Material.valueOf(config.getString("launchpad.type"));
-        if(!Hubbly.getInstance().getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, config.getLong("launchpad.cooldown")))
+        if(!Hubbly.getInstance().getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, config.getLong("launchpad.cooldown")));
         if (blockStandingOn.getType() == launchpadMaterial || blockBelow.getType() == launchpadMaterial) {
             if (player.hasPermission("hubbly.launchpad.use") || player.isOp()) {
                 //logger.info("Player is on a launchpad!");
@@ -61,10 +63,10 @@ public class LaunchpadListener implements Listener {
                 Vector direction = player.getLocation().getDirection();
 
                 // Set the Y component of the direction to ensure upward launch
-                direction.setY(0.5); // Adjust this value for the desired upward strength
+                direction.setY(powerY); // Adjust this value for the desired upward strength
 
                 // Scale the direction vector for forward boost
-                direction.multiply(2); // Adjust this value for the desired forward strength
+                direction.multiply(power); // Adjust this value for the desired forward strength
 
                 // Set the player's velocity to the new direction
                 player.setVelocity(direction);

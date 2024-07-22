@@ -35,7 +35,7 @@ public class CompassItem implements CustomItem {
 
 
     public final ItemStack createItem() {
-        ItemStack compass = new ItemStack(Material.valueOf(config.getString("selector.material")));
+        ItemStack compass = new ItemStack(Material.valueOf(config.getString("selector.material").toUpperCase()));
         ItemMeta meta = compass.getItemMeta();
         if(meta != null) {
             try {
