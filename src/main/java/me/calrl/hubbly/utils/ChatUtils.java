@@ -17,13 +17,16 @@
 
 package me.calrl.hubbly.utils;
 
+import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
 public class ChatUtils {
-    public static String translateColorCodes(String message) {
+    public static String translateHexColorCodes(String message) {
         message = ChatColor.translateAlternateColorCodes('&', message);
 
         Pattern hexPattern = Pattern.compile( "#[a-fA-F0-9]{6}");
@@ -36,5 +39,19 @@ public class ChatUtils {
         }
         matcher.appendTail(buffer);
         return buffer.toString();
+    }
+
+    public String parsePlaceholders(Player player, String message) {
+        message = ChatColor.translateAlternateColorCodes('&', message);
+        
+        if(message.contains("%player") && player != null) {
+            message = message.replace("%player%", player.getName());
+        }
+
+        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            message = PlaceholderAPI.setPlaceholders(player, message);
+        }
+
+        return message;
     }
 }
