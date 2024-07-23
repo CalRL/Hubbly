@@ -2,6 +2,7 @@ package me.calrl.hubbly.action.actions;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.Action;
+import me.calrl.hubbly.managers.DebugMode;
 import org.bukkit.entity.Player;
 
 public class SoundAction implements Action {
@@ -12,6 +13,12 @@ public class SoundAction implements Action {
 
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
-        player.playSound(player.getLocation(), data, 1L, 1L);
+        DebugMode debugMode = plugin.getDebugMode();
+        try {
+            player.playSound(player.getLocation(), data, 1L, 1L);
+        } catch (Exception e) {
+            debugMode.severe("Sound action failed: " + e);
+        }
+
     }
 }

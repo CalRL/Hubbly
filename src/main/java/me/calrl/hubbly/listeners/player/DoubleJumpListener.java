@@ -34,6 +34,7 @@ public class DoubleJumpListener implements Listener {
     private static final String FLY_METADATA_KEY = "hubbly.canFly";
     @EventHandler
     public void onToggleFlight(PlayerToggleFlightEvent event) {
+        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
         FileConfiguration config = Hubbly.getInstance().getConfig();
         Player player = event.getPlayer();
 

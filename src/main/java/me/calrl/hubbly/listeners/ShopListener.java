@@ -41,6 +41,7 @@ public class ShopListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
+        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
         Player player = event.getPlayer();
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         if (itemInHand.getType() == Material.valueOf(config.getString("shop.item.type")) && (player.hasPermission("hubbly.shop.use") || player.isOp())) {

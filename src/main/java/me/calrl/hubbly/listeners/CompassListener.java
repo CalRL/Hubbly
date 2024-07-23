@@ -70,7 +70,7 @@ public class CompassListener implements Listener {
     @EventHandler
     public void onPlayerRightClick(PlayerInteractEvent event) {
         if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
-        
+
         if (event.getAction() != Action.PHYSICAL) {
             Player player = event.getPlayer();
             ItemStack item = player.getInventory().getItemInMainHand();
@@ -123,13 +123,12 @@ public class CompassListener implements Listener {
 
                 if (actionsString != null) {
                     debugMode.info("Actions string found: " + actionsString);  // Debug log
-                    String[] actions = actionsString.split(";");
+                    String[] actions = actionsString.split(",");
                     for (String actionData : actions) {
                         actionManager.executeAction(plugin, player, actionData);
                         debugMode.info("Executing action: " + actionData);
                     }
                      debugMode.info(Arrays.toString(actions)); // Log the array contents properly
-                } else {
                 }
             } else {
             }
@@ -207,7 +206,7 @@ public class CompassListener implements Listener {
 
             List<String> actions = config.getStringList(path + ".actions");
             if (!actions.isEmpty()) {
-                String actionsString = String.join(";", actions);
+                String actionsString = String.join(",", actions);
                 meta.getPersistentDataContainer().set(actionsKey, PersistentDataType.STRING, actionsString);
                 debugMode.info("Set actions for item " + itemKey + ": " + actionsString);
                 debugMode.info(actions.toString());

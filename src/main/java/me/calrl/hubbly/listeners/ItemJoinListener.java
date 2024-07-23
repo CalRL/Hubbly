@@ -48,6 +48,7 @@ public class ItemJoinListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
         PlayerInventory playerInventory = event.getPlayer().getInventory();
         playerInventory.clear();
         playerInventory.setHeldItemSlot(4);

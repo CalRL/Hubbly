@@ -159,14 +159,11 @@ player:
         - "&6&lWe_"
         - "&6&lW_"
         - "&6&lW_"
-  title:
-    enabled: true
-    text: "&6Hubbly&r"
-    subtitle: "Configure me :)"
-    # ANIMATIONS IN TICKS
-    fadein: 10
-    stay: 70
-    fadeout: 10
+
+actions_on_join:
+  - '[TITLE] &aHubbly;configure me;20;70;20'
+  - '[SOUND] block.note_block.chime'
+  - '[FIREWORK] BALL;255;0;255;2'
 
 #---------------------#
 # WORLD EVENT MANAGER #

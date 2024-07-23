@@ -44,6 +44,7 @@ public class VoidDamageListener implements Listener {
 
     @EventHandler
     private void onEntityDamage(EntityDamageEvent event) {
+        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getEntity().getLocation())) return;
         Entity entity = event.getEntity();
         if (!(entity instanceof Player)) return;
         Player player = (Player) event.getEntity();

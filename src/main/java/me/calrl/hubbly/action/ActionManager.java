@@ -18,10 +18,8 @@
 package me.calrl.hubbly.action;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.action.actions.CloseAction;
-import me.calrl.hubbly.action.actions.PlayerCommandAction;
-import me.calrl.hubbly.action.actions.ConsoleCommandAction;
-import me.calrl.hubbly.action.actions.SoundAction;
+import me.calrl.hubbly.action.actions.*;
+import org.bukkit.block.data.type.Fire;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -47,7 +45,12 @@ public class ActionManager {
                 new PlayerCommandAction(),
                 new ConsoleCommandAction(),
                 new CloseAction(),
-                new SoundAction()
+                new SoundAction(),
+                new GamemodeAction(),
+                new SoundAction(),
+                new TitleAction(),
+                new FireworkAction()
+
         );
     }
     public void executeAction(Hubbly plugin, Player player, String actionData) {

@@ -18,8 +18,10 @@
 package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.functions.ParsePlaceholders;
+import me.calrl.hubbly.managers.DebugMode;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
@@ -31,9 +33,14 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.meta.FireworkMeta;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Logger;
 import me.calrl.hubbly.managers.DisabledWorlds;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 
 public class PlayerJoinListener implements Listener {
 
@@ -41,11 +48,15 @@ public class PlayerJoinListener implements Listener {
     private final FileConfiguration config;
     private final FileConfiguration serverSelectorConfig;
     private static final String FLY_METADATA_KEY = "hubbly.canFly";
+    private DebugMode debugMode;
+    private ActionManager actionManager;
 
     public PlayerJoinListener(Logger logger) {
         this.logger = logger;
         this.config = Hubbly.getInstance().getConfig();
         this.serverSelectorConfig = Hubbly.getInstance().getServerSelectorConfig();
+        this.debugMode = Hubbly.getInstance().getDebugMode();
+        this.actionManager = Hubbly.getInstance().getActionManager();
     }
 
     private FireworkEffect fireworkEffect() {
@@ -67,8 +78,22 @@ public class PlayerJoinListener implements Listener {
 
         // Checks
         if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
-        else if(player.getGameMode() != GameMode.SURVIVAL) return;
 
+        if (config.getBoolean("player.spawn_on_join")) {
+            try {
+                String worldName = config.getString("spawn.world");
+                World world = Bukkit.getWorld(worldName);
+                double x = config.getDouble("spawn.x");
+                double y = config.getDouble("spawn.y");
+                double z = config.getDouble("spawn.z");
+                float yaw = (float) config.getDouble("spawn.yaw");
+                float pitch = (float) config.getDouble("spawn.pitch");
+                player.teleport(new Location(world, x, y, z, yaw, pitch));
+            } catch (Exception e) {
+                e.printStackTrace();
+                debugMode.warn("Couldnt teleport " + player.getName() + " to spawn");
+            }
+        }
 
         if (config.getBoolean("player.join_message.enabled")) {
             String joinMessage = config.getString("player.join_message.message");
@@ -97,25 +122,29 @@ public class PlayerJoinListener implements Listener {
             BossBarManager.getInstance().createBossBar(player);
         }
 
-        if (config.getBoolean("player.title.enabled")) {
-            String text = ChatColor.translateAlternateColorCodes('&', config.getString("player.title.text"));
-            String subtitle = ChatColor.translateAlternateColorCodes('&', config.getString("player.title.subtitle"));
-            int fadeIn = config.getInt("player.title.fadein");
-            int stay = config.getInt("player.title.stay");
-            int fadeOut = config.getInt("player.title.fadeout");
-            player.sendTitle(text, subtitle, fadeIn, stay, fadeOut);
+        if(config.contains("actions_on_join")) {
+            List<String> actions = config.getStringList("actions_on_join");
+            if (!actions.isEmpty()) {
+                for(String action : actions) {
+                    actionManager.executeAction(Hubbly.getInstance(), player, action);
+                    debugMode.info("Executed " + action);
+                }
+
+                debugMode.info(actions.toString());
+            }
         }
 
-        if (config.getBoolean("player.spawn_on_join")) {
-            String worldName = config.getString("spawn.world");
-            World world = Bukkit.getWorld(worldName);
-            double x = config.getDouble("spawn.x");
-            double y = config.getDouble("spawn.y");
-            double z = config.getDouble("spawn.z");
-            float yaw = (float) config.getDouble("spawn.yaw");
-            float pitch = (float) config.getDouble("spawn.pitch");
-            player.teleport(new Location(world, x, y, z, yaw, pitch));
-        }
+
+//        if (config.getBoolean("player.title.enabled")) {
+//            String text = ChatColor.translateAlternateColorCodes('&', config.getString("player.title.text"));
+//            String subtitle = ChatColor.translateAlternateColorCodes('&', config.getString("player.title.subtitle"));
+//            int fadeIn = config.getInt("player.title.fadein");
+//            int stay = config.getInt("player.title.stay");
+//            int fadeOut = config.getInt("player.title.fadeout");
+//            player.sendTitle(text, subtitle, fadeIn, stay, fadeOut);
+//        }
+
+
     }
 
     @EventHandler

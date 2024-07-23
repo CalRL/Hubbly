@@ -91,8 +91,8 @@ public class ConfigItems implements CustomItem {
             List<String> actions = config.getStringList(path + ".actions");
             if (!actions.isEmpty()) {
 
-                String actionsString = String.join(";", actions);
-                meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "customActions"), PersistentDataType.STRING, String.join(";", actions));
+                String actionsString = String.join(",", actions);
+                meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "customActions"), PersistentDataType.STRING, String.join(",", actions));
                 logger.info("Set actions for item " + itemKey + ": " + actionsString);
             }
 
@@ -107,7 +107,7 @@ public class ConfigItems implements CustomItem {
         String actionsString = meta.getPersistentDataContainer().get(new NamespacedKey(plugin, "customActions"), PersistentDataType.STRING);
         if (actionsString == null || actionsString.isEmpty()) return;
 
-        String[] actions = actionsString.split(";");
+        String[] actions = actionsString.split(",");
         for (String actionData : actions) {
             actionManager.executeAction(Hubbly.getInstance(), player, actionData);
             logger.info("Executing actions: " + actionsString);
