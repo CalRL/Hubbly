@@ -24,8 +24,8 @@ import org.bukkit.entity.Player;
 public class ParsePlaceholders {
 
     public static String parsePlaceholders(Player player, String text) {
-        if(text.contains("%player%") && player != null) {
-            text = text.replace("%player%", player.getName());
+        if(text.contains("%name%") && player != null) {
+            text = text.replace("%name%", player.getName());
         }
         if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             return PlaceholderAPI.setPlaceholders(player, text);
