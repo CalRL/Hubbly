@@ -60,7 +60,10 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
+        if(!player.hasMetadata(FLY_METADATA_KEY)) {
+            player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
+        }
+
 
         // Checks
         if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
