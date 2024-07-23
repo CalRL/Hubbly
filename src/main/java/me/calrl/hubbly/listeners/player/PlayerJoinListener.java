@@ -22,6 +22,7 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Firework;
@@ -97,9 +98,9 @@ public class PlayerJoinListener implements Listener {
 
         if (config.getBoolean("player.join_message.enabled")) {
             String joinMessage = config.getString("player.join_message.message");
-            joinMessage = joinMessage.replace("%name%", player.getName());
-            joinMessage = ParsePlaceholders.parsePlaceholders(player, joinMessage);
-            event.setJoinMessage(ChatColor.translateAlternateColorCodes('&', joinMessage));
+            // joinMessage = ParsePlaceholders.parsePlaceholders(player, joinMessage);
+            joinMessage = ChatUtils.parsePlaceholders(player, joinMessage);
+            event.setJoinMessage(ChatUtils.translateHexColorCodes(joinMessage));
         }
 
         if (config.getBoolean("player.fly.enabled") && config.getBoolean("player.fly.default")) {
@@ -153,9 +154,8 @@ public class PlayerJoinListener implements Listener {
         BossBarManager.getInstance().removeBossBar(player);
         if (config.getBoolean("player.leave_message")) {
             String quitMessage = config.getString("player.leave_message.message");
-            quitMessage = quitMessage.replace("%name%", player.getName());
-            quitMessage = ParsePlaceholders.parsePlaceholders(player, quitMessage);
-            event.setQuitMessage(ChatColor.translateAlternateColorCodes('&', quitMessage));
+            quitMessage = ChatUtils.parsePlaceholders(player, quitMessage);
+            event.setQuitMessage(ChatUtils.translateHexColorCodes(quitMessage));
         }
     }
 }

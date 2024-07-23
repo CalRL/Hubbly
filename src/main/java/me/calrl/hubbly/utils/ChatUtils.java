@@ -41,7 +41,7 @@ public class ChatUtils {
         return buffer.toString();
     }
 
-    public String parsePlaceholders(Player player, String message) {
+    public static String parsePlaceholders(Player player, String message) {
         message = ChatColor.translateAlternateColorCodes('&', message);
 
         if(message.contains("%player") && player != null) {
