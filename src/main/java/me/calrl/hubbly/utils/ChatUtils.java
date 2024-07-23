@@ -43,7 +43,7 @@ public class ChatUtils {
 
     public String parsePlaceholders(Player player, String message) {
         message = ChatColor.translateAlternateColorCodes('&', message);
-        
+
         if(message.contains("%player") && player != null) {
             message = message.replace("%player%", player.getName());
         }
