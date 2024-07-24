@@ -29,12 +29,12 @@ public class ChatUtils {
     public static String translateHexColorCodes(String message) {
         message = ChatColor.translateAlternateColorCodes('&', message);
 
-        Pattern hexPattern = Pattern.compile( "#[a-fA-F0-9]{6}");
+        Pattern hexPattern = Pattern.compile( "<#[a-fA-F0-9]{6}>");
         Matcher matcher = hexPattern.matcher(message);
         StringBuffer buffer = new StringBuffer();
         while(matcher.find()) {
             String hexColor = matcher.group();
-            String chatColor = ChatColor.of(hexColor).toString();
+            String chatColor = ChatColor.of(hexColor.substring(1, hexColor.length()-1)).toString();
             matcher.appendReplacement(buffer, chatColor);
         }
         matcher.appendTail(buffer);
