@@ -72,29 +72,31 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+
         if(!player.hasMetadata(FLY_METADATA_KEY)) {
             player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
         }
+        player.setAllowFlight(true);
 
 
         // Checks
         if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
 
-        if (config.getBoolean("player.spawn_on_join")) {
-            try {
-                String worldName = config.getString("spawn.world");
-                World world = Bukkit.getWorld(worldName);
-                double x = config.getDouble("spawn.x");
-                double y = config.getDouble("spawn.y");
-                double z = config.getDouble("spawn.z");
-                float yaw = (float) config.getDouble("spawn.yaw");
-                float pitch = (float) config.getDouble("spawn.pitch");
-                player.teleport(new Location(world, x, y, z, yaw, pitch));
-            } catch (Exception e) {
-                e.printStackTrace();
-                debugMode.warn("Couldnt teleport " + player.getName() + " to spawn");
-            }
-        }
+//        if (config.getBoolean("player.spawn_on_join")) {
+//            try {
+//                String worldName = config.getString("spawn.world");
+//                World world = Bukkit.getWorld(worldName);
+//                double x = config.getDouble("spawn.x");
+//                double y = config.getDouble("spawn.y");
+//                double z = config.getDouble("spawn.z");
+//                float yaw = (float) config.getDouble("spawn.yaw");
+//                float pitch = (float) config.getDouble("spawn.pitch");
+//                player.teleport(new Location(world, x, y, z, yaw, pitch));
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//                debugMode.warn("Couldnt teleport " + player.getName() + " to spawn");
+//            }
+//        }
 
         if (config.getBoolean("player.join_message.enabled")) {
             String joinMessage = config.getString("player.join_message.message");
@@ -103,9 +105,6 @@ public class PlayerJoinListener implements Listener {
             event.setJoinMessage(ChatUtils.translateHexColorCodes(joinMessage));
         }
 
-        if (config.getBoolean("player.fly.enabled") && config.getBoolean("player.fly.default")) {
-            event.getPlayer().setAllowFlight(true);
-        }
 
         if (config.getBoolean("player.join_firework.enabled")) {
             try {

@@ -122,7 +122,6 @@ player:
   spawn_on_join: true
   fly:
     enabled: true
-    default: true
   join_message:
     enabled: true
     message: "%name% joined"

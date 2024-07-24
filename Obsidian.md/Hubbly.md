@@ -1,7 +1,25 @@
 # Hubbly 2.0 Update
 
 ## Actions
-
+- -
+- Player:
+	- [PLAYER] {command}
+	- Executes a command from the player's perspective
+- Console:
+	- [CONSOLE] {command}
+	- Executes a command from the consoles perspective
+- Bungee:
+	- [BUNGEE] {command}
+	- Executes a BungeeCord command from the player's perspective (Works with waterfall, velocity)
+- Close:
+	- [CLOSE]
+	- No arguments, closes the player's open inventory (or gui's in general)
+- Gamemode:
+	- [GAMEMODE] {gamemode}
+	- Changes a player's gamemode
+- Message:
+	- [MESSAGE] {message}
+	- Sends a message to the player (supports hex color codes)
 - Sound:
 	- [SOUND] {sound}
 	- Where {sound} is a minecraft sound
@@ -12,11 +30,12 @@
 	- [FIREWORK] SHAPE;R;G;B;POWER
 	- R, G, B being red blue green values
 - 
- 
 ## ??
 - Launchpad power now configurable
-- Player visibility and compass among other events dont work in disabled worlds
+- Player visibility and compass among other events don't work in disabled worlds
 - Debug mode added!
 - Flight QoL change, keeps state on logout
 - Added hex color support (limited to join and logout messages for now)
-- 
+	- Format: <#HEXCODE>
+- `spawn_on_join` removed, replaced with actions [PLAYER] spawn.
+- Removed SHOP item, now make your own custom item, by fault, a shop item will come in items.yml anyway.
