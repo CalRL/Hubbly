@@ -18,6 +18,7 @@ package me.calrl.hubbly.listeners.items;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.utils.ChatUtils;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
@@ -55,7 +56,7 @@ public class PlayerVisibilityListener implements Listener {
                 event.setCancelled(true);
 
             } else {
-                player.sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.no_permission_use")));
+                player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_use")));
             }
             debugMode.info("Holding: " + player.getInventory().getItemInMainHand());
         }

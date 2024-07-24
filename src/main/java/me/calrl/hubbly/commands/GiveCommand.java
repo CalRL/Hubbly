@@ -23,6 +23,7 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.items.*;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -105,7 +106,7 @@ public class GiveCommand implements SubCommand {
                 sender.sendMessage(ChatColor.RED + "Unknown item: " + itemName); // Debugging
             }
         } else {
-            sender.sendMessage(Objects.requireNonNull(config.getString("messages.no_permission_use")));
+            sender.sendMessage(Objects.requireNonNull(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_use"))));
         }
     }
 }

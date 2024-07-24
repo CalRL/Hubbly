@@ -18,6 +18,7 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -57,7 +58,7 @@ public class FlyCommand implements CommandExecutor {
         }
 
         if (!player.hasPermission("hubbly.command.fly") && !player.isOp()) {
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', "messages.no_permission"));
+            player.sendMessage(ChatUtils.translateHexColorCodes("messages.no_permission"));
             return true;
         }
 
@@ -71,10 +72,10 @@ public class FlyCommand implements CommandExecutor {
         if (canFly) {
             player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
             player.setFlying(false);
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("messages.fly.disable"))));
+            player.sendMessage(ChatUtils.translateHexColorCodes(Objects.requireNonNull(config.getString("messages.fly.disable"))));
         } else {
             player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), true));
-            player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("messages.fly.enable"))));
+            player.sendMessage(ChatUtils.translateHexColorCodes(Objects.requireNonNull(config.getString("messages.fly.enable"))));
         }
 
         return true;

@@ -21,6 +21,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.functions.CreateCloseItem;
+import me.calrl.hubbly.utils.ChatUtils;
 import net.kyori.adventure.inventory.Book;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -60,7 +61,7 @@ public class SocialsListener implements Listener {
                 if(event.getPlayer().hasPermission("hubbly." + "socials.use") || event.getPlayer().isOp()) {
                     openSocialsGUI(event.getPlayer());
                 } else {
-                    event.getPlayer().sendMessage(ChatColor.translateAlternateColorCodes('&', config.getString("messages.no_permission_use")));
+                    event.getPlayer().sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_use")));
 
                 }
             }

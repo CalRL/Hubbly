@@ -21,6 +21,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.listeners.player.PlayerJoinListener;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -49,7 +50,7 @@ public class ReloadCommand implements SubCommand {
                     bossBarManager.removeAllBossBars();
                 }
                 Hubbly.getInstance().reloadPlugin();
-                player.sendMessage(config.getString("messages.reload"));
+                player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.reload")));
                 BossBarManager.initialize(Hubbly.getInstance().getConfig());
                 bossBarManager = BossBarManager.getInstance();
                 bossBarManager.reAddAllBossBars();

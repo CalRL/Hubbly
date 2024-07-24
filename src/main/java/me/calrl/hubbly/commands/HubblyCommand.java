@@ -19,6 +19,7 @@ package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.SubCommand;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -55,7 +56,7 @@ public class HubblyCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String String, @NotNull String[] args) {
         if(!(sender instanceof Player)) {
-            sender.sendMessage(config.getString("messages.no_console"));
+            sender.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_console")));
             return true;
         }
         Player player = (Player) sender;

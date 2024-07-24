@@ -22,6 +22,7 @@ import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.event.EventHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -99,7 +100,7 @@ public class CompassListener implements Listener {
                     event.setCancelled(true);
                     openCompassGUI(player);
                 } else {
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("messages.no_permission_use"))));
+                    player.sendMessage(ChatUtils.translateHexColorCodes(Objects.requireNonNull(config.getString("messages.no_permission_use"))));
                 }
             }
         }
