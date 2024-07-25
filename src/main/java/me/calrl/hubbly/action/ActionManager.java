@@ -49,7 +49,8 @@ public class ActionManager {
                 new GamemodeAction(),
                 new SoundAction(),
                 new TitleAction(),
-                new FireworkAction()
+                new FireworkAction(),
+                new BroadcastAction()
 
         );
     }

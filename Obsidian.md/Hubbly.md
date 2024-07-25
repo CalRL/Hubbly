@@ -29,6 +29,9 @@
 - Firework:
 	- [FIREWORK] SHAPE;R;G;B;POWER
 	- R, G, B being red blue green values
+- Broadcast:
+	- [BROADCAST] {message}
+	- Broadcasts a message using bukkit.
 - 
 ## ??
 - Launchpad power now configurable
