@@ -1,0 +1,5 @@
+- [ ] add action binder to items /hubbly bind {actionname} {params}
+- [ ] Interval server announcements
+- [ ] AFK Kicker
+- [ ] Command blocker
+	- [ ] Disabled worlds
