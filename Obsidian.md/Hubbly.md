@@ -42,3 +42,6 @@
 	- Format: <#HEXCODE>
 - `spawn_on_join` removed, replaced with actions [PLAYER] spawn.
 - Removed SHOP item, now make your own custom item, by fault, a shop item will come in items.yml anyway.
+- Added CommandBlocker:
+	- Block commands in `blocked_commands` in config.yml.
+	- Edit message in `message.blocked_command`

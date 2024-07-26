@@ -39,6 +39,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -115,6 +116,7 @@ public final class Hubbly extends JavaPlugin {
         registerListener(new PlayerVisibilityListener(), "playervisibility.enabled");
         registerListener(new LaunchpadListener(), "launchpad.enabled");
         registerListener(new PlayerJoinListener(logger));
+        registerListener(new CommandBlockerListener(this));
     }
     @Override
     public void onEnable() {

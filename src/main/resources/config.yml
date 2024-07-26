@@ -4,7 +4,6 @@ debug: false
 #
 #---------------#
 
-
 #----------------#
 # Disable Worlds #
 #----------------#
@@ -118,6 +117,12 @@ spawn:
 # PLAYER SETTINGS #
 #-----------------#
 
+blocked_commands:
+  - 'pl'
+  - 'plugins'
+  - 'op'
+  - 'stop'
+  - 'reload'
 player:
   spawn_on_join: true
   fly:
@@ -193,4 +198,5 @@ messages:
   fly:
     enable: "Flight mode enabled."
     disable: "Flight mode disabled."
+  blocked_command: 'Unknown command. Type "/help" for help'
 
