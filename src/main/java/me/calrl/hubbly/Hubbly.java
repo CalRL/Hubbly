@@ -21,6 +21,8 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.commands.*;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.listeners.*;
+import me.calrl.hubbly.listeners.chat.ChatListener;
+import me.calrl.hubbly.listeners.chat.CommandBlockerListener;
 import me.calrl.hubbly.listeners.items.ConfigItemListener;
 import me.calrl.hubbly.listeners.items.PlayerVisibilityListener;
 import me.calrl.hubbly.listeners.player.DoubleJumpListener;
@@ -39,13 +41,11 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 public final class Hubbly extends JavaPlugin {
@@ -117,6 +117,7 @@ public final class Hubbly extends JavaPlugin {
         registerListener(new LaunchpadListener(), "launchpad.enabled");
         registerListener(new PlayerJoinListener(logger));
         registerListener(new CommandBlockerListener(this));
+        registerListener(new ChatListener(this));
     }
     @Override
     public void onEnable() {

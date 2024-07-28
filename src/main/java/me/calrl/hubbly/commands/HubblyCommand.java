@@ -38,7 +38,7 @@ public class HubblyCommand implements CommandExecutor {
     private Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
 
-    private final JavaPlugin plugin;
+    private final Hubbly plugin;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
 
     public HubblyCommand(Logger logger, Hubbly plugin) {
@@ -51,6 +51,7 @@ public class HubblyCommand implements CommandExecutor {
         subCommands.put("give", new GiveCommand(plugin));
         subCommands.put("reload", new ReloadCommand(logger, plugin));
         subCommands.put("getmetadata", new MetaCommand());
+        subCommands.put("clearchat", new ClearChatCommand(plugin));
     }
 
     @Override

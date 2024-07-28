@@ -186,6 +186,11 @@ cancel_events:
   death_messages: true
   leaf_decay: true
 
+blocked_words:
+  enabled: false
+  words:
+    - 'Fuck'
+
 #----------#
 # MESSAGES #
 #----------#
@@ -199,4 +204,5 @@ messages:
     enable: "Flight mode enabled."
     disable: "Flight mode disabled."
   blocked_command: 'Unknown command. Type "/help" for help'
+  blocked_message: 'Please do not use that word!'
 

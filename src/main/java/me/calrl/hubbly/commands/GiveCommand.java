@@ -37,14 +37,14 @@ import java.util.Objects;
 
 public class GiveCommand implements SubCommand {
 
-    private final JavaPlugin plugin;
+    private final Hubbly plugin;
     private final FileConfiguration config;
     private final Map<String, CustomItem> items = new HashMap<>();
     private FileConfiguration itemsConfig;
     private ActionManager actionManager;
     private Map<String, Action> actions;
 
-    public GiveCommand(JavaPlugin plugin) {
+    public GiveCommand(Hubbly plugin) {
         this.plugin = plugin;
         this.itemsConfig = Hubbly.getInstance().getItemsConfig();
         this.config = Hubbly.getInstance().getConfig();

@@ -33,10 +33,10 @@ public class ReloadCommand implements SubCommand {
 
     private final Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
-    private final JavaPlugin plugin;
+    private final Hubbly plugin;
     private PlayerJoinListener playerJoinListener;
 
-    public ReloadCommand(Logger logger, JavaPlugin plugin) {
+    public ReloadCommand(Logger logger, Hubbly plugin) {
         this.logger = logger;
         this.plugin = plugin;
     }

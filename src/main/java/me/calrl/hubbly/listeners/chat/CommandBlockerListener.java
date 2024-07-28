@@ -1,4 +1,4 @@
-package me.calrl.hubbly.listeners;
+package me.calrl.hubbly.listeners.chat;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.utils.ChatUtils;
@@ -21,6 +21,7 @@ public class CommandBlockerListener implements Listener {
     }
     @EventHandler
     private void onPlayerCommand(PlayerCommandPreprocessEvent event) {
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
         String message = event.getMessage().toLowerCase();
         FileConfiguration config = plugin.getConfig();
         blockedCommands = config.getStringList("blocked_commands");

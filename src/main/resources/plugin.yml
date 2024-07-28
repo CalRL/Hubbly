@@ -12,6 +12,7 @@ commands:
     description: main command
     usage: /hubbly
     permission: hubbly.hubbly
+    aliases: [hb]
   spawn:
     description: spawn command
     usage: /spawn
@@ -53,6 +54,9 @@ permissions:
     default: op
   hubbly.reload:
     default: op
+  hubbly.clearchat:
+    default: op
+    description: Clears the chat
 
 
 softdepend:

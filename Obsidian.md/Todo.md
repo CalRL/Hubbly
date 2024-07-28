@@ -2,4 +2,9 @@
 - [ ] Interval server announcements
 - [ ] AFK Kicker
 - [ ] Command blocker
-	- [ ] Disabled worlds
+	- [x] Disabled worlds
+- [ ] Blocked words (chatlistener)
+	- [x] Disabled worlds
+- [ ] Tab Completer
+- [ ] Animated/dynamic items support (with refreshes)
+- [ ] 
