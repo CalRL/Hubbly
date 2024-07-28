@@ -200,6 +200,15 @@ blocked_commands:
 
 announcements:
   interval: 30
+  messages:
+    message1:
+      - 'Test'
+      - 'This is an announcement'
+      - 'Hello'
+    message2:
+      - 'Test2'
+      - 'This is a second announcement'
+      - 'Goodbye'
 
 #----------#
 # MESSAGES #

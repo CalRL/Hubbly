@@ -59,4 +59,7 @@ public class ChatUtils {
         return new String(new char[count]).replace("\0", string);
     }
 
+    public static String center(String string) {
+
+    }
 }
