@@ -47,4 +47,4 @@
 	- Edit message in `message.blocked_command`
 	- Permission `hubbly.bypass` bypasses command blocker
 - Added ClearChat:
-	- permission: `hubbly.clearchat`
+	- permission: `hubbly.command.clearchat`

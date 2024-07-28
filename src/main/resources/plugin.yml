@@ -25,6 +25,11 @@ commands:
     description: fly
     usage: /fly
     permission: hubbly.command.fly
+  clearchat:
+    description: clear chat
+    usage: /clearchat
+    permission: hubbly.command.clearchat
+    aliases: [cc, clearc, cchat]
 
 
 permissions:

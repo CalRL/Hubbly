@@ -93,6 +93,7 @@ public final class Hubbly extends JavaPlugin {
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
         getCommand("spawn").setExecutor(new SpawnCommand(this));
         getCommand("fly").setExecutor(new FlyCommand(logger));
+        getCommand("clearchat").setExecutor(new ClearChatCommand(this));
     }
 
     private void registerListener(Listener listener, String enabledPath) {
