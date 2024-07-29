@@ -60,6 +60,6 @@ public class ChatUtils {
     }
 
     public static String center(String string) {
-
+        return string;
     }
 }

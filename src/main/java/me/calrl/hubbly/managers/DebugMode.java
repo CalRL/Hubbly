@@ -7,8 +7,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DebugMode {
-    private FileConfiguration config = Hubbly.getInstance().getConfig();
-    private Logger logger = Hubbly.getInstance().getLogger();
+    private final FileConfiguration config = Hubbly.getInstance().getConfig();
+    private final Logger logger = Hubbly.getInstance().getLogger();
 
     public void info(String message) {
         if(config.getBoolean("debug")){
