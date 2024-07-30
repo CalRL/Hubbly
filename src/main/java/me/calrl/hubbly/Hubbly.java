@@ -78,10 +78,10 @@ public final class Hubbly extends JavaPlugin {
     }
 
     public void loadComponents() {
+        getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, this), this);
         loadListeners();
 
         getServer().getPluginManager().registerEvents(new ShopListener(), this);
-        getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, this), this);
         getServer().getPluginManager().registerEvents(new SocialsListener(logger),this);
         getServer().getPluginManager().registerEvents(new VoidDamageListener(this), this);
         getServer().getPluginManager().registerEvents(new WorldEventListeners(logger), this);

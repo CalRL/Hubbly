@@ -44,8 +44,10 @@ public class ChatUtils {
     public static String parsePlaceholders(Player player, String message) {
         message = ChatColor.translateAlternateColorCodes('&', message);
 
-        if(message.contains("%name%") && player != null) {
+        if(message.contains("%name%")&& player != null) {
             message = message.replace("%name%", player.getName());
+        } else if(message.contains("%player_name%") && player != null) {
+            message = message.replace("%player_name%", player.getName());
         }
 
         if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {

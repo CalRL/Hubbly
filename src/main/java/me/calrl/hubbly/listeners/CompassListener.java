@@ -19,7 +19,6 @@ package me.calrl.hubbly.listeners;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.CreateCustomHead;
-import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
@@ -189,14 +188,14 @@ public class CompassListener implements Listener {
         ItemMeta meta = item.getItemMeta();
         if (meta != null) {
             if (config.contains(path + ".name")) {
-                String itemName = ParsePlaceholders.parsePlaceholders(player, config.getString(path + ".name"));
+                String itemName = ChatUtils.parsePlaceholders(player, config.getString(path + ".name"));
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', itemName));
             }
 
             if (config.contains(path + ".lore")) {
                 List<String> loreList = config.getStringList(path + ".lore");
                 for (int i = 0; i < loreList.size(); i++) {
-                    loreList.set(i, ChatColor.translateAlternateColorCodes('&', ParsePlaceholders.parsePlaceholders(player, loreList.get(i))));
+                    loreList.set(i, ChatColor.translateAlternateColorCodes('&', ChatUtils.parsePlaceholders(player, loreList.get(i))));
                 }
                 meta.setLore(loreList);
             }
@@ -240,7 +239,7 @@ public class CompassListener implements Listener {
         if (meta != null) {
             String displayName = config.getString("selector.fill.name");
             if (displayName != null) {
-                displayName = ParsePlaceholders.parsePlaceholders(player, displayName);
+                displayName = ChatUtils.parsePlaceholders(player, displayName);
                 meta.setDisplayName(displayName);
             }
 

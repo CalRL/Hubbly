@@ -50,7 +50,8 @@ public class ActionManager {
                 new SoundAction(),
                 new TitleAction(),
                 new FireworkAction(),
-                new BroadcastAction()
+                new BroadcastAction(),
+                new ItemAction()
 
         );
     }

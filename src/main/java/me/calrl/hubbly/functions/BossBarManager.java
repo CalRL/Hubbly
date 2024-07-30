@@ -18,6 +18,7 @@ package me.calrl.hubbly.functions;
 
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
@@ -82,7 +83,7 @@ public class BossBarManager {
                     this.cancel();
                     return;
                 }
-                String text = ChatColor.translateAlternateColorCodes('&', texts.get(index));
+                String text = ChatUtils.translateHexColorCodes(texts.get(index));
                 bar.setTitle(text);
                 index = (index + 1) % texts.size();
             }

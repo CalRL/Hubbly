@@ -32,13 +32,18 @@
 - Broadcast:
 	- [BROADCAST] {message}
 	- Broadcasts a message using bukkit.
-- 
+- Item:
+	- [ITEM] ITEM;SLOT
+	- Give a custom item defined in items.yml
+	- Can leave SLOT empty
 ## ??
 - Launchpad power now configurable
 - Player visibility and compass among other events don't work in disabled worlds
 - Debug mode added!
 - Flight QoL change, keeps state on logout
-- Added hex color support (limited to join and logout messages for now)
+- Added hex color support
+	- To Join and leave messages
+	- To the bossbar
 	- Format: <#HEXCODE>
 - `spawn_on_join` removed, replaced with actions [PLAYER] spawn.
 - Removed SHOP item, now make your own custom item, by fault, a shop item will come in items.yml anyway.
@@ -48,3 +53,5 @@
 	- Permission `hubbly.bypass` bypasses command blocker
 - Added ClearChat:
 	- permission: `hubbly.command.clearchat`
+- Fixed `/fly`, disabling flight now also stops flight if the player is flying.
+- 

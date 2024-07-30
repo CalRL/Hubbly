@@ -8,15 +8,14 @@ items:
     lore:
       - 'line 1'
       - 'line 2'
-    commands:
-      - '[player] spawn'
-      - '[console] broadcast item1'
-  item2:
-    name: 'not a block'
-    type: COMPASS
+    actions:
+      - '[PLAYER] spawn'
+      - '[CONSOLE] broadcast item1'
+  socials:
+    name: '&aShop'
+    type: EMERALD
     lore:
-      - 'not line 1'
-      - 'DEFINITELY not line 2'
-    commands:
-      - '[player] spawn'
-      - '[console] broadcast item2'
+      - '&7Opens the shop'
+    actions:
+      - '[PLAYER] buy'
+
