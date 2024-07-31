@@ -37,11 +37,14 @@ public class WorldEventListeners implements Listener {
 
     private final Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
-    public WorldEventListeners(Logger logger) {
-        this.logger = logger;
+    private final Hubbly plugin;
+    public WorldEventListeners(Hubbly plugin) {
+        this.plugin = plugin;
+        this.logger = plugin.getLogger();
+
     }
     private boolean checkWorld(Player player) {
-        return Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(player.getLocation());
+        return plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation());
     }
 
 

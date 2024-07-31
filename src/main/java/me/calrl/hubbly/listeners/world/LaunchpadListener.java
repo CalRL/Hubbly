@@ -39,14 +39,14 @@ public class LaunchpadListener implements Listener {
     private double powerY = config.getDouble("launchpad.power_y");
     private double power = config.getDouble("launchpad.power");
 
-    public LaunchpadListener() {
-        this.plugin = Hubbly.getInstance();
+    public LaunchpadListener(Hubbly plugin) {
+        this.plugin = plugin;
         this.logger = plugin.getLogger();
     }
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
 
         if(!config.getBoolean("launchpad.enabled")) return;
         Player player = event.getPlayer();

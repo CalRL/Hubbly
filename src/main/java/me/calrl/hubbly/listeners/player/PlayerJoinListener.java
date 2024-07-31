@@ -42,6 +42,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
 
 public class PlayerJoinListener implements Listener {
 
@@ -51,13 +52,15 @@ public class PlayerJoinListener implements Listener {
     private static final String FLY_METADATA_KEY = "hubbly.canFly";
     private DebugMode debugMode;
     private ActionManager actionManager;
+    private final Hubbly plugin;
 
-    public PlayerJoinListener(Logger logger) {
-        this.logger = logger;
-        this.config = Hubbly.getInstance().getConfig();
-        this.serverSelectorConfig = Hubbly.getInstance().getServerSelectorConfig();
-        this.debugMode = Hubbly.getInstance().getDebugMode();
-        this.actionManager = Hubbly.getInstance().getActionManager();
+    public PlayerJoinListener(Hubbly plugin) {
+        this.plugin = plugin;
+        this.logger = plugin.getLogger();
+        this.config = plugin.getConfig();
+        this.serverSelectorConfig = plugin.getServerSelectorConfig();
+        this.debugMode = plugin.getDebugMode();
+        this.actionManager = plugin.getActionManager();
     }
 
     private FireworkEffect fireworkEffect() {
@@ -72,6 +75,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
 
         if(!player.hasMetadata(FLY_METADATA_KEY)) {
             player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
@@ -80,7 +84,7 @@ public class PlayerJoinListener implements Listener {
 
 
         // Checks
-        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+
 
 //        if (config.getBoolean("player.spawn_on_join")) {
 //            try {

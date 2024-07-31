@@ -83,7 +83,7 @@ public final class Hubbly extends JavaPlugin {
 
         getServer().getPluginManager().registerEvents(new SocialsListener(logger),this);
         getServer().getPluginManager().registerEvents(new VoidDamageListener(this), this);
-        getServer().getPluginManager().registerEvents(new WorldEventListeners(logger), this);
+        getServer().getPluginManager().registerEvents(new WorldEventListeners(this), this);
         getServer().getPluginManager().registerEvents(new ConfigItemListener(this), this);
         getServer().getPluginManager().registerEvents(new DoubleJumpListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerOffHandListener(), this);
@@ -114,8 +114,8 @@ public final class Hubbly extends JavaPlugin {
     private void loadListeners() {
         registerListener(new CompassListener(this));
         registerListener(new PlayerVisibilityListener(), "playervisibility.enabled");
-        registerListener(new LaunchpadListener(), "launchpad.enabled");
-        registerListener(new PlayerJoinListener(logger));
+        registerListener(new LaunchpadListener(this), "launchpad.enabled");
+        registerListener(new PlayerJoinListener(this));
         registerListener(new CommandBlockerListener(this));
         registerListener(new ChatListener(this));
     }

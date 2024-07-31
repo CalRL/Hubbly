@@ -27,6 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -37,17 +38,17 @@ import org.bukkit.plugin.java.JavaPlugin;
 public class ItemJoinListener implements Listener {
     private final Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
-    private final JavaPlugin plugin;
+    private final Hubbly plugin;
 
 
-    public ItemJoinListener(Logger logger, JavaPlugin plugin) {
+    public ItemJoinListener(Logger logger, Hubbly plugin) {
         this.logger = logger;
         this.plugin = plugin;
     }
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
         PlayerInventory playerInventory = event.getPlayer().getInventory();
         playerInventory.clear();
         playerInventory.setHeldItemSlot(4);
