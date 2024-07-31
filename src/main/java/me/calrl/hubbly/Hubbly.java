@@ -131,7 +131,6 @@ public final class Hubbly extends JavaPlugin {
         config = this.getConfig();
         try {
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:main");
 
             loadFiles();
             loadComponents();
@@ -146,7 +145,7 @@ public final class Hubbly extends JavaPlugin {
         Metrics metrics = new Metrics(this, pluginId);
 
         for(Player player : Bukkit.getOnlinePlayers()) {
-            player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
+            player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(this, false));
         }
 
         logger.info("Hubbly has been enabled!");
@@ -157,6 +156,7 @@ public final class Hubbly extends JavaPlugin {
         // Plugin shutdown logic
         BossBarManager.getInstance().removeAllBossBars();
         logger.info("Hubbly has been disabled!");
+        this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
     }
 
 

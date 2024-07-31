@@ -222,8 +222,6 @@ public class CompassListener implements Listener {
         }
         return item;
     }
-
-
     private ItemStack createFillItem(Player player) {
         String materialName = config.getString("selector.fill.type");
         if (materialName == null) {

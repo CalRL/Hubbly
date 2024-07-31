@@ -23,10 +23,7 @@ import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockBurnEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.LeavesDecayEvent;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -141,6 +138,22 @@ public class WorldEventListeners implements Listener {
             event.setCancelled(true);
         }
     }
+    @EventHandler
+    private void onBlockIgnite(BlockIgniteEvent event) {
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getBlock().getWorld())) return;
+        if(config.getBoolean("cancel_events.block_burn")) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    private void onBlockSpread(BlockSpreadEvent event) {
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getBlock().getWorld())) return;
+        if(config.getBoolean("cancel_events.block_burn")) {
+            event.setCancelled(true);
+        }
+    }
+
     @EventHandler
     private void onPlayerDeath(PlayerDeathEvent event) {
         if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getEntity().getWorld())) return;
