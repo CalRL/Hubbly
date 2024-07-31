@@ -52,6 +52,9 @@ public class CompassListener implements Listener {
     private final ActionManager actionManager;
     private final NamespacedKey actionsKey;
     private DebugMode debugMode;
+    private boolean isBungee;
+    private boolean isVelocity;
+
 
     public CompassListener(Hubbly plugin) {
         this.plugin = plugin;
@@ -65,6 +68,7 @@ public class CompassListener implements Listener {
 
         // Register the BungeeCord channel
         plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
+        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "velocity:player");
     }
 
     @EventHandler

@@ -51,7 +51,8 @@ public class ActionManager {
                 new TitleAction(),
                 new FireworkAction(),
                 new BroadcastAction(),
-                new ItemAction()
+                new ItemAction(),
+                new VelocityAction()
 
         );
     }
