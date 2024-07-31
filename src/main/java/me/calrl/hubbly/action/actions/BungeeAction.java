@@ -21,6 +21,7 @@ import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.Action;
+import me.calrl.hubbly.managers.DebugMode;
 import org.bukkit.entity.Player;
 
 public class BungeeAction implements Action {
@@ -31,10 +32,15 @@ public class BungeeAction implements Action {
 
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
+        player.sendMessage("nerd");
+        DebugMode debugMode = plugin.getDebugMode();
+        debugMode.info(data);
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
-        out.writeUTF("ConnectOther");
+        out.writeUTF("Connect");
         out.writeUTF(player.getName());
         out.writeUTF(data);
-        player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+        player.sendPluginMessage(plugin, "bungeecord:main", out.toByteArray());
+
+
     }
 }

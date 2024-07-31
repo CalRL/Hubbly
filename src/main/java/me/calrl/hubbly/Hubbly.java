@@ -130,6 +130,8 @@ public final class Hubbly extends JavaPlugin {
         this.saveDefaultConfig();
         config = this.getConfig();
         try {
+            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "bungeecord:main");
 
             loadFiles();
             loadComponents();

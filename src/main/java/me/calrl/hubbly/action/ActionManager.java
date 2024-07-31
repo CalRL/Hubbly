@@ -52,7 +52,7 @@ public class ActionManager {
                 new FireworkAction(),
                 new BroadcastAction(),
                 new ItemAction(),
-                new VelocityAction()
+                new BungeeAction()
 
         );
     }

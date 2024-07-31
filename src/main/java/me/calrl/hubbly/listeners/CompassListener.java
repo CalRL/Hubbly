@@ -67,8 +67,7 @@ public class CompassListener implements Listener {
 
 
         // Register the BungeeCord channel
-        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
-        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "velocity:player");
+
     }
 
     @EventHandler
@@ -199,7 +198,7 @@ public class CompassListener implements Listener {
             if (config.contains(path + ".lore")) {
                 List<String> loreList = config.getStringList(path + ".lore");
                 for (int i = 0; i < loreList.size(); i++) {
-                    loreList.set(i, ChatColor.translateAlternateColorCodes('&', ChatUtils.parsePlaceholders(player, loreList.get(i))));
+                    loreList.set(i, ChatUtils.translateHexColorCodes(ChatUtils.parsePlaceholders(player, loreList.get(i))));
                 }
                 meta.setLore(loreList);
             }
