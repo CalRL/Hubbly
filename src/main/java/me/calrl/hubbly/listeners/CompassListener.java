@@ -33,6 +33,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -93,7 +94,8 @@ public class CompassListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        if (event.getView().getTitle().equals(config.getString("compass.gui.title"))) {
+        InventoryView view = event.getView();
+        if (view.getTitle().equals(config.getString("compass.gui.title"))) {
             event.setCancelled(true);  // Prevent item movement
             Player player = (Player) event.getWhoClicked();
             ItemStack clickedItem = event.getCurrentItem();
