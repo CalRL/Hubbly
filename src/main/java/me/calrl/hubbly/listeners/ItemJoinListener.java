@@ -22,7 +22,6 @@ import java.util.logging.Logger;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.items.CompassItem;
 import me.calrl.hubbly.items.PlayerVisibilityItem;
-import me.calrl.hubbly.items.ShopItem;
 import me.calrl.hubbly.items.SocialsItem;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -55,9 +54,6 @@ public class ItemJoinListener implements Listener {
         if(Objects.equals(config.getBoolean("item_on_join.enabled"), true)) {
             if(Objects.equals(config.getBoolean("item_on_join.features.compass.enabled"), true)) {
                 event.getPlayer().getInventory().setItem(config.getInt("item_on_join.features.compass.slot")-1, new CompassItem().createItem());
-            }
-            if(Objects.equals(config.getBoolean("item_on_join.features.shop.enabled"), true)) {
-                event.getPlayer().getInventory().setItem(config.getInt("item_on_join.features.shop.slot")-1, new ShopItem().createItem());
             }
             if(Objects.equals(config.getBoolean("item_on_join.features.socials.enabled"), true)) {
                 event.getPlayer().getInventory().setItem(config.getInt("item_on_join.features.socials.slot")-1, new SocialsItem().createItem());

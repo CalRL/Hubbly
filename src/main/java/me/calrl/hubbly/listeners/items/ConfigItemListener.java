@@ -20,6 +20,7 @@ package me.calrl.hubbly.listeners.items;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.items.ConfigItems;
 import me.calrl.hubbly.action.ActionManager;
+import me.calrl.hubbly.managers.DebugMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -27,6 +28,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -39,11 +41,13 @@ public class ConfigItemListener implements Listener {
     private final Logger logger;
     private final NamespacedKey customActionsKey;
     private final ActionManager actionManager;
+    private final DebugMode debugMode;
 
-    public ConfigItemListener(JavaPlugin plugin) {
+    public ConfigItemListener(Hubbly plugin) {
         this.logger = plugin.getLogger();
         this.customActionsKey = new NamespacedKey(plugin, "customActions");
-        this.actionManager = Hubbly.getInstance().getActionManager();
+        this.actionManager = plugin.getActionManager();
+        this.debugMode = plugin.getDebugMode();
     }
 
     @EventHandler
@@ -61,7 +65,7 @@ public class ConfigItemListener implements Listener {
             return;
         }
 
-        if (event.getAction() != Action.PHYSICAL) {
+        if (event.getAction() != Action.PHYSICAL && event.getHand() == EquipmentSlot.HAND) {
             if (meta.getPersistentDataContainer().has(customActionsKey, PersistentDataType.STRING)) {
                 // Execute actions
                 ConfigItems configItems = new ConfigItems("", actionManager);

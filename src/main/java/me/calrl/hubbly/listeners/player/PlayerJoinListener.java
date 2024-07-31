@@ -105,19 +105,6 @@ public class PlayerJoinListener implements Listener {
             event.setJoinMessage(ChatUtils.translateHexColorCodes(joinMessage));
         }
 
-
-        if (config.getBoolean("player.join_firework.enabled")) {
-            try {
-                Firework firework = player.getWorld().spawn(player.getLocation(), Firework.class);
-                FireworkMeta meta = firework.getFireworkMeta();
-                meta.addEffect(fireworkEffect());
-                meta.setPower(config.getInt("player.join_firework.power"));
-                firework.setFireworkMeta(meta);
-            } catch (Exception e) {
-                logger.warning("Failed to launch firework: " + e.getMessage());
-            }
-        }
-
         if (config.getBoolean("player.bossbar.enabled")) {
             BossBarManager.getInstance().createBossBar(player);
         }

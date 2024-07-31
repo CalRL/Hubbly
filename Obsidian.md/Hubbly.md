@@ -37,13 +37,14 @@
 	- Give a custom item defined in items.yml
 	- Can leave SLOT empty
 ## ??
+- Config.yml has changed so much its honestly more worth to just delete the Hubbly folder and let it recreate itself
 - Launchpad power now configurable
 - Player visibility and compass among other events don't work in disabled worlds
 - Debug mode added!
 - Flight QoL change, keeps state on logout
 - Added hex color support
-	- To Join and leave messages
-	- To the bossbar
+	- To Join and Leave messages
+	- To the BossBar
 	- Format: <#HEXCODE>
 - `spawn_on_join` removed, replaced with actions [PLAYER] spawn.
 - Removed SHOP item, now make your own custom item, by fault, a shop item will come in items.yml anyway.
@@ -54,4 +55,8 @@
 - Added ClearChat:
 	- permission: `hubbly.command.clearchat`
 - Fixed `/fly`, disabling flight now also stops flight if the player is flying.
-- 
+- Added Blocked words:
+	- `blocked_words` in config.yml
+- Optimized the way custom items work
+## WIP
+- PvPMode

@@ -11,7 +11,7 @@ items:
     actions:
       - '[PLAYER] spawn'
       - '[CONSOLE] broadcast item1'
-  socials:
+  shop:
     name: '&aShop'
     type: EMERALD
     lore:

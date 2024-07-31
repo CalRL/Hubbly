@@ -55,7 +55,6 @@ public class GiveCommand implements SubCommand {
     private void registerItems() {
         items.put("compass", new CompassItem());
         items.put("socials", new SocialsItem());
-        items.put("shop", new ShopItem());
         items.put("playervisibility", new PlayerVisibilityItem());
 
         if (itemsConfig.getConfigurationSection("items") != null) {
@@ -93,7 +92,7 @@ public class GiveCommand implements SubCommand {
                             sender.sendMessage(ChatColor.RED + "Invalid slot: " + args[3]);
                             return;
                         }
-                        targetPlayer.getInventory().setItem(slot, item);
+                        targetPlayer.getInventory().setItem(slot-1, item);
                         sender.sendMessage(ChatColor.YELLOW + "Given " + itemName + " to " + targetPlayer.getName() + " in slot " + slot);
                     } catch (NumberFormatException e) {
                         sender.sendMessage(ChatColor.RED + "Slot must be a number: " + args[3]);

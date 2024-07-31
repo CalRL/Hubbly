@@ -128,11 +128,6 @@ player:
   leave_message:
     enabled: true
     message: "%name% left"
-  join_firework:
-    enabled: true
-    type: "BALL"
-    #POWER 1-3
-    power: 1
   bossbar:
     enabled: true
     color: "PURPLE"

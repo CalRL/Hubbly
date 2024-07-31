@@ -31,6 +31,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -70,6 +71,15 @@ public class SocialsListener implements Listener {
 
     @EventHandler
     private void onBlockPlace(BlockPlaceEvent event) {
+        Player player = event.getPlayer();
+        ItemStack heldItem = player.getInventory().getItemInMainHand();
+        if(heldItem.getType() == Material.PLAYER_HEAD && heldItem.getItemMeta().getDisplayName().equals(Objects.requireNonNull(ChatColor.translateAlternateColorCodes('&', config.getString("socials.item.name"))))) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    private void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         ItemStack heldItem = player.getInventory().getItemInMainHand();
         if(heldItem.getType() == Material.PLAYER_HEAD && heldItem.getItemMeta().getDisplayName().equals(Objects.requireNonNull(ChatColor.translateAlternateColorCodes('&', config.getString("socials.item.name"))))) {
