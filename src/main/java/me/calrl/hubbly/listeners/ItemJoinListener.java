@@ -71,7 +71,7 @@ public class ItemJoinListener implements Listener {
         boolean forceInventory = plugin.getConfig().getBoolean("item_on_join.forceinventory");
         Player player = (Player) event.getWhoClicked();
 
-        if (forceInventory && !player.hasPermission("hubbly.items.bypass")) {
+        if (forceInventory && !player.hasPermission("hubbly.forceinventory.bypass")) {
             event.setCancelled(true);
             player.setItemOnCursor(new ItemStack(Material.AIR));
             player.updateInventory();

@@ -43,11 +43,9 @@ permissions:
     default: true
   hubbly.socials.use:
     default: true
-  hubbly.shop.use:
-    default: true
-  hubbly.command.use:
+  hubbly.command:
     default: op
-  hubbly.items.bypass:
+  hubbly.forceinventory.bypass:
     default: op
   hubbly.command.setspawn:
     default: op
