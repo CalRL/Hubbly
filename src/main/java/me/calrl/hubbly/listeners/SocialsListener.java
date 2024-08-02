@@ -23,6 +23,7 @@ import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.functions.CreateCloseItem;
 import me.calrl.hubbly.utils.ChatUtils;
 import net.kyori.adventure.inventory.Book;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -117,9 +118,10 @@ public class SocialsListener implements Listener {
             if (itemDisplayName != null && itemDisplayName.equals(clickedDisplayName)) {
                 String message = config.getString("socials.items." + itemKey + ".message");
                 if (message != null) {
-                    message = ParsePlaceholders.parsePlaceholders(player, message);
-                    player.sendMessage(ChatColor.translateAlternateColorCodes('&', message));
                     player.closeInventory();
+                    message = ParsePlaceholders.parsePlaceholders(player, ChatColor.translateAlternateColorCodes('&', message));
+                    player.spigot().sendMessage(ChatUtils.textLinkBuilder(message, config.getString( "socials.items." + itemKey + ".link"), config.getString("socials.items." + itemKey + ".hover")));
+
                 }
                 break;
             }

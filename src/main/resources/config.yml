@@ -54,14 +54,18 @@ socials:
       name: "&dTik&bTok"  # Display name of the item with placeholder
       lore: # Lore for the item/
       value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYmNmMjEwNWJiNzM3NjM4ODMzMDMzZGQ4MjQ0MDcxZTc1ODcwZTJlMTFjMjYxN2U1NDJlODkyNGZiMmI5MDE4MCJ9fX0="
-      message: "tiktok.com"
+      message: "&3Click me for tiktok"
+      hover: '&7Our Tiktok!'
+      link: 'tiktok.com'
     youtube: # Key for this item
       slot: 15 # Slot for this item (0-based index)
       material: PLAYER_HEAD  # Material for the item
       name: "&cYoutube"  # Display name of the item with placeholder
       lore: # Lore for the item
       value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWM1NmRkYmVmMWI4MWJkNTdjOWIxYzZkNWQxYjc4YjU0NzM3YjcxOTkyOWIyOWMyYTkzMGE1ZjdjMmFlNGE4NiJ9fX0="
-      message: "youtube.com"
+      message: "&3Click me for youtube!"
+      hover: '&7Our Tiktok!'
+      link: 'tiktok.com'
 
   fill:
     name: " "

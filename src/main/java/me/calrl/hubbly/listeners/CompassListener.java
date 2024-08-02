@@ -22,6 +22,7 @@ import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
+import org.bukkit.command.Command;
 import org.bukkit.event.EventHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -32,6 +33,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -143,7 +145,7 @@ public class CompassListener implements Listener {
         }
     }
 
-    private void openCompassGUI(Player player) {
+    public void openCompassGUI(Player player) {
         if (Objects.equals(config.getString("selector.enabled"), "true")) {
             Inventory gui = Bukkit.createInventory(null, config.getInt("selector.gui.size"), Objects.requireNonNull(config.getString("selector.gui.title")));
             for (String itemKey : Objects.requireNonNull(config.getConfigurationSection("selector.gui.items")).getKeys(false)) {

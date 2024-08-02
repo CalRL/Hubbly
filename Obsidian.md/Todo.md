@@ -7,4 +7,7 @@
 	- [x] Disabled worlds
 - [ ] Tab Completer
 - [ ] Animated/dynamic items support (with refreshes)
-- [ ] 
+- [x] Make text and link different (textcomponent and textclickaction)
+- [ ] MENU BUILDER....
+- [x] FIX CLICK ACTION ON TEXTCLICKACTION
+- [ ] Compass on command...

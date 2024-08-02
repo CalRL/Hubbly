@@ -19,9 +19,14 @@ package me.calrl.hubbly.utils;
 
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
+import net.md_5.bungee.api.chat.HoverEvent;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
+import java.awt.*;
 import java.util.regex.Pattern;
 import java.util.regex.Matcher;
 
@@ -63,5 +68,12 @@ public class ChatUtils {
 
     public static String center(String string) {
         return string;
+    }
+
+    public static TextComponent textLinkBuilder(String message, String link, String hoverText) {
+        TextComponent component = new TextComponent(message);
+        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatUtils.translateHexColorCodes(hoverText)).create()));
+        component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
+        return component;
     }
 }

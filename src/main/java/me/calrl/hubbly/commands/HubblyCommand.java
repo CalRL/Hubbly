@@ -52,6 +52,7 @@ public class HubblyCommand implements CommandExecutor {
         subCommands.put("give", new GiveCommand(plugin));
         subCommands.put("reload", new ReloadCommand(logger, plugin));
         subCommands.put("getmetadata", new MetaCommand());
+        subCommands.put("selector", new SelectorCommand());
     }
 
     @Override
