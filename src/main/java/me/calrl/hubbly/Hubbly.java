@@ -73,6 +73,7 @@ public final class Hubbly extends JavaPlugin {
 //            saveDefaultConfig();
 //        }
         this.saveDefaultConfig();
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
         loadComponents();
         logger.info("Hubbly has been enabled!");
         BossBarManager.initialize(Hubbly.getInstance().getConfig());
@@ -86,8 +87,11 @@ public final class Hubbly extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+
         BossBarManager.getInstance().removeAllBossBars();
         logger.info("Hubbly has been disabled!");
+
     }
 
 

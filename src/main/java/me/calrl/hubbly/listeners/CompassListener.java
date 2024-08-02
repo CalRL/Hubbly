@@ -55,8 +55,6 @@ public class CompassListener implements Listener {
     private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final NamespacedKey itemKey;
     private final JavaPlugin plugin;
-    private boolean isBungeeCord = false;
-    private boolean isVelocity = false;
 
     //private final boolean papiInstalled;
 
@@ -64,21 +62,6 @@ public class CompassListener implements Listener {
         this.logger = logger;
         this.plugin = plugin;
         this.itemKey = new NamespacedKey(plugin, "compassItemKey");
-
-        // Register the BungeeCord channel
-
-        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "BungeeCord");
-        plugin.getServer().getMessenger().registerOutgoingPluginChannel(plugin, "velocity:player");
-
-        Set<String> outgoingChannels = plugin.getServer().getMessenger().getOutgoingChannels();
-        if (outgoingChannels.contains("BungeeCord")) {
-            isBungeeCord = true;
-            plugin.getLogger().info("BungeeCord detected.");
-        }
-        if (outgoingChannels.contains("velocity:player")) {
-            isVelocity = true;
-            plugin.getLogger().info("Velocity detected.");
-        }
 
         // Check if PlaceholderAPI is installed
 //        this.papiInstalled = Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI");
@@ -110,7 +93,7 @@ public class CompassListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        InventoryView view = event.getView();
+        InventoryView view = (InventoryView) event.getView();
         if (view.getTitle().equals(config.getString("compass.gui.title"))) {
             event.setCancelled(true);  // Prevent item movement
             Player player = (Player) event.getWhoClicked();
@@ -225,27 +208,19 @@ public class CompassListener implements Listener {
     }
 
     private void sendPlayerToServer(Player player, String server) {
-        if (!isBungeeCord && !isVelocity) {
-            player.sendMessage("No proxy platform detected.");
-            return;
-        }
 
         ByteArrayOutputStream b = new ByteArrayOutputStream();
         DataOutputStream out = new DataOutputStream(b);
         try {
-            if (isBungeeCord) {
-                out.writeUTF("Connect");
-                player.sendPluginMessage(plugin, "BungeeCord", b.toByteArray());
-            } else if (isVelocity) {
-                out.writeUTF("connect");
-                player.sendPluginMessage(plugin, "velocity:player", b.toByteArray());
-            }
+            out.writeUTF("Connect");
             out.writeUTF(server);
+            player.sendPluginMessage(plugin, "BungeeCord", b.toByteArray());
         } catch (IOException e) {
             e.printStackTrace();
             player.sendMessage("Failed to connect to server: " + server);
         }
     }
+
 
     private ItemStack createFillItem(Player player) {
         String materialName = config.getString("compass.fill.type");

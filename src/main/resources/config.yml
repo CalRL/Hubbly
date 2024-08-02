@@ -19,6 +19,8 @@ compass:
 launchpad:
   enabled: true
   type: "SLIME_BLOCK"
+  power: 2
+  power_y: 1
 shop:
   enabled: true
   command: "buy"

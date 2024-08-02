@@ -56,10 +56,10 @@ public class LaunchpadListener implements Listener {
                 Vector direction = player.getLocation().getDirection();
 
                 // Set the Y component of the direction to ensure upward launch
-                direction.setY(0.5); // Adjust this value for the desired upward strength
+                direction.setY(config.getDouble("launchpad.power_y")); // Adjust this value for the desired upward strength
 
                 // Scale the direction vector for forward boost
-                direction.multiply(2); // Adjust this value for the desired forward strength
+                direction.multiply(config.getDouble("launchpad.power")); // Adjust this value for the desired forward strength
 
                 // Set the player's velocity to the new direction
                 player.setVelocity(direction);
