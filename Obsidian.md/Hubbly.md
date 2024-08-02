@@ -1,5 +1,9 @@
 # Hubbly 2.0 Update
 
+## IMPORTANT
+- Socials item will be deprecated soon!
+	- This means that socials will be gone in config but added in items.yml
+	- With this may come a menu update, to build your own menus but I can't promise that, so please use a menu plugin such as DeluxeMenus.
 ## Actions
 - -
 - Player:

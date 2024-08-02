@@ -39,13 +39,6 @@ playervisibility:
   visible_text: '&rPlayers: &aVisible'
   hidden_text: '&rPlayers: &cHidden'
 
-shop:
-  enabled: true
-  command: "buy"
-  item:
-    name: "&aShop"
-    type: "EMERALD"
-
 socials:
   enabled: true
   size: 27
@@ -73,6 +66,7 @@ socials:
   fill:
     name: " "
     type: "BLACK_STAINED_GLASS_PANE"
+  
 item_on_join:
   enabled: true
   forceinventory: true
