@@ -60,8 +60,8 @@ socials:
       lore: # Lore for the item
       value: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMWM1NmRkYmVmMWI4MWJkNTdjOWIxYzZkNWQxYjc4YjU0NzM3YjcxOTkyOWIyOWMyYTkzMGE1ZjdjMmFlNGE4NiJ9fX0="
       message: "&3Click me for youtube!"
-      hover: '&7Our Tiktok!'
-      link: 'tiktok.com'
+      hover: '&7Our YouTube!'
+      link: 'youtube.com'
 
   fill:
     name: " "
@@ -166,18 +166,6 @@ blocked_commands:
   - 'op'
   - 'stop'
   - 'reload'
-
-announcements:
-  interval: 30
-  messages:
-    message1:
-      - 'Test'
-      - 'This is an announcement'
-      - 'Hello'
-    message2:
-      - 'Test2'
-      - 'This is a second announcement'
-      - 'Goodbye'
 
 #----------#
 # MESSAGES #

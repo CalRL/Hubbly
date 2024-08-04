@@ -41,6 +41,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -68,19 +69,21 @@ public final class Hubbly extends JavaPlugin {
         this.saveConfig();
 
         config = this.getConfig();
+
         try {
-            logger.info("Loading Components");
-            loadComponents();
-            logger.info("Loaded!");
+            debugMode.info("Restarting...");
+            this.setEnabled(false);
+            this.setEnabled(true);
+            debugMode.info("Restarted.");
+
         } catch(Error e) {
             e.printStackTrace();
         }
     }
 
     public void loadComponents() {
-        getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, this), this);
         loadListeners();
-
+        getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, this), this);
         getServer().getPluginManager().registerEvents(new SocialsListener(logger),this);
         getServer().getPluginManager().registerEvents(new VoidDamageListener(this), this);
         getServer().getPluginManager().registerEvents(new WorldEventListeners(this), this);
