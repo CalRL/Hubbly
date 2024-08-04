@@ -93,6 +93,7 @@ public final class Hubbly extends JavaPlugin {
         getCommand("spawn").setExecutor(new SpawnCommand(this));
         getCommand("fly").setExecutor(new FlyCommand(logger));
         getCommand("clearchat").setExecutor(new ClearChatCommand(this));
+        getCommand("give").setExecutor(new GiveCommand(this));
     }
 
     private void registerListener(Listener listener, String enabledPath) {
@@ -124,7 +125,7 @@ public final class Hubbly extends JavaPlugin {
         instance = this;
         disabledWorlds = new DisabledWorlds();
         cooldownManager = new CooldownManager();
-        actionManager = new ActionManager();
+        actionManager = new ActionManager(this);
         debugMode = new DebugMode();
 
         this.saveDefaultConfig();

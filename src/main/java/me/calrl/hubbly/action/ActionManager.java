@@ -30,8 +30,8 @@ public class ActionManager {
     private final Hubbly plugin;
     private final Map<String, Action> actions;
 
-    public ActionManager() {
-        this.plugin = Hubbly.getInstance();
+    public ActionManager(Hubbly plugin) {
+        this.plugin = plugin;
         this.actions = new HashMap<>();
         load();
     }
@@ -57,6 +57,7 @@ public class ActionManager {
         );
     }
     public void executeAction(Hubbly plugin, Player player, String actionData) {
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
         if (actionData.startsWith("[") && actionData.contains("]")) {
             int endIndex = actionData.indexOf("]");
             String identifier = actionData.substring(1, endIndex).toUpperCase();

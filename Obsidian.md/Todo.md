@@ -1,9 +1,9 @@
 - [ ] add action binder to items /hubbly bind {actionname} {params}
 - [ ] Interval server announcements
 - [ ] AFK Kicker
-- [ ] Command blocker
+- [x] Command blocker
 	- [x] Disabled worlds
-- [ ] Blocked words (chatlistener)
+- [x] Blocked words (chatlistener)
 	- [x] Disabled worlds
 - [ ] Tab Completer
 - [ ] Animated/dynamic items support (with refreshes)

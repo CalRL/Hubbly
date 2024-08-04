@@ -1,9 +1,5 @@
 debug: false
 
-#---------------#
-#
-#---------------#
-
 #----------------#
 # Disable Worlds #
 #----------------#
@@ -78,12 +74,6 @@ item_on_join:
     compass:
       enabled: true
       slot: 5
-    shop:
-      enabled: true
-      slot: 9
-    socials:
-      enabled: true
-      slot: 1
     playervisibility:
       enabled: true
       slot: 8
@@ -137,10 +127,11 @@ player:
         - '<#69b320>&lHello!'
 
 actions_on_join:
-  - '[TITLE] &aHubbly;configure me;20;70;20'
+  - '[TITLE] <#FFDF00>Hubbly;configure me;20;70;20'
   - '[SOUND] block.note_block.chime'
   - '[FIREWORK] BALL;255;0;255;2'
-  - '[ITEM] socials'
+  - '[ITEM] socials;1'
+  - '[ITEM] shop;9'
 
 #---------------------#
 # WORLD EVENT MANAGER #

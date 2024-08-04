@@ -30,9 +30,21 @@ commands:
     usage: /clearchat
     permission: hubbly.command.clearchat
     aliases: [cc, clearc, cchat]
+  give:
+    description: give command
+    usage: /give
+    permission: hubbly.command.give
+    aliases: [gv]
 
 
 permissions:
+  hubbly.*:
+    description: Gives access to all hubbly commands
+    children:
+      hubbly.command.*: true
+
+
+
   hubbly.hubbly:
     default: true
   hubbly.compass.use:

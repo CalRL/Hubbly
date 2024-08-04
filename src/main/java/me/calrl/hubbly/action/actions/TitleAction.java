@@ -3,6 +3,7 @@ package me.calrl.hubbly.action.actions;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.Action;
 import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
@@ -27,8 +28,8 @@ public class TitleAction implements Action {
                 debugMode.warn("Invalid data format, expected 4 args, got " + args.length);
             }
 
-            title = ChatColor.translateAlternateColorCodes('&', args[0]);
-            subtitle = ChatColor.translateAlternateColorCodes('&', args[1]);
+            title = ChatUtils.translateHexColorCodes(args[0]);
+            subtitle = ChatUtils.translateHexColorCodes(args[1]);
             fadeIn = Integer.parseInt(args[2]);
             stay = Integer.parseInt(args[3]);
             fadeOut = Integer.parseInt(args[4]);
