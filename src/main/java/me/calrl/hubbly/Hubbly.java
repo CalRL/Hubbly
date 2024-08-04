@@ -39,6 +39,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.plugin.Plugin;
@@ -72,8 +73,10 @@ public final class Hubbly extends JavaPlugin {
 
         try {
             debugMode.info("Restarting...");
-            this.setEnabled(false);
-            this.setEnabled(true);
+            cleanup();
+            loadComponents();
+            loadFiles();
+
             debugMode.info("Restarted.");
 
         } catch(Error e) {
@@ -82,8 +85,10 @@ public final class Hubbly extends JavaPlugin {
     }
 
     public void loadComponents() {
-        loadListeners();
         getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, this), this);
+
+        loadListeners();
+
         getServer().getPluginManager().registerEvents(new SocialsListener(logger),this);
         getServer().getPluginManager().registerEvents(new VoidDamageListener(this), this);
         getServer().getPluginManager().registerEvents(new WorldEventListeners(this), this);
@@ -158,9 +163,12 @@ public final class Hubbly extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+        cleanup();
+
         BossBarManager.getInstance().removeAllBossBars();
         logger.info("Hubbly has been disabled!");
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
+
     }
 
 
@@ -186,6 +194,10 @@ public final class Hubbly extends JavaPlugin {
         serverSelectorConfig = YamlConfiguration.loadConfiguration(serverSelectorFile);
     }
 
+    private void cleanup() {
+        HandlerList.unregisterAll(this);
+        Bukkit.getScheduler().cancelTasks(this);
+    }
 
 
 // todo:

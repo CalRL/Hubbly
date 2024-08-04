@@ -12,7 +12,7 @@ public class DebugMode {
 
     public void info(String message) {
         if(config.getBoolean("debug")){
-            logger.log(Level.INFO, message);
+            logger.log(Level.INFO, "[DEBUG] " + message);
         }
     }
     public void warn(String message) {
