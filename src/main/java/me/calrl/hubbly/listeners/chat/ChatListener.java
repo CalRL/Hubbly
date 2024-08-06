@@ -27,6 +27,7 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 
 public class ChatListener implements Listener {
@@ -35,7 +36,7 @@ public class ChatListener implements Listener {
     private final DebugMode debugMode;
     public ChatListener(Hubbly plugin) {
         this.plugin = plugin;
-        blockedWords = plugin.getConfig().getStringList("blocked_words.words");
+        blockedWords = plugin.getConfig().getStringList("blocked_words.words").stream().map(String::toLowerCase).collect(Collectors.toList());
         debugMode = plugin.getDebugMode();
     }
 
@@ -45,11 +46,12 @@ public class ChatListener implements Listener {
         if(!config.getBoolean("blocked_words.enabled")) return;
         if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
 
-
-        String message = event.getMessage();
+        boolean messageModified = false;
+        String message = event.getMessage().toLowerCase();
         String method = config.getString("blocked_words.method");
 
         for(String word : blockedWords) {
+            if(!message.contains(word)) return;
             if(method == null) {
                 debugMode.info("blocked_words.method is null in config");
                 return;

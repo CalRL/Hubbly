@@ -42,8 +42,10 @@ public class ConfigItemListener implements Listener {
     private final NamespacedKey customActionsKey;
     private final ActionManager actionManager;
     private final DebugMode debugMode;
+    private final Hubbly plugin;
 
     public ConfigItemListener(Hubbly plugin) {
+        this.plugin = plugin;
         this.logger = plugin.getLogger();
         this.customActionsKey = new NamespacedKey(plugin, "customActions");
         this.actionManager = plugin.getActionManager();
@@ -68,7 +70,7 @@ public class ConfigItemListener implements Listener {
         if (event.getAction() != Action.PHYSICAL && event.getHand() == EquipmentSlot.HAND) {
             if (meta.getPersistentDataContainer().has(customActionsKey, PersistentDataType.STRING)) {
                 // Execute actions
-                ConfigItems configItems = new ConfigItems("", actionManager);
+                ConfigItems configItems = new ConfigItems("", plugin);
                 configItems.executeActions(player, item);
                 event.setCancelled(true);
             }

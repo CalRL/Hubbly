@@ -22,6 +22,7 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.interfaces.CustomItem;
+import me.calrl.hubbly.managers.DebugMode;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -44,12 +45,14 @@ public class ConfigItems implements CustomItem {
     private final String itemKey;
     private final ActionManager actionManager;
     private Player player;
+    private DebugMode debugMode;
 
-    public ConfigItems(String itemKey, ActionManager actionManager) {
-        this.plugin = Hubbly.getInstance();
+    public ConfigItems(String itemKey, Hubbly plugin) {
+        this.plugin = plugin;
         this.logger = plugin.getLogger();
         this.itemKey = itemKey;
-        this.actionManager = actionManager;
+        this.actionManager = plugin.getActionManager();
+        this.debugMode = plugin.getDebugMode();
     }
 
     @Override
@@ -93,7 +96,7 @@ public class ConfigItems implements CustomItem {
 
                 String actionsString = String.join(",", actions);
                 meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "customActions"), PersistentDataType.STRING, String.join(",", actions));
-                logger.info("Set actions for item " + itemKey + ": " + actionsString);
+                debugMode.info("Set actions for item " + itemKey + ": " + actionsString);
             }
 
             item.setItemMeta(meta);
@@ -110,7 +113,7 @@ public class ConfigItems implements CustomItem {
         String[] actions = actionsString.split(",");
         for (String actionData : actions) {
             actionManager.executeAction(Hubbly.getInstance(), player, actionData);
-            logger.info("Executing actions: " + actionsString);
+            debugMode.info("Executing actions: " + actionsString);
         }
     }
 }

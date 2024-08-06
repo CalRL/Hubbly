@@ -18,6 +18,7 @@
 package me.calrl.hubbly.listeners.chat;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
@@ -32,21 +33,26 @@ public class CommandBlockerListener implements Listener {
     private final Hubbly plugin;
     private List<String> blockedCommands;
     private Logger logger;
+    private final DebugMode debugMode;
     public CommandBlockerListener(Hubbly plugin) {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
+        this.debugMode = plugin.getDebugMode();
     }
     @EventHandler
     private void onPlayerCommand(PlayerCommandPreprocessEvent event) {
+        if(event.isCancelled()) return;
+
         if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
         String message = event.getMessage().toLowerCase();
         FileConfiguration config = plugin.getConfig();
         blockedCommands = config.getStringList("blocked_commands");
         for (String command : blockedCommands) {
-            if(message.startsWith("/" + command.toLowerCase()) & !event.getPlayer().hasPermission("hubbly.bypass")) {
+            if(message.startsWith("/" + command.toLowerCase()) && !event.getPlayer().hasPermission("hubbly.bypass")) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.blocked_command")));
-                logger.info(event.getPlayer().getName() + " tried to use /" + command);
+                debugMode.info(event.getPlayer().getName() + " tried to use /" + command);
+                return;
             }
         }
     }

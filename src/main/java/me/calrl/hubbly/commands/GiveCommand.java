@@ -23,6 +23,7 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.items.*;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -47,12 +48,14 @@ public class GiveCommand implements CommandExecutor {
     private FileConfiguration itemsConfig;
     private ActionManager actionManager;
     private Map<String, Action> actions;
+    private DebugMode debugMode;
 
     public GiveCommand(Hubbly plugin) {
         this.plugin = plugin;
         this.itemsConfig = Hubbly.getInstance().getItemsConfig();
         this.config = Hubbly.getInstance().getConfig();
         this.actionManager = plugin.getActionManager();
+        this.debugMode = plugin.getDebugMode();
         registerItems();
     }
 
@@ -63,10 +66,10 @@ public class GiveCommand implements CommandExecutor {
 
         if (itemsConfig.getConfigurationSection("items") != null) {
             for (String itemKey : itemsConfig.getConfigurationSection("items").getKeys(false)) {
-                items.put(ChatColor.stripColor(itemKey.toLowerCase()), new ConfigItems(itemKey, actionManager));
+                items.put(ChatColor.stripColor(itemKey.toLowerCase()), new ConfigItems(itemKey, plugin));
             }
         } else {
-            plugin.getLogger().warning("No items found in items.yml");
+            debugMode.warn("No items found in items.yml");
         }
     }
 
