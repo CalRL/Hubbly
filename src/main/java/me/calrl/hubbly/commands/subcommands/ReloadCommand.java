@@ -15,17 +15,23 @@
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.calrl.hubbly.commands;
+package me.calrl.hubbly.commands.subcommands;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.listeners.player.PlayerJoinListener;
 import me.calrl.hubbly.utils.ChatUtils;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 public class ReloadCommand implements SubCommand {
@@ -40,9 +46,13 @@ public class ReloadCommand implements SubCommand {
         this.logger = logger;
         this.plugin = plugin;
     }
+
+    public String getIdentifier() {
+        return "RELOAD";
+    }
     @Override
     public void execute(Player player, String[] args) {
-        if(player.hasPermission("hubbly.reload") || player.isOp()) {
+        if(player.hasPermission("hubbly.command.reload") || player.isOp()) {
 
             try {
                 BossBarManager bossBarManager = BossBarManager.getInstance();

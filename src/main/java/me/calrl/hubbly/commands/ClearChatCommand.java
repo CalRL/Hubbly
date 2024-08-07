@@ -38,7 +38,7 @@ public class ClearChatCommand implements CommandExecutor {
         if(player.hasPermission("hubbly.command.clearchat") || player.isOp()) {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 int i = 0;
-                while (i <= 50) {
+                while (i <= 100) {
                     Bukkit.broadcastMessage("");
                     i++;
                 }

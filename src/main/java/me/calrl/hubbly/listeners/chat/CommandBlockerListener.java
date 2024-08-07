@@ -48,7 +48,7 @@ public class CommandBlockerListener implements Listener {
         FileConfiguration config = plugin.getConfig();
         blockedCommands = config.getStringList("blocked_commands");
         for (String command : blockedCommands) {
-            if(message.startsWith("/" + command.toLowerCase()) && !event.getPlayer().hasPermission("hubbly.bypass")) {
+            if(message.startsWith("/" + command.toLowerCase()) && !event.getPlayer().hasPermission("hubbly.bypass.blockedcommands")) {
                 event.setCancelled(true);
                 event.getPlayer().sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.blocked_command")));
                 debugMode.info(event.getPlayer().getName() + " tried to use /" + command);

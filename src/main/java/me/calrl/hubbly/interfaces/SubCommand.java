@@ -22,6 +22,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public interface SubCommand {
+
+    String getIdentifier();
     void execute(Player player, String[] args);
 
 }

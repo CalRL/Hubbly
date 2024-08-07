@@ -40,38 +40,84 @@ commands:
 permissions:
   hubbly.*:
     description: Gives access to all hubbly commands
-    children:
-      hubbly.command.*: true
-
-
+    default: op
 
   hubbly.hubbly:
     default: true
-  hubbly.compass.use:
+
+  hubbly.use.*:
+    children:
+      hubbly.use.compass: true
+      hubbly.use.launchpad: true
+      hubbly.use.playervisibility: true
+      hubbly.use.socials: true
+  hubbly.use.compass:
     default: true
-  hubbly.launchpad.use:
+  hubbly.use.launchpad:
     default: true
-  hubbly.playervisibility.use:
+  hubbly.use.playervisibility:
     default: true
-  hubbly.socials.use:
+  hubbly.use.socials:
     default: true
+
+  hubbly.bypass:
+    default: op
+  hubbly.bypass.*:
+    description: Gives access to all .bypass permissions
+    children:
+      hubbly.bypass.forceinventory: true
+      hubbly.bypass.antiswear: true
+      hubbly.bypass.item: true
+      hubbly.bypass.item.pickup: true
+      hubbly.bypass.item.drop: true
+      hubbly.bypass.damage: true
+      hubbly.bypass.place: true
+      hubbly.bypass.break: true
+      hubbly.bypass.food: true
+      hubbly.bypass.blockedcommands: true
+  hubbly.bypass.forceinventory:
+    default: op
+  hubbly.bypass.antiswear:
+    default: op
+  hubbly.bypass.blockedcommands:
+    default: op
+  hubbly.bypass.item:
+    children:
+      hubbly.bypass.item.pickup: true
+      hubbly.bypass.item.drop: true
+  hubbly.bypass.damage:
+    default: op
+  hubbly.bypass.place:
+    default: op
+  hubbly.bypass.break:
+    default: op
+  hubbly.bypass.food:
+    default: op
+
+
   hubbly.command:
     default: op
-  hubbly.forceinventory.bypass:
-    default: op
+  hubbly.command.*:
+    children:
+      hubbly.command.setspawn: true
+      hubbly.command.spawn: true
+      hubbly.command.clearchat: true
+      hubbly.command.fly: true
+      hubbly.command.reload: true
+      hubbly.command.give: true
   hubbly.command.setspawn:
     default: op
   hubbly.command.spawn:
     default: true
   hubbly.command.fly:
     default: op
-  hubbly.bypass:
+  hubbly.command.reload:
     default: op
-  hubbly.reload:
-    default: op
-  hubbly.clearchat:
+  hubbly.command.clearchat:
     default: op
     description: Clears the chat
+  hubbly.command.give:
+    default: op
 
 
 softdepend:

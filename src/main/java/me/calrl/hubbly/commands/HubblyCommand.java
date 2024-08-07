@@ -18,41 +18,45 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.commands.subcommands.ReloadCommand;
+import me.calrl.hubbly.commands.subcommands.SelectorCommand;
+import me.calrl.hubbly.commands.subcommands.VersionCommand;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
-import org.bukkit.command.CommandSender;
+import org.bukkit.command.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
-public class HubblyCommand implements CommandExecutor {
+public class HubblyCommand implements TabExecutor {
 
     private Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
 
     private final Hubbly plugin;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
+    private final String[] commands = {"reload", "version", "selector"};
 
     public HubblyCommand(Logger logger, Hubbly plugin) {
         this.logger = logger;
         this.plugin = plugin;
         registerSubCommands();
+
     }
 
     private void registerSubCommands() {
         subCommands.put("reload", new ReloadCommand(logger, plugin));
-        subCommands.put("getmetadata", new MetaCommand());
         subCommands.put("selector", new SelectorCommand(plugin));
-
+        subCommands.put("version", new VersionCommand(plugin));
     }
 
     @Override
@@ -77,4 +81,13 @@ public class HubblyCommand implements CommandExecutor {
         return true;
     }
 
+
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        final List<String> completions = new ArrayList<>();
+        StringUtil.copyPartialMatches(args[0], List.of(commands), completions);
+        return completions;
+    }
 }

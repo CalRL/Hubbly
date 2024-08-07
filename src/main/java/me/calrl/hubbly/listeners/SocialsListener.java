@@ -60,7 +60,7 @@ public class SocialsListener implements Listener {
         if(event.getAction() != Action.PHYSICAL && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.valueOf(config.getString("socials.item.type"))) {
             ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
             if (item.getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("socials.item.name"))))) {
-                if(event.getPlayer().hasPermission("hubbly." + "socials.use") || event.getPlayer().isOp()) {
+                if(event.getPlayer().hasPermission("hubbly.use.socials") || event.getPlayer().isOp()) {
                     openSocialsGUI(event.getPlayer());
                 } else {
                     event.getPlayer().sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_use")));

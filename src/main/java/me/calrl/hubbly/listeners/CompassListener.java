@@ -56,6 +56,7 @@ public class CompassListener implements Listener {
     private DebugMode debugMode;
     private boolean isBungee;
     private boolean isVelocity;
+    private FileConfiguration pluginConfig;
 
 
     public CompassListener(Hubbly plugin) {
@@ -66,6 +67,7 @@ public class CompassListener implements Listener {
         this.itemKey = new NamespacedKey(plugin, "compassItemKey");
         this.actionsKey = new NamespacedKey(plugin, "customActions");
         this.debugMode = plugin.getDebugMode();
+        pluginConfig = plugin.getConfig();
 
 
         // Register the BungeeCord channel
@@ -100,11 +102,11 @@ public class CompassListener implements Listener {
             }
 
             if (item.getType() == material && ChatColor.translateAlternateColorCodes('&', itemName).equals(item.getItemMeta().getDisplayName())) {
-                if (player.hasPermission("hubbly.compass.use") || player.isOp()) {
+                if (player.hasPermission("hubbly.use.compass") || player.isOp()) {
                     event.setCancelled(true);
                     openCompassGUI(player);
                 } else {
-                    player.sendMessage(ChatUtils.translateHexColorCodes(Objects.requireNonNull(config.getString("messages.no_permission_use"))));
+                    player.sendMessage(ChatUtils.translateHexColorCodes(Objects.requireNonNull(pluginConfig.getString("messages.no_permission_use"))));
                 }
             }
         }

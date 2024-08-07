@@ -56,6 +56,7 @@ public class ChatListener implements Listener {
                 debugMode.info("blocked_words.method is null in config");
                 return;
             }
+            if(event.getPlayer().hasPermission("hubbly.bypass.antiswear")) return;
 
             if(Objects.equals(method.toUpperCase(), "CANCEL")) {
 

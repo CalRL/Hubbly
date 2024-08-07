@@ -56,8 +56,8 @@ public class SetSpawnCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        if(!(sender instanceof Player player)) return true;
         if (sender.hasPermission("hubbly.command.setspawn") || sender.isOp()) {
-            Player player = (Player) sender;
             Location location = player.getServer().getPlayer(player.getName()).getLocation();
             double x = location.getX();
             double y = location.getY();
@@ -76,6 +76,8 @@ public class SetSpawnCommand implements CommandExecutor {
             player.sendMessage("Set spawn successfully.");
             plugin.saveConfig();
 
+        } else {
+            player.sendMessage(config.getString("messages.no_permission"));
         }
         return true;
     }
