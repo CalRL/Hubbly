@@ -25,21 +25,20 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.metadata.FixedMetadataValue;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
-import java.util.logging.Logger;
 
 public class FlyCommand implements CommandExecutor {
 
-    private final Logger logger;
+    private final Hubbly plugin;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
     private static final String FLY_METADATA_KEY = "hubbly.canFly";
 
-    public FlyCommand(Logger logger) {
-        this.logger = logger;
+    public FlyCommand(Hubbly plugin) {
+        this.plugin = plugin;
     }
+
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (!(sender instanceof Player)) {
@@ -53,29 +52,28 @@ public class FlyCommand implements CommandExecutor {
             return true;
         }
 
-        if(!player.getAllowFlight()) {
-            player.setAllowFlight(true);
-        }
-
         if (!player.hasPermission("hubbly.command.fly") && !player.isOp()) {
-            player.sendMessage(ChatUtils.translateHexColorCodes("messages.no_permission"));
+            player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_command")));
             return true;
         }
 
-        boolean canFly = false;
-        if (player.hasMetadata(FLY_METADATA_KEY)) {
-            canFly = player.getMetadata(FLY_METADATA_KEY).get(0).asBoolean();
-        } else {
-            player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
+        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
+
+        // Check if the player already has flight data stored
+        Byte canFly = dataContainer.get(plugin.FLY_KEY, PersistentDataType.BYTE);
+
+        // If no data is found, default to false (0)
+        if (canFly == null) {
+            canFly = 0;
         }
 
-        if (canFly) {
-            player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
+        if (canFly == 1) {
             player.setFlying(false);
-            player.sendMessage(ChatUtils.translateHexColorCodes(Objects.requireNonNull(config.getString("messages.fly.disable"))));
+            player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.fly.disable")));
+            dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 0); // Update to no flight
         } else {
-            player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), true));
-            player.sendMessage(ChatUtils.translateHexColorCodes(Objects.requireNonNull(config.getString("messages.fly.enable"))));
+            player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.fly.enable")));
+            dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 1); // Update to allow flight
         }
 
         return true;

@@ -18,6 +18,7 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.commands.subcommands.NextAnnouncementCommand;
 import me.calrl.hubbly.commands.subcommands.ReloadCommand;
 import me.calrl.hubbly.commands.subcommands.SelectorCommand;
 import me.calrl.hubbly.commands.subcommands.VersionCommand;
@@ -44,8 +45,7 @@ public class HubblyCommand implements TabExecutor {
 
     private final Hubbly plugin;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
-    private final String[] commands = {"reload", "version", "selector"};
-
+    private final String[] commands = {"reload", "version", "selector", "nextannouncement"};
     public HubblyCommand(Logger logger, Hubbly plugin) {
         this.logger = logger;
         this.plugin = plugin;
@@ -57,6 +57,7 @@ public class HubblyCommand implements TabExecutor {
         subCommands.put("reload", new ReloadCommand(logger, plugin));
         subCommands.put("selector", new SelectorCommand(plugin));
         subCommands.put("version", new VersionCommand(plugin));
+        subCommands.put("nextannouncement", new NextAnnouncementCommand(plugin));
     }
 
     @Override

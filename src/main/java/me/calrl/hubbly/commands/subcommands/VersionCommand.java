@@ -25,8 +25,10 @@ public class VersionCommand implements SubCommand {
     public void execute(Player player, String[] args) {
         if(player.hasPermission("hubbly.command.version") || player.isOp()) {
             player.sendMessage("Version: " + plugin.getDescription().getVersion());
+            player.sendMessage("api-VERSION: " + plugin.getDescription().getAPIVersion());
+            player.sendMessage("Website: " + plugin.getDescription().getWebsite());
         } else {
-            player.sendMessage(config.getString("messages.no_permission"));
+            player.sendMessage(config.getString("messages.no_permission_command"));
         }
 
     }

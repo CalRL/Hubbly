@@ -19,32 +19,39 @@ package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
 
 public class DoubleJumpListener implements Listener {
+    private final Hubbly plugin;
+
+    public DoubleJumpListener(Hubbly plugin) {
+        this.plugin = plugin;
+    }
 
     private static final String FLY_METADATA_KEY = "hubbly.canFly";
     @EventHandler
     public void onToggleFlight(PlayerToggleFlightEvent event) {
-        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
         FileConfiguration config = Hubbly.getInstance().getConfig();
         Player player = event.getPlayer();
 
-        boolean canFly = player.getMetadata(FLY_METADATA_KEY).get(0).asBoolean();
-
-            if (!canFly && config.getBoolean("double_jump.enabled")) {
+        //boolean canFly = player.getMetadata(FLY_METADATA_KEY).get(0).asBoolean();
+        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
+        if(!dataContainer.has(plugin.FLY_KEY)) return;
+        if(!plugin.canPlayerFly(player) && config.getBoolean("double_jump.enabled")) {
                 event.setCancelled(true);
                 player.setFlying(false);
                 UUID uuid = player.getUniqueId();
-                if(!Hubbly.getInstance().getCooldownManager().tryCooldown(uuid, CooldownType.DOUBLE_JUMP, config.getLong("double_jump.cooldown")))  return;
+
+                if(!plugin.getCooldownManager().tryCooldown(uuid, CooldownType.DOUBLE_JUMP, config.getLong("double_jump.cooldown")))  return;
 
 
                 Vector direction = player.getLocation().getDirection();

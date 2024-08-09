@@ -26,9 +26,8 @@ import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.awt.*;
-import java.util.regex.Pattern;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ChatUtils {
     public static String translateHexColorCodes(String message) {
@@ -41,6 +40,25 @@ public class ChatUtils {
             String hexColor = matcher.group();
             String chatColor = ChatColor.of(hexColor.substring(1, hexColor.length()-1)).toString();
             matcher.appendReplacement(buffer, chatColor);
+        }
+        matcher.appendTail(buffer);
+        return buffer.toString();
+    }
+
+    public static String processMessage(String message) {
+        message = translateHexColorCodes(message);
+        message = translateCenterMessage(message);
+
+        return message;
+    }
+    private static String translateCenterMessage(String message) {
+        Pattern centerPattern = Pattern.compile("<center>(.*?)</center>");
+        Matcher matcher = centerPattern.matcher(message);
+        StringBuffer buffer = new StringBuffer();
+        while (matcher.find()) {
+            String centeredText = matcher.group(1);
+            String centeredMessage = center(centeredText);
+            matcher.appendReplacement(buffer, centeredMessage);
         }
         matcher.appendTail(buffer);
         return buffer.toString();
@@ -66,7 +84,7 @@ public class ChatUtils {
         return new String(new char[count]).replace("\0", string);
     }
 
-    public String centerMessage(String message) {
+    public static String center(String message) {
         if(message == null || message.isEmpty()) {
             return "";
         }

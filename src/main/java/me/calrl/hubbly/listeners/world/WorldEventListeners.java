@@ -27,7 +27,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.logging.Logger;
 
@@ -97,11 +99,23 @@ public class WorldEventListeners implements Listener {
     }
     @EventHandler
     private void onItemPickup(EntityPickupItemEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
+        if (event.getEntity() instanceof Player player) {
             if (checkWorld(player)) return;
             if (player.hasPermission("hubbly.bypass.item.pickup") || player.isOp()) return;
             if (config.getBoolean("cancel_events.item_pickup")) {
+                event.setCancelled(true);
+            }
+        }
+    }
+    @EventHandler
+    private void onItemThrow(ProjectileLaunchEvent event) {
+        ProjectileSource source = event.getEntity().getShooter();
+        if(config.getBoolean("cancel_events.item_throw", true)) {
+            if (source instanceof Player player) {
+                if (player.hasPermission("hubbly.bypass.item.throw") || player.isOp()) return;
+                if (checkWorld(player)) return;
+                event.setCancelled(true);
+            } else {
                 event.setCancelled(true);
             }
         }

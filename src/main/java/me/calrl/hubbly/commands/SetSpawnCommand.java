@@ -77,7 +77,7 @@ public class SetSpawnCommand implements CommandExecutor {
             plugin.saveConfig();
 
         } else {
-            player.sendMessage(config.getString("messages.no_permission"));
+            player.sendMessage(config.getString("messages.no_permission_command"));
         }
         return true;
     }

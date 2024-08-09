@@ -6,7 +6,7 @@ api-version: '1.20'
 prefix: Hubbly
 load: STARTUP
 authors: [cal]
-website: cal.ceo
+website: cal.ceo/hubbly
 commands:
   hubbly:
     description: main command
@@ -75,6 +75,7 @@ permissions:
       hubbly.bypass.break: true
       hubbly.bypass.food: true
       hubbly.bypass.blockedcommands: true
+      hubbly.bypass.item.throw: true
   hubbly.bypass.forceinventory:
     default: op
   hubbly.bypass.antiswear:
@@ -85,6 +86,7 @@ permissions:
     children:
       hubbly.bypass.item.pickup: true
       hubbly.bypass.item.drop: true
+      hubbly.bypass.item.throw: true
   hubbly.bypass.damage:
     default: op
   hubbly.bypass.place:
@@ -105,6 +107,7 @@ permissions:
       hubbly.command.fly: true
       hubbly.command.reload: true
       hubbly.command.give: true
+      hubbly.command.nextannouncement: true
   hubbly.command.setspawn:
     default: op
   hubbly.command.spawn:
@@ -118,7 +121,8 @@ permissions:
     description: Clears the chat
   hubbly.command.give:
     default: op
-
+  hubbly.command.nextannouncement:
+    default: op
 
 softdepend:
   - PlaceholderAPI

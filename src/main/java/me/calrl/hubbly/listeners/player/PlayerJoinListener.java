@@ -20,45 +20,30 @@ package me.calrl.hubbly.listeners.player;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.BossBarManager;
-import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.*;
+import org.bukkit.Color;
+import org.bukkit.FireworkEffect;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Firework;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.meta.FireworkMeta;
 
-import java.io.File;
-import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Logger;
-import me.calrl.hubbly.managers.DisabledWorlds;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.metadata.FixedMetadataValue;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 
 public class PlayerJoinListener implements Listener {
-
-    private final Logger logger;
     private final FileConfiguration config;
-    private final FileConfiguration serverSelectorConfig;
     private static final String FLY_METADATA_KEY = "hubbly.canFly";
-    private DebugMode debugMode;
-    private ActionManager actionManager;
+
+    private final DebugMode debugMode;
+    private final ActionManager actionManager;
     private final Hubbly plugin;
 
     public PlayerJoinListener(Hubbly plugin) {
         this.plugin = plugin;
-        this.logger = plugin.getLogger();
         this.config = plugin.getConfig();
-        this.serverSelectorConfig = plugin.getServerSelectorConfig();
         this.debugMode = plugin.getDebugMode();
         this.actionManager = plugin.getActionManager();
     }
@@ -72,14 +57,17 @@ public class PlayerJoinListener implements Listener {
         return builder.build();
     }
 
+
+
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
-
-        if(!player.hasMetadata(FLY_METADATA_KEY)) {
-            player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(Hubbly.getInstance(), false));
+        if(player.isOp() || plugin.needsUpdate) {
+            player.sendMessage("Please update Hubbly at cal.ceo/hubbly");
         }
+        plugin.setPlayerFlight(player);
+
         player.setAllowFlight(true);
 
 
