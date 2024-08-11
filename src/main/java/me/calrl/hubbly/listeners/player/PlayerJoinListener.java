@@ -63,7 +63,7 @@ public class PlayerJoinListener implements Listener {
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
-        if(player.isOp() || plugin.needsUpdate) {
+        if(player.isOp() && plugin.needsUpdate) {
             player.sendMessage("Please update Hubbly at cal.ceo/hubbly");
         }
         plugin.setPlayerFlight(player);
