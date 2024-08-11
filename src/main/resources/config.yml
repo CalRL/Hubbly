@@ -161,6 +161,7 @@ blocked_words:
   words:
     - 'Fuck'
 
+# %command% = the command executed
 blocked_commands:
   - 'pl'
   - 'plugins'

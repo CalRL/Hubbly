@@ -50,7 +50,8 @@ public class CommandBlockerListener implements Listener {
         for (String command : blockedCommands) {
             if(message.startsWith("/" + command.toLowerCase()) && !event.getPlayer().hasPermission("hubbly.bypass.blockedcommands")) {
                 event.setCancelled(true);
-                event.getPlayer().sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.blocked_command")));
+                message = config.getString("messages.blocked_command", "Unknown command %command%").replace("%command%", command);
+                event.getPlayer().sendMessage(ChatUtils.translateHexColorCodes(message));
                 debugMode.info(event.getPlayer().getName() + " tried to use /" + command);
                 return;
             }
