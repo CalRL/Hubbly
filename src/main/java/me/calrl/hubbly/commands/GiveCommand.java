@@ -21,8 +21,10 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.Action;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.interfaces.CustomItem;
-import me.calrl.hubbly.interfaces.SubCommand;
-import me.calrl.hubbly.items.*;
+import me.calrl.hubbly.items.CompassItem;
+import me.calrl.hubbly.items.ConfigItems;
+import me.calrl.hubbly.items.PlayerVisibilityItem;
+import me.calrl.hubbly.items.SocialsItem;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -33,7 +35,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -109,7 +110,7 @@ public class GiveCommand implements CommandExecutor {
                         }
                     } else {
                         targetPlayer.getInventory().addItem(item);
-                        sender.sendMessage(ChatColor.YELLOW + "Given " + itemName + " to " + targetPlayer.getName());
+                        debugMode.info(ChatColor.YELLOW + "Given " + itemName + " to " + targetPlayer.getName());
                     }
                 } else {
                     sender.sendMessage(ChatColor.RED + "Unknown item: " + itemName); // Debugging

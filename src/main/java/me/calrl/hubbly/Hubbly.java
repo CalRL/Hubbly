@@ -150,7 +150,7 @@ public final class Hubbly extends JavaPlugin {
         config = this.getConfig();
         try {
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-
+            debugMode.info("BungeeCord channel registered");
             loadFiles();
             loadComponents();
             BossBarManager.initialize(Hubbly.getInstance().getConfig());
@@ -195,7 +195,7 @@ public final class Hubbly extends JavaPlugin {
 
         BossBarManager.getInstance().removeAllBossBars();
         logger.info("Hubbly has been disabled!");
-        this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
+            this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
 
     }
 
