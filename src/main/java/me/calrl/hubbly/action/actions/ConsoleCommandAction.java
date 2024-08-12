@@ -31,6 +31,7 @@ public class ConsoleCommandAction implements Action {
 
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
+        data = data.replace("%player_name%", player.getName());
         Bukkit.dispatchCommand(Bukkit.getConsoleSender(), data);
     }
 
