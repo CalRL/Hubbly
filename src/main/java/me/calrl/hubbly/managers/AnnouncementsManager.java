@@ -24,7 +24,7 @@ public class AnnouncementsManager {
         this.debugMode = plugin.getDebugMode();
         this.announcements = new ArrayList<>();
         this.config = plugin.getConfig();
-        if(config.getBoolean("announcements.enabled")) {
+        if(config.getBoolean("announcements.enabled", true)) {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 loadAnnouncements();
                 startAnnouncementsTask();
