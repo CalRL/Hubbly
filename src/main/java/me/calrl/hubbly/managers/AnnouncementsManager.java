@@ -6,7 +6,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
@@ -15,6 +14,7 @@ import java.util.List;
 public class AnnouncementsManager {
     private List<String[]> announcements;
     private final Hubbly plugin;
+    private final FileConfiguration config;
     private DebugMode debugMode;
     private int currentAnnouncementIndex = 0;
     private BukkitTask task;
@@ -23,10 +23,14 @@ public class AnnouncementsManager {
         this.plugin = plugin;
         this.debugMode = plugin.getDebugMode();
         this.announcements = new ArrayList<>();
-        Bukkit.getScheduler().runTask(plugin, () -> {
-            loadAnnouncements();
-            startAnnouncementsTask();
-        });
+        this.config = plugin.getConfig();
+        if(config.getBoolean("announcements.enabled")) {
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                loadAnnouncements();
+                startAnnouncementsTask();
+            });
+        }
+
 
 
     }

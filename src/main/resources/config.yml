@@ -172,6 +172,7 @@ blocked_commands:
 # You can use a tool like BirdFlop RGB to make cool gradients!
 # https://www.birdflop.com/resources/rgb/
 announcements:
+  enabled: true
   interval: 30 # In Seconds
   messages:
     message1:
