@@ -18,28 +18,27 @@
 package me.calrl.hubbly.listeners;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.action.ActionManager;
+import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.command.Command;
-import org.bukkit.event.EventHandler;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -86,7 +85,8 @@ public class CompassListener implements Listener {
             }
 
             String materialName = config.getString("selector.material").toUpperCase();
-            String itemName = config.getString("selector.name");
+            String itemName = ChatUtils.translateHexColorCodes(
+                    config.getString("selector.name"));
 
             if (materialName == null || itemName == null) {
                 debugMode.warn("Configuration for selector.material or selector.name is missing.");

@@ -18,12 +18,10 @@
 package me.calrl.hubbly.listeners;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.functions.CreateCloseItem;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
-import me.calrl.hubbly.functions.CreateCloseItem;
 import me.calrl.hubbly.utils.ChatUtils;
-import net.kyori.adventure.inventory.Book;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -39,7 +37,6 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.List;
@@ -59,7 +56,7 @@ public class SocialsListener implements Listener {
         if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
         if(event.getAction() != Action.PHYSICAL && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.valueOf(config.getString("socials.item.type"))) {
             ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-            if (item.getItemMeta().getDisplayName().equals(ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("socials.item.name"))))) {
+            if (item.getItemMeta().getDisplayName().equals(ChatUtils.translateHexColorCodes(config.getString("socials.item.name")))) {
                 if(event.getPlayer().hasPermission("hubbly.use.socials") || event.getPlayer().isOp()) {
                     openSocialsGUI(event.getPlayer());
                 } else {

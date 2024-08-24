@@ -19,7 +19,6 @@ package me.calrl.hubbly.action;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.actions.*;
-import org.bukkit.block.data.type.Fire;
 import org.bukkit.entity.Player;
 
 import java.util.Arrays;
@@ -52,7 +51,8 @@ public class ActionManager {
                 new FireworkAction(),
                 new BroadcastAction(),
                 new ItemAction(),
-                new BungeeAction()
+                new BungeeAction(),
+                new MessageAction()
 
         );
     }

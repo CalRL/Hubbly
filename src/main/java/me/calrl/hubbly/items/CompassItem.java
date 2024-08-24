@@ -20,13 +20,12 @@ package me.calrl.hubbly.items;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.CustomItem;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import java.util.Objects;
 
 public class CompassItem implements CustomItem {
 
@@ -39,7 +38,8 @@ public class CompassItem implements CustomItem {
         ItemMeta meta = compass.getItemMeta();
         if(meta != null) {
             try {
-                String displayName = config.getString("selector.name");
+                String displayName = ChatUtils.translateHexColorCodes(
+                        config.getString("selector.name"));
                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', displayName));
                 compass.setItemMeta(meta);
             } catch (NullPointerException e) {

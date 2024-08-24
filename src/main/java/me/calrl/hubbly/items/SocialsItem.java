@@ -19,23 +19,13 @@ package me.calrl.hubbly.items;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.CreateCustomHead;
-import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.interfaces.CustomItem;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.properties.Property;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.block.Skull;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
-
-import java.io.File;
-import java.lang.reflect.Field;
-import java.util.UUID;
-import java.util.logging.Logger;
 
 public class SocialsItem implements CustomItem {
 
@@ -44,7 +34,7 @@ public class SocialsItem implements CustomItem {
     public final ItemStack createItem() {
         ItemStack item;
         String textureValue = config.getString("socials.item.value");
-        String itemName = config.getString("socials.item.name");
+        String itemName = ChatUtils.translateHexColorCodes(config.getString("socials.item.name"));
         String itemType = config.getString("socials.item.type");
         if("PLAYER_HEAD".equalsIgnoreCase(itemType)) {
             item = CreateCustomHead.createCustomHead(textureValue, itemName);

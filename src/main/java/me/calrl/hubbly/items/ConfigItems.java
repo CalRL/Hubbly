@@ -23,7 +23,7 @@ import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.managers.DebugMode;
-import org.bukkit.Bukkit;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -76,7 +76,7 @@ public class ConfigItems implements CustomItem {
         if (meta != null) {
             // Set item name
             if (config.contains(path + ".name")) {
-                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', config.getString(path + ".name")));
+                meta.setDisplayName(ChatUtils.translateHexColorCodes(config.getString(path + ".name")));
             }
 
             // Set item lore
