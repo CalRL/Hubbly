@@ -19,10 +19,7 @@ package me.calrl.hubbly.listeners.items;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -32,9 +29,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-import org.w3c.dom.Text;
 
 public class PlayerVisibilityListener implements Listener {
 
@@ -66,13 +60,15 @@ public class PlayerVisibilityListener implements Listener {
         String displayName;
         if (itemInHand.getType() == Material.LIME_DYE) {
             newMaterial = Material.GRAY_DYE;
-            displayName = ChatColor.translateAlternateColorCodes('&', config.getString("playervisibility.hidden_text"));
+            displayName = ChatUtils.translateHexColorCodes(
+                    config.getString("playervisibility.hidden_text"));
             for(Player online : Bukkit.getOnlinePlayers()){
                 player.hidePlayer(plugin, online);
             }
         } else {
             newMaterial = Material.LIME_DYE;
-            displayName = ChatColor.translateAlternateColorCodes('&', config.getString("playervisibility.visible_text"));
+            displayName = ChatUtils.translateHexColorCodes(
+                    config.getString("playervisibility.visible_text"));
             for(Player online : Bukkit.getOnlinePlayers()){
                 player.showPlayer(plugin, online);
             }

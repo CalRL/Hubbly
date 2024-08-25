@@ -18,16 +18,13 @@ package me.calrl.hubbly.listeners.world;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.managers.DebugMode;
-import org.bukkit.GameMode;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
@@ -177,4 +174,5 @@ public class WorldEventListeners implements Listener {
             event.setCancelled(true);
         }
     }
+
 }
