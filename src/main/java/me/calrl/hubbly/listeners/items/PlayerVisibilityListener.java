@@ -59,16 +59,16 @@ public class PlayerVisibilityListener implements Listener {
         Material newMaterial;
         String displayName;
         if (itemInHand.getType() == Material.LIME_DYE) {
-            newMaterial = Material.GRAY_DYE;
+            newMaterial = Material.valueOf(config.getString("playervisibility.hidden.item", "GREEN_DYE"));
             displayName = ChatUtils.translateHexColorCodes(
-                    config.getString("playervisibility.hidden_text"));
+                    config.getString("playervisibility.hidden.text"));
             for(Player online : Bukkit.getOnlinePlayers()){
                 player.hidePlayer(plugin, online);
             }
         } else {
-            newMaterial = Material.LIME_DYE;
+            newMaterial = Material.valueOf(config.getString("playervisibility.visible.item", "GRAY_DYE"));
             displayName = ChatUtils.translateHexColorCodes(
-                    config.getString("playervisibility.visible_text"));
+                    config.getString("playervisibility.visible.text"));
             for(Player online : Bukkit.getOnlinePlayers()){
                 player.showPlayer(plugin, online);
             }

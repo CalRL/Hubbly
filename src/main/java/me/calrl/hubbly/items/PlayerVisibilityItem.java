@@ -29,10 +29,10 @@ public class PlayerVisibilityItem implements CustomItem {
 
     public final ItemStack createItem() {
         FileConfiguration config = Hubbly.getInstance().getConfig();
-        ItemStack item = new ItemStack(Material.LIME_DYE);
+        ItemStack item = new ItemStack(Material.valueOf(config.getString("playervisibility.visible.item", "GREEN_DYE")));
         ItemMeta meta = item.getItemMeta();
         if(meta != null) {
-            String itemName = ChatUtils.translateHexColorCodes(config.getString("playervisibility.visible_text"));
+            String itemName = ChatUtils.translateHexColorCodes(config.getString("playervisibility.visible.text"));
             meta.setDisplayName(itemName);
             item.setItemMeta(meta);
         }

@@ -32,8 +32,12 @@ double_jump:
 #-------#
 playervisibility:
   enabled: true
-  visible_text: '&rPlayers: &aVisible'
-  hidden_text: '&rPlayers: &cHidden'
+  visible:
+    item: 'LIME_DYE'
+    text: '&rPlayers: &aVisible'
+  hidden:
+    item: 'GRAY_DYE'
+    text: '&rPlayers: &cHidden'
 
 socials:
   enabled: true

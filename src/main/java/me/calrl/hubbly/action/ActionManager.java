@@ -52,7 +52,8 @@ public class ActionManager {
                 new BroadcastAction(),
                 new ItemAction(),
                 new BungeeAction(),
-                new MessageAction()
+                new MessageAction(),
+                new LaunchAction()
 
         );
     }

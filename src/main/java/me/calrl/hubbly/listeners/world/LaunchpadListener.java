@@ -19,7 +19,6 @@ package me.calrl.hubbly.listeners.world;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
-import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -27,7 +26,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.util.Vector;
 
 import java.util.logging.Logger;
 
@@ -57,19 +55,7 @@ public class LaunchpadListener implements Listener {
         if(!Hubbly.getInstance().getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, config.getLong("launchpad.cooldown")));
         if (blockStandingOn.getType() == launchpadMaterial || blockBelow.getType() == launchpadMaterial) {
             if (player.hasPermission("hubbly.use.launchpad") || player.isOp()) {
-                //logger.info("Player is on a launchpad!");
-
-                // Get the player's current direction
-                Vector direction = player.getLocation().getDirection();
-
-                // Set the Y component of the direction to ensure upward launch
-                direction.setY(powerY); // Adjust this value for the desired upward strength
-
-                // Scale the direction vector for forward boost
-                direction.multiply(power); // Adjust this value for the desired forward strength
-
-                // Set the player's velocity to the new direction
-                player.setVelocity(direction);
+                plugin.getActionManager().executeAction(plugin, player, "[LAUNCH]");
             }
         }
     }

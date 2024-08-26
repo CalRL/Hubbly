@@ -114,3 +114,4 @@ run/
 /.obsidian
 obsidian.md/.obsidian/
 build/
+/.gradle
