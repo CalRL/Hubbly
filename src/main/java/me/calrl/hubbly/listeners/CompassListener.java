@@ -68,13 +68,11 @@ public class CompassListener implements Listener {
         this.debugMode = plugin.getDebugMode();
         pluginConfig = plugin.getConfig();
 
-
-        // Register the BungeeCord channel
-
     }
 
     @EventHandler
     public void onPlayerRightClick(PlayerInteractEvent event) {
+        pluginConfig = plugin.getConfig();
         if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
 
         if (event.getAction() != Action.PHYSICAL) {
@@ -113,7 +111,8 @@ public class CompassListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {;
+    public void onInventoryClick(InventoryClickEvent event) {
+        pluginConfig = plugin.getConfig();
         if (config == null || !config.contains("selector.gui.title")) {
             debugMode.warn("Configuration for selector.gui.title is missing.");
             return;
@@ -148,6 +147,7 @@ public class CompassListener implements Listener {
     }
 
     public void openCompassGUI(Player player) {
+        pluginConfig = plugin.getConfig();
         if (Objects.equals(config.getString("selector.enabled"), "true")) {
             Inventory gui = Bukkit.createInventory(null, config.getInt("selector.gui.size"), Objects.requireNonNull(config.getString("selector.gui.title")));
             for (String itemKey : Objects.requireNonNull(config.getConfigurationSection("selector.gui.items")).getKeys(false)) {
@@ -178,6 +178,7 @@ public class CompassListener implements Listener {
     }
 
     private ItemStack createItemFromConfig(Player player, String itemKey) {
+        pluginConfig = plugin.getConfig();
         String path = "selector.gui.items." + itemKey;
         if (!config.contains(path)) {
             return null;
@@ -227,6 +228,7 @@ public class CompassListener implements Listener {
         return item;
     }
     private ItemStack createFillItem(Player player) {
+        pluginConfig = plugin.getConfig();
         String materialName = config.getString("selector.fill.type");
         if (materialName == null) {
             debugMode.warn("Material not set for fill item in configuration.");
