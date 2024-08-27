@@ -18,10 +18,7 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.commands.subcommands.NextAnnouncementCommand;
-import me.calrl.hubbly.commands.subcommands.ReloadCommand;
-import me.calrl.hubbly.commands.subcommands.SelectorCommand;
-import me.calrl.hubbly.commands.subcommands.VersionCommand;
+import me.calrl.hubbly.commands.subcommands.*;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
@@ -36,6 +33,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.locks.Lock;
 import java.util.logging.Logger;
 
 public class HubblyCommand implements TabExecutor {
@@ -58,6 +56,7 @@ public class HubblyCommand implements TabExecutor {
         subCommands.put("selector", new SelectorCommand(plugin));
         subCommands.put("version", new VersionCommand(plugin));
         subCommands.put("nextannouncement", new NextAnnouncementCommand(plugin));
+        subCommands.put("getlockchat", new GetLockChatCommand(plugin));
     }
 
     @Override

@@ -7,16 +7,11 @@ public class LockChat {
     private boolean isChatLocked;
     public LockChat(Hubbly plugin) {
         this.plugin = plugin;
-        isChatLocked = plugin.getConfig().getBoolean("lock_chat", false);
+        isChatLocked = false;
     }
-
-
-    public void setChatLock(Boolean bool) {
-        plugin.getConfig().set("lock_chat", bool);
-        plugin.saveConfig();
-        isChatLocked = plugin.getConfig().getBoolean("lock_chat", false);
+    public void setChatLocked(Boolean bool) {
+        isChatLocked = bool;
     }
-
     public void flipChatLock() {
         isChatLocked = !isChatLocked;
     }

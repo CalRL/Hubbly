@@ -19,13 +19,13 @@ public class LockChatCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(!commandSender.hasPermission(Permissions.COMMAND_LOCK_CHAT.getPermission())) return true;
-        plugin.getLockChat().flipChatLock();
         lockChat = plugin.getLockChat();
         if(lockChat.getChatLock()) {
             Bukkit.broadcastMessage("Chat has been unlocked by " + commandSender.getName());
         } else {
             Bukkit.broadcastMessage("Chat has been locked by " + commandSender.getName());
         }
+        lockChat.flipChatLock();
 
         return true;
     }

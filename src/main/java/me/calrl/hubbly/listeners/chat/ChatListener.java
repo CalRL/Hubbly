@@ -43,38 +43,38 @@ public class ChatListener implements Listener {
     }
 
     @EventHandler
-    private void onPlayerChat(AsyncPlayerChatEvent event) {
-        FileConfiguration config = plugin.getConfig();
-        if(!config.getBoolean("blocked_words.enabled")) return;
+    private void checkChatLock(AsyncPlayerChatEvent event) {
         if(plugin.getLockChat().getChatLock() && !event.getPlayer().hasPermission(Permissions.BYPASS_CHAT_LOCK.getPermission())) {
             event.setCancelled(true);
-            debugMode.info("Event Cancelled.");
         }
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
+    }
+    @EventHandler
+    private void onPlayerChat(AsyncPlayerChatEvent event) {
+        FileConfiguration config = plugin.getConfig();
+        if(config.getBoolean("blocked_words.enabled") && !plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) {
+            String message = event.getMessage().toLowerCase();
+            String method = config.getString("blocked_words.method");
 
-        String message = event.getMessage().toLowerCase();
-        String method = config.getString("blocked_words.method");
+            for(String word : blockedWords) {
+                if(!message.contains(word)) return;
+                if(method == null) {
+                    debugMode.info("blocked_words.method is null in config");
+                    return;
+                }
+                if(event.getPlayer().hasPermission("hubbly.bypass.antiswear")) return;
 
-        for(String word : blockedWords) {
-            if(!message.contains(word)) return;
-            if(method == null) {
-                debugMode.info("blocked_words.method is null in config");
-                return;
-            }
-            if(event.getPlayer().hasPermission("hubbly.bypass.antiswear")) return;
+                if(Objects.equals(method.toUpperCase(), "CANCEL")) {
 
-            if(Objects.equals(method.toUpperCase(), "CANCEL")) {
+                    event.setCancelled(true);
+                    event.getPlayer().sendMessage(Objects.requireNonNull(config.getString("messages.blocked_message")));
+                    return;
 
-                event.setCancelled(true);
-                event.getPlayer().sendMessage(Objects.requireNonNull(config.getString("messages.blocked_message")));
-                return;
+                } else if (Objects.equals(method.toUpperCase(), "STAR")) {
 
-            } else if (Objects.equals(method.toUpperCase(), "STAR")) {
-
-                message = message.replace(word, ChatUtils.repeat("*", word.length()));
-                event.setMessage(message);
+                    message = message.replace(word, ChatUtils.repeat("*", word.length()));
+                    event.setMessage(message);
+                }
             }
         }
-
     }
 }
