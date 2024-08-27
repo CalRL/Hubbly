@@ -18,6 +18,7 @@ package me.calrl.hubbly.listeners.world;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.managers.DebugMode;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,7 +26,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
+import org.bukkit.event.world.WorldLoadEvent;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.logging.Logger;
@@ -84,6 +87,22 @@ public class WorldEventListeners implements Listener {
         if(config.getBoolean("cancel_events.weather")) {
             event.setCancelled(true);
         }
+    }
+
+    @EventHandler
+    private void onThunderChange(ThunderChangeEvent event) {
+        if(config.getBoolean("cancel_events.weather")) {
+            event.setCancelled(true);
+        }
+    }
+    @EventHandler
+    private void onWorldLoad(WorldLoadEvent event) {
+        if(config.getBoolean("cancel_events.weather")) {
+            event.getWorld().setThundering(false);
+            event.getWorld().setStorm(false);
+            event.getWorld().setClearWeatherDuration(200);
+        }
+
     }
     @EventHandler
     private void onItemDrop(PlayerDropItemEvent event) {
