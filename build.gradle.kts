@@ -27,10 +27,10 @@ repositories {
 }
 
 dependencies {
-    api(libs.org.jetbrains.annotations)
+    api("org.jetbrains:annotations:24.1.0")
     compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT")
-    compileOnly(libs.org.spigotmc.spigot)
-    compileOnly(libs.me.clip.placeholderapi)
+    compileOnly("org.spigotmc:spigot:1.21-R0.1-SNAPSHOT")
+    compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
 group = "me.calrl"
