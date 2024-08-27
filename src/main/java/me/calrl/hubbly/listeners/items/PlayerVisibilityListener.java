@@ -17,6 +17,7 @@
 package me.calrl.hubbly.listeners.items;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -29,6 +30,11 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.Plugin;
+
+import java.util.Objects;
 
 public class PlayerVisibilityListener implements Listener {
 
@@ -44,7 +50,9 @@ public class PlayerVisibilityListener implements Listener {
 
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
-        if (itemInHand.getType() == Material.LIME_DYE || itemInHand.getType() == Material.GRAY_DYE) {
+        ItemMeta meta = itemInHand.getItemMeta();
+
+        if (meta.getPersistentDataContainer().has(PluginKeys.PLAYER_VISIBILITY.getKey())) {
             if(event.getAction() != Action.PHYSICAL && (player.hasPermission("hubbly.use.playervisibility") || player.isOp())) {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> swapDye(player, itemInHand), 1L);
                 event.setCancelled(true);
@@ -58,25 +66,34 @@ public class PlayerVisibilityListener implements Listener {
     private void swapDye(Player player, ItemStack itemInHand) {
         Material newMaterial;
         String displayName;
-        if (itemInHand.getType() == Material.LIME_DYE) {
-            newMaterial = Material.valueOf(config.getString("playervisibility.hidden.item", "GREEN_DYE"));
+        PersistentDataContainer container = itemInHand.getItemMeta().getPersistentDataContainer();
+        String finalString;
+        if (Objects.equals(container.get(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING), "visible")) {
+            newMaterial = Material.valueOf(config.getString("playervisibility.hidden.item", "GRAY_DYE"));
             displayName = ChatUtils.translateHexColorCodes(
                     config.getString("playervisibility.hidden.text"));
+            finalString = "hidden";
             for(Player online : Bukkit.getOnlinePlayers()){
                 player.hidePlayer(plugin, online);
             }
-        } else {
-            newMaterial = Material.valueOf(config.getString("playervisibility.visible.item", "GRAY_DYE"));
+        } else if(Objects.equals(container.get(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING), "hidden")) {
+            newMaterial = Material.valueOf(config.getString("playervisibility.visible.item", "LIME_DYE"));
             displayName = ChatUtils.translateHexColorCodes(
                     config.getString("playervisibility.visible.text"));
+            finalString = "visible";
             for(Player online : Bukkit.getOnlinePlayers()){
                 player.showPlayer(plugin, online);
             }
+        } else {
+            plugin.getLogger().info("Error! Please report to developer!");
+            return;
         }
+
         ItemStack newItem = new ItemStack(newMaterial);
         ItemMeta meta = newItem.getItemMeta();
         if (meta != null) {
             meta.setDisplayName(displayName);
+            meta.getPersistentDataContainer().set(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING, finalString);
             newItem.setItemMeta(meta);
         }
         player.getInventory().setItemInMainHand(newItem);

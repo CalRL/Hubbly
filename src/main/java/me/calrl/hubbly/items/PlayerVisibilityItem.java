@@ -18,20 +18,27 @@
 package me.calrl.hubbly.items;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
+
 
 public class PlayerVisibilityItem implements CustomItem {
-
     public final ItemStack createItem() {
         FileConfiguration config = Hubbly.getInstance().getConfig();
         ItemStack item = new ItemStack(Material.valueOf(config.getString("playervisibility.visible.item", "GREEN_DYE")));
         ItemMeta meta = item.getItemMeta();
+
         if(meta != null) {
+            PersistentDataContainer container = meta.getPersistentDataContainer();
+            container.set(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING, "visible");
             String itemName = ChatUtils.translateHexColorCodes(config.getString("playervisibility.visible.text"));
             meta.setDisplayName(itemName);
             item.setItemMeta(meta);

@@ -1,4 +1,4 @@
-package me.calrl.hubbly;
+package me.calrl.hubbly.enums;
 
 public enum Permissions {
     COMMAND_HUBBLY("command"),
@@ -10,6 +10,7 @@ public enum Permissions {
     COMMAND_RELOAD("command.reload"),
     COMMAND_VERSION("command.version"),
     COMMAND_LOCK_CHAT("command.lockchat"),
+    COMMAND_ADMIN("command.admin"),
 
     BYPASS_FORCE_INVENTORY("bypass.forceinvenory"),
     BYPASS_ANTI_SWEAR("bypass.antiswear"),

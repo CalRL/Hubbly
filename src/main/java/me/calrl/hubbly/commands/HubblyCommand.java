@@ -57,6 +57,7 @@ public class HubblyCommand implements TabExecutor {
         subCommands.put("version", new VersionCommand(plugin));
         subCommands.put("nextannouncement", new NextAnnouncementCommand(plugin));
         subCommands.put("getlockchat", new GetLockChatCommand(plugin));
+        subCommands.put("getpdc", new GetPDCCommand(plugin));
     }
 
     @Override

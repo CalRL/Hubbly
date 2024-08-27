@@ -1,7 +1,7 @@
 package me.calrl.hubbly.commands.subcommands;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.Permissions;
+import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.interfaces.SubCommand;
 import org.bukkit.entity.Player;
 

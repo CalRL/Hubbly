@@ -18,7 +18,7 @@
 package me.calrl.hubbly.listeners.chat;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.Permissions;
+import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.configuration.file.FileConfiguration;
