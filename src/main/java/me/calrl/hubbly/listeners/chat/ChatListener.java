@@ -18,6 +18,7 @@
 package me.calrl.hubbly.listeners.chat;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.Permissions;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 public class ChatListener implements Listener {
     private final Hubbly plugin;
+    private boolean isChatLocked;
     private final List<String> blockedWords;
     private final DebugMode debugMode;
     public ChatListener(Hubbly plugin) {
@@ -44,9 +46,9 @@ public class ChatListener implements Listener {
     private void onPlayerChat(AsyncPlayerChatEvent event) {
         FileConfiguration config = plugin.getConfig();
         if(!config.getBoolean("blocked_words.enabled")) return;
+        if(isChatLocked || event.getPlayer().hasPermission(Permissions.BYPASS_CHAT_LOCK.getPermission()))
         if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
 
-        boolean messageModified = false;
         String message = event.getMessage().toLowerCase();
         String method = config.getString("blocked_words.method");
 

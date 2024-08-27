@@ -9,10 +9,14 @@ public enum Permissions {
     COMMAND_GIVE("command.give"),
     COMMAND_RELOAD("command.reload"),
     COMMAND_VERSION("command.version"),
+    COMMAND_LOCK_CHAT("command.lockchat"),
 
     BYPASS_FORCE_INVENTORY("bypass.forceinvenory"),
     BYPASS_ANTI_SWEAR("bypass.antiswear"),
     BYPASS_BLOCKED_COMMANDS("bypass.blockedcommands"),
+    BYPASS_ANTI_WDL("bypass.antiwdl"),
+    BYPASS_CHAT_LOCK("bypass.chatlock"),
+
 
     // World Event Manager Bypasses
 
@@ -28,7 +32,9 @@ public enum Permissions {
     USE_SELECTOR("use.compass"),
     USE_PLAYER_VISIBILITY("use.playervisibility"),
     USE_SOCIALS("use.socials"),
-    USE_LAUNCHPAD("use.launchpad");
+    USE_LAUNCHPAD("use.launchpad"),
+
+    NOTIFY_WDL("notify.antiwdl");
 
     private final String permission;
 

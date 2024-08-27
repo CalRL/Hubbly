@@ -20,6 +20,7 @@ package me.calrl.hubbly.commands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
+import org.bukkit.GameMode;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -46,7 +47,9 @@ public class FlyCommand implements CommandExecutor {
             return true;
         }
 
+
         Player player = (Player) sender;
+        if(player.getGameMode() == GameMode.SPECTATOR) return true;
 
         if (!config.getBoolean("player.fly.enabled")) {
             return true;

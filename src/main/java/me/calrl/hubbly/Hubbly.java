@@ -31,9 +31,11 @@ import me.calrl.hubbly.listeners.player.DoubleJumpListener;
 import me.calrl.hubbly.listeners.player.PlayerJoinListener;
 import me.calrl.hubbly.listeners.player.PlayerOffHandListener;
 import me.calrl.hubbly.listeners.player.VoidDamageListener;
+import me.calrl.hubbly.listeners.world.AntiWDL;
 import me.calrl.hubbly.listeners.world.LaunchpadListener;
 import me.calrl.hubbly.listeners.world.WorldEventListeners;
 import me.calrl.hubbly.managers.AnnouncementsManager;
+import me.calrl.hubbly.managers.LockChat;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
@@ -69,6 +71,7 @@ public final class Hubbly extends JavaPlugin {
     private CooldownManager cooldownManager;
     private DebugMode debugMode;
     private AnnouncementsManager announcementsManager;
+    public LockChat lockChat;
     public NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
 
     private List<Listener> listeners;
@@ -111,6 +114,7 @@ public final class Hubbly extends JavaPlugin {
         getCommand("fly").setExecutor(new FlyCommand(this));
         getCommand("clearchat").setExecutor(new ClearChatCommand(this));
         getCommand("give").setExecutor(new GiveCommand(this));
+        getCommand("lockchat").setExecutor(new LockChatCommand(this));
     }
 
     private void registerListener(Listener listener, String enabledPath) {
@@ -145,10 +149,16 @@ public final class Hubbly extends JavaPlugin {
         actionManager = new ActionManager(this);
         debugMode = new DebugMode();
         announcementsManager = new AnnouncementsManager(this);
+        lockChat = new LockChat(this);
 
         this.saveDefaultConfig();
         config = this.getConfig();
         try {
+
+            if(config.getBoolean("anti_world_download.enabled")) {
+                this.getServer().getMessenger().registerIncomingPluginChannel(this, "wdl:init", new AntiWDL(this));
+                this.getServer().getMessenger().registerOutgoingPluginChannel(this, "wdl:control");
+            }
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
             debugMode.info("BungeeCord channel registered");
             loadFiles();
@@ -195,7 +205,9 @@ public final class Hubbly extends JavaPlugin {
 
         BossBarManager.getInstance().removeAllBossBars();
         logger.info("Hubbly has been disabled!");
-            this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
+        this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
+        this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "wdl:init");
+        this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "wdl:control");
 
     }
 
@@ -267,4 +279,5 @@ public final class Hubbly extends JavaPlugin {
     }
     public DebugMode getDebugMode() { return debugMode; }
     public AnnouncementsManager getAnnouncementsManager() { return announcementsManager; }
+    public LockChat getLockChat() {return lockChat;}
 }

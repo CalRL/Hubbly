@@ -70,26 +70,6 @@ public class PlayerJoinListener implements Listener {
 
         player.setAllowFlight(true);
 
-
-        // Checks
-
-
-//        if (config.getBoolean("player.spawn_on_join")) {
-//            try {
-//                String worldName = config.getString("spawn.world");
-//                World world = Bukkit.getWorld(worldName);
-//                double x = config.getDouble("spawn.x");
-//                double y = config.getDouble("spawn.y");
-//                double z = config.getDouble("spawn.z");
-//                float yaw = (float) config.getDouble("spawn.yaw");
-//                float pitch = (float) config.getDouble("spawn.pitch");
-//                player.teleport(new Location(world, x, y, z, yaw, pitch));
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//                debugMode.warn("Couldnt teleport " + player.getName() + " to spawn");
-//            }
-//        }
-
         if (config.getBoolean("player.join_message.enabled")) {
             String joinMessage = config.getString("player.join_message.message");
             // joinMessage = ParsePlaceholders.parsePlaceholders(player, joinMessage);

@@ -19,12 +19,15 @@ package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
+import org.bukkit.GameMode;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerToggleFlightEvent;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.UUID;
@@ -39,9 +42,11 @@ public class DoubleJumpListener implements Listener {
     private static final String FLY_METADATA_KEY = "hubbly.canFly";
     @EventHandler
     public void onToggleFlight(PlayerToggleFlightEvent event) {
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
-        FileConfiguration config = Hubbly.getInstance().getConfig();
         Player player = event.getPlayer();
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+        if(player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
+        FileConfiguration config = Hubbly.getInstance().getConfig();
+
 
         //boolean canFly = player.getMetadata(FLY_METADATA_KEY).get(0).asBoolean();
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
@@ -68,5 +73,22 @@ public class DoubleJumpListener implements Listener {
 
 
             }
+    }
+    @EventHandler
+    private void onGamemodeChange(PlayerGameModeChangeEvent event) {
+        if(event.getNewGameMode() == GameMode.ADVENTURE || event.getNewGameMode() == GameMode.SURVIVAL) {
+            Player player = event.getPlayer();
+            FileConfiguration config = plugin.getConfig();
+            if(config.getBoolean("double_jump.enabled")) {
+                new BukkitRunnable() {
+
+                    @Override
+                    public void run() {
+                        player.setAllowFlight(true);
+                    }
+                }.runTaskLater(plugin, 1L);
+
+            }
+        }
     }
 }

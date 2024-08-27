@@ -35,6 +35,9 @@ commands:
     usage: /give
     permission: hubbly.command.give
     aliases: [gv]
+  lockchat:
+    usage: /give
+    aliases: [lc]
 
 
 permissions:
@@ -76,6 +79,7 @@ permissions:
       hubbly.bypass.food: true
       hubbly.bypass.blockedcommands: true
       hubbly.bypass.item.throw: true
+      hubbly.bypass.antiwdl: true
   hubbly.bypass.forceinventory:
     default: op
   hubbly.bypass.antiswear:
@@ -95,6 +99,9 @@ permissions:
     default: op
   hubbly.bypass.food:
     default: op
+
+hubbly.notify:
+  hubbly.notify.antiwdl: true
 
 
   hubbly.command:

@@ -1,5 +1,6 @@
 debug: false
 
+
 #----------------#
 # Disable Worlds #
 #----------------#
@@ -155,10 +156,15 @@ cancel_events:
   death_messages: true
   leaf_decay: true
 
+anti_world_download:
+  enabled: true
+  notify_admin: true
 
 #------------#
 # MANAGEMENT #
 #------------#
+
+lock_chat: false
 
 blocked_words:
   enabled: false
