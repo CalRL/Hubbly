@@ -19,9 +19,6 @@ public class LockChat {
 
     public void flipChatLock() {
         isChatLocked = !isChatLocked;
-
-        plugin.getConfig().set("lock_chat", isChatLocked);
-        plugin.saveConfig();
     }
 
     public boolean getChatLock() {

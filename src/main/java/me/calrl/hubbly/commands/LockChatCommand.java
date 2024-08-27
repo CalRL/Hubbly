@@ -12,6 +12,7 @@ import org.jetbrains.annotations.NotNull;
 public class LockChatCommand implements CommandExecutor {
 
     private Hubbly plugin;
+    private LockChat lockChat;
     public LockChatCommand(Hubbly plugin) {
         this.plugin = plugin;
     }
@@ -19,7 +20,13 @@ public class LockChatCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(!commandSender.hasPermission(Permissions.COMMAND_LOCK_CHAT.getPermission())) return true;
         plugin.getLockChat().flipChatLock();
-        Bukkit.broadcastMessage("Chat has been locked by " + commandSender.getName());
+        lockChat = plugin.getLockChat();
+        if(lockChat.getChatLock()) {
+            Bukkit.broadcastMessage("Chat has been unlocked by " + commandSender.getName());
+        } else {
+            Bukkit.broadcastMessage("Chat has been locked by " + commandSender.getName());
+        }
+
         return true;
     }
 }

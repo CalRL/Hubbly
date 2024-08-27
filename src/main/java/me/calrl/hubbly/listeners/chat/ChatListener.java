@@ -46,7 +46,10 @@ public class ChatListener implements Listener {
     private void onPlayerChat(AsyncPlayerChatEvent event) {
         FileConfiguration config = plugin.getConfig();
         if(!config.getBoolean("blocked_words.enabled")) return;
-        if(isChatLocked || event.getPlayer().hasPermission(Permissions.BYPASS_CHAT_LOCK.getPermission()))
+        if(plugin.getLockChat().getChatLock() && !event.getPlayer().hasPermission(Permissions.BYPASS_CHAT_LOCK.getPermission())) {
+            event.setCancelled(true);
+            debugMode.info("Event Cancelled.");
+        }
         if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
 
         String message = event.getMessage().toLowerCase();

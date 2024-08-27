@@ -58,3 +58,17 @@ tasks.processResources {
         expand("project" to project, "version" to project.version)
     }
 }
+
+// Define a custom task to copy the JAR file
+// Define a custom task to copy the JAR file
+//tasks.register<Copy>("copyJar") {
+//    val jarTask = tasks.named("jar") // Get reference to the jar task
+//    from(jarTask.get().outputs.files)  // Source directory (where the JAR file is located)
+//    into("C:\\Users\\Callum\\Desktop\\server 1.21\\plugins")  // Destination directory
+//    include("*.jar")  // Include only JAR files
+//}
+//
+//// Make sure the custom task runs after the JAR is created
+//tasks.named("build") {
+//    finalizedBy("copyJar")
+//}
