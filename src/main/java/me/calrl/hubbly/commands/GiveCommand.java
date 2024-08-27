@@ -80,14 +80,14 @@ public class GiveCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
             if (args.length < 2) {
-                sender.sendMessage(ChatColor.YELLOW + "Usage: /give <player> <item> [slot]");
+                sender.sendMessage(ChatColor.YELLOW + "Usage: /give <player> <item> [amount] [slot]");
                 return true;
             }
 
             if (sender.hasPermission("hubbly.command.give") || sender.isOp()) {
                 Player targetPlayer = Bukkit.getPlayer(args[0]);
                 if (targetPlayer == null) {
-                    sender.sendMessage(ChatColor.RED + "Player not found: " + args[1]);
+                    sender.sendMessage(ChatColor.RED + "Player not found: " + args[0]);
                     return true;
                 }
 
@@ -96,9 +96,17 @@ public class GiveCommand implements CommandExecutor {
 
                 if (customItem != null) {
                     ItemStack item = customItem.createItem();
-                    if (args.length > 2) {
+                    if(args.length == 3) {
+                        int amount = Integer.parseInt(args[2]);
+                        item.setAmount(amount);
+                        targetPlayer.getInventory().addItem(item);
+                        return true;
+                    }
+                    if (args.length == 4) {
                         try {
-                            int slot = Integer.parseInt(args[2]);
+                            int amount = Integer.parseInt(args[2]);
+                            item.setAmount(amount);
+                            int slot = Integer.parseInt(args[3]);
                             if (slot < 0 || slot >= targetPlayer.getInventory().getSize()) {
                                 sender.sendMessage(ChatColor.RED + "Invalid slot: " + args[3]);
                                 return true;
