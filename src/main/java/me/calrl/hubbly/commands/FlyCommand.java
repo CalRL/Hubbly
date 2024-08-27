@@ -52,6 +52,7 @@ public class FlyCommand implements CommandExecutor {
         if(player.getGameMode() == GameMode.SPECTATOR) return true;
 
         if (!config.getBoolean("player.fly.enabled")) {
+            player.sendMessage(config.getString("messages.no_fly_enabled", "Flight is disabled in config"));
             return true;
         }
 

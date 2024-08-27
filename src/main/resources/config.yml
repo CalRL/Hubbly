@@ -210,6 +210,7 @@ messages:
   fly:
     enable: "Flight mode enabled."
     disable: "Flight mode disabled."
+  no_fly_enabled: "Flight is disabled in config"
   blocked_command: 'Unknown command. Type "/help" for help'
   blocked_message: 'Please do not use that word!'
 
