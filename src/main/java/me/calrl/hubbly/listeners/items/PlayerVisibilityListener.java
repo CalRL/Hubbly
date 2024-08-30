@@ -52,7 +52,7 @@ public class PlayerVisibilityListener implements Listener {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         ItemMeta meta = itemInHand.getItemMeta();
 
-        if (meta.getPersistentDataContainer().has(PluginKeys.PLAYER_VISIBILITY.getKey())) {
+        if (meta != null && meta.getPersistentDataContainer().has(PluginKeys.PLAYER_VISIBILITY.getKey())) {
             if(event.getAction() != Action.PHYSICAL && (player.hasPermission("hubbly.use.playervisibility") || player.isOp())) {
                 Bukkit.getScheduler().runTaskLater(plugin, () -> swapDye(player, itemInHand), 2L);
                 event.setCancelled(true);

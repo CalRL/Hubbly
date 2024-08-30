@@ -83,7 +83,7 @@ public class ConfigItems implements CustomItem {
             if (config.contains(path + ".lore")) {
                 List<String> lore = new ArrayList<>();
                 for (String line : config.getStringList(path + ".lore")) {
-                    lore.add(ChatColor.translateAlternateColorCodes('&', ParsePlaceholders.parsePlaceholders(player, line)));
+                    lore.add(ChatUtils.translateHexColorCodes(ParsePlaceholders.parsePlaceholders(player, line)));
                 }
                 meta.setLore(lore);
             }
