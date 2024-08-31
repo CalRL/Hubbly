@@ -63,7 +63,7 @@ public class GiveCommand implements TabExecutor {
         items.put("playervisibility", new PlayerVisibilityItem());
         items.put("enderbow", new EnderbowItem(plugin));
         items.put("trident", new TridentItem(plugin));
-        items.put("fishing_rod", new TridentItem(plugin));
+        items.put("fishing_rod", new RodItem(plugin));
 
         if (itemsConfig.getConfigurationSection("items") != null) {
             for (String itemKey : itemsConfig.getConfigurationSection("items").getKeys(false)) {
