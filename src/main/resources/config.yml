@@ -123,7 +123,6 @@ spawn:
 
 
 player:
-  spawn_on_join: true
   fly:
     enabled: true
   join_message:
