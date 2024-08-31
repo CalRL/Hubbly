@@ -21,10 +21,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.Action;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.interfaces.CustomItem;
-import me.calrl.hubbly.items.CompassItem;
-import me.calrl.hubbly.items.ConfigItems;
-import me.calrl.hubbly.items.PlayerVisibilityItem;
-import me.calrl.hubbly.items.SocialsItem;
+import me.calrl.hubbly.items.*;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -32,16 +29,16 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
-public class GiveCommand implements CommandExecutor {
+public class GiveCommand implements TabExecutor {
 
     private final Hubbly plugin;
     private final FileConfiguration config;
@@ -64,6 +61,9 @@ public class GiveCommand implements CommandExecutor {
         items.put("compass", new CompassItem());
         items.put("socials", new SocialsItem());
         items.put("playervisibility", new PlayerVisibilityItem());
+        items.put("enderbow", new EnderbowItem(plugin));
+        items.put("trident", new TridentItem(plugin));
+        items.put("fishing_rod", new TridentItem(plugin));
 
         if (itemsConfig.getConfigurationSection("items") != null) {
             for (String itemKey : itemsConfig.getConfigurationSection("items").getKeys(false)) {
@@ -118,7 +118,7 @@ public class GiveCommand implements CommandExecutor {
                         }
                     } else {
                         targetPlayer.getInventory().addItem(item);
-                        debugMode.info(ChatColor.YELLOW + "Given " + itemName + " to " + targetPlayer.getName());
+                        debugMode.info("Given " + itemName + " to " + targetPlayer.getName());
                     }
                 } else {
                     sender.sendMessage(ChatColor.RED + "Unknown item: " + itemName); // Debugging
@@ -128,4 +128,18 @@ public class GiveCommand implements CommandExecutor {
             }
             return true;
         }
+
+    @Nullable
+    @Override
+    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+        List<String> stringList = new ArrayList<>();
+        if(args.length == 1) {
+            for(Player player : Bukkit.getOnlinePlayers()) {
+                stringList.add(player.getName());
+            }
+        }
+        if(args.length == 2)
+            stringList.addAll(items.keySet());
+        return stringList;
     }
+}

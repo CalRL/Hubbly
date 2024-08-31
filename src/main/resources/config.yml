@@ -89,6 +89,17 @@ close_button:
   material: "BARRIER"
   name: "&aClose"
 
+movementitems:
+  enderbow:
+    enabled: true
+    name: "Enderbow"
+  trident:
+    enabled: true
+    name: "Trident"
+  fishing_rod:
+    enabled: true
+    name: "Rod"
+
 #---------------#
 # Teleportation #
 #---------------#

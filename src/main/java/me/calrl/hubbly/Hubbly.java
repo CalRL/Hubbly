@@ -26,6 +26,7 @@ import me.calrl.hubbly.listeners.SocialsListener;
 import me.calrl.hubbly.listeners.chat.ChatListener;
 import me.calrl.hubbly.listeners.chat.CommandBlockerListener;
 import me.calrl.hubbly.listeners.items.ConfigItemListener;
+import me.calrl.hubbly.listeners.items.MovementItemListener;
 import me.calrl.hubbly.listeners.items.PlayerVisibilityListener;
 import me.calrl.hubbly.listeners.player.DoubleJumpListener;
 import me.calrl.hubbly.listeners.player.PlayerJoinListener;
@@ -140,6 +141,7 @@ public final class Hubbly extends JavaPlugin {
         registerListener(new PlayerJoinListener(this));
         registerListener(new CommandBlockerListener(this));
         registerListener(new ChatListener(this));
+        registerListener(new MovementItemListener(this));
     }
     @Override
     public void onEnable() {
