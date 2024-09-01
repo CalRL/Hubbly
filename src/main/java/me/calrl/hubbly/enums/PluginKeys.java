@@ -11,7 +11,7 @@ public enum PluginKeys {
     SOCIALS(new NamespacedKey(Hubbly.getInstance(), "socials")),
     SELECTOR(new NamespacedKey(Hubbly.getInstance(), "selector")),
     TRIDENT(new NamespacedKey(Hubbly.getInstance(), "trident")),
-    FISHING_ROD(new NamespacedKey(Hubbly.getInstance(), "fishing_rod")),
+    GRAPPLING_HOOK(new NamespacedKey(Hubbly.getInstance(), "grappling_hook")),
     ENDER_BOW(new NamespacedKey(Hubbly.getInstance(),"ender_bow"));
 
 

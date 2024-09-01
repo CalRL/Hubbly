@@ -20,8 +20,8 @@ public class RodItem implements CustomItem {
         ItemStack item = new ItemStack(Material.FISHING_ROD);
         ItemMeta meta = item.getItemMeta();
         if(meta != null) {
-            meta.getPersistentDataContainer().set(PluginKeys.FISHING_ROD.getKey(), PersistentDataType.STRING, "rod");
-            meta.setDisplayName(ChatUtils.translateHexColorCodes(plugin.getConfig().getString("movementitems.fishing_rod.name")));
+            meta.getPersistentDataContainer().set(PluginKeys.GRAPPLING_HOOK.getKey(), PersistentDataType.STRING, "rod");
+            meta.setDisplayName(ChatUtils.translateHexColorCodes(plugin.getConfig().getString("movementitems.grappling_hook.name")));
         }
         item.setItemMeta(meta);
         return item;
