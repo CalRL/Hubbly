@@ -41,9 +41,17 @@ public class MovementItemListener implements Listener {
     private void onBowShoot(EntityShootBowEvent event) {
         if(!config.getBoolean("movementitems.enderbow.enabled")) return;
         if(!(event.getBow().getItemMeta().getPersistentDataContainer().has(PluginKeys.ENDER_BOW.getKey()))) return;
-        if(!(event.getProjectile() instanceof Arrow arrow)) return;
-        PersistentDataContainer container = arrow.getPersistentDataContainer();
-        container.set(PluginKeys.ENDER_BOW.getKey(), PersistentDataType.STRING, "arrow");
+        if(event.getEntity() instanceof Player player) {
+            if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.ENDER_BOW, config.getLong("movementitems.enderbow.cooldown"))) {
+                event.setCancelled(true);
+                return;
+            }
+
+            if(!(event.getProjectile() instanceof Arrow arrow)) return;
+            PersistentDataContainer container = arrow.getPersistentDataContainer();
+            container.set(PluginKeys.ENDER_BOW.getKey(), PersistentDataType.STRING, "arrow");
+        }
+
     }
     @EventHandler
     private void onArrowLand(ProjectileHitEvent event) {
@@ -55,6 +63,7 @@ public class MovementItemListener implements Listener {
                 Location location = arrow.getLocation();
                 location.setPitch(player.getLocation().getPitch());
                 location.setYaw(player.getLocation().getYaw());
+                arrow.remove();
                 player.teleport(location);
                 player.playSound(player, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
             }
@@ -68,6 +77,11 @@ public class MovementItemListener implements Listener {
             ItemMeta meta = itemInHand.getItemMeta();
 
             if(meta != null && itemInHand.getType() == Material.TRIDENT && itemInHand.getItemMeta().getPersistentDataContainer().has(PluginKeys.TRIDENT.getKey())) {
+                if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.TRIDENT, config.getLong("movementitems.trident.cooldown"))) {
+                    event.setCancelled(true);
+                    return;
+                }
+
                 event.getEntity().getPersistentDataContainer().set(PluginKeys.TRIDENT.getKey(), PersistentDataType.STRING, "trident");
             }
 
