@@ -22,4 +22,7 @@ public enum CooldownType {
     LAUNCHPAD,
     PLAYER_VISIBILITY,
     OPEN_GUI,
+    ENDER_BOW,
+    TRIDENT,
+    GRAPPLING_HOOK
 }
