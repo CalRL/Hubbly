@@ -52,9 +52,9 @@ public class LaunchpadListener implements Listener {
         Block blockBelow = player.getLocation().subtract(0, 1, 0).getBlock(); // Get the block directly below the player
 
         Material launchpadMaterial = Material.valueOf(config.getString("launchpad.type"));
-        if(!Hubbly.getInstance().getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, config.getLong("launchpad.cooldown")));
         if (blockStandingOn.getType() == launchpadMaterial || blockBelow.getType() == launchpadMaterial) {
             if (player.hasPermission("hubbly.use.launchpad") || player.isOp()) {
+                if(!Hubbly.getInstance().getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, config.getLong("launchpad.cooldown")));
                 plugin.getActionManager().executeAction(plugin, player, "[LAUNCH]");
             }
         }
