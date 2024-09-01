@@ -1,4 +1,4 @@
-debug: false
+debug: true
 
 
 #----------------#
@@ -93,13 +93,15 @@ movementitems:
   enderbow:
     enabled: true
     name: "Enderbow"
+    cooldown: 3
   trident:
     enabled: true
     name: "Trident"
-  fishing_rod:
+    cooldown: 3
+  grappling_hook:
     enabled: true
-    name: "Rod"
-
+    name: "Grappling Hook"
+    cooldown: 3
 #---------------#
 # Teleportation #
 #---------------#
