@@ -1,6 +1,7 @@
 package me.calrl.hubbly.listeners.items;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.enums.TridentSounds;
 import me.calrl.hubbly.items.TridentItem;
@@ -42,6 +43,7 @@ public class MovementItemListener implements Listener {
         if(!config.getBoolean("movementitems.enderbow.enabled")) return;
         if(!(event.getBow().getItemMeta().getPersistentDataContainer().has(PluginKeys.ENDER_BOW.getKey()))) return;
         if(event.getEntity() instanceof Player player) {
+            if(!player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())) return;
             if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.ENDER_BOW, config.getLong("movementitems.enderbow.cooldown"))) {
                 event.setCancelled(true);
                 return;
@@ -51,7 +53,6 @@ public class MovementItemListener implements Listener {
             PersistentDataContainer container = arrow.getPersistentDataContainer();
             container.set(PluginKeys.ENDER_BOW.getKey(), PersistentDataType.STRING, "arrow");
         }
-
     }
     @EventHandler
     private void onArrowLand(ProjectileHitEvent event) {
@@ -73,6 +74,7 @@ public class MovementItemListener implements Listener {
     @EventHandler
     public void onTridentThrow(ProjectileLaunchEvent event) {
         if (event.getEntity() instanceof Trident trident && trident.getShooter() instanceof Player player) {
+            if(!player.hasPermission(Permissions.USE_TRIDENT.getPermission())) return;
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
             ItemMeta meta = itemInHand.getItemMeta();
 
@@ -116,7 +118,8 @@ public class MovementItemListener implements Listener {
         if (!config.getBoolean("movementitems.grappling_hook.enabled")) return;
 
         Player player = event.getPlayer();
-         ItemMeta meta = player.getInventory().getItemInMainHand().getItemMeta();
+        if(!player.hasPermission(Permissions.USE_GRAPPLING_HOOK.getPermission())) return;
+        ItemMeta meta = player.getInventory().getItemInMainHand().getItemMeta();
 
         if (event.getState() != PlayerFishEvent.State.FAILED_ATTEMPT
                 && event.getState() != PlayerFishEvent.State.IN_GROUND

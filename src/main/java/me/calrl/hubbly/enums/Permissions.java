@@ -34,6 +34,9 @@ public enum Permissions {
     USE_PLAYER_VISIBILITY("use.playervisibility"),
     USE_SOCIALS("use.socials"),
     USE_LAUNCHPAD("use.launchpad"),
+    USE_GRAPPLING_HOOK("use.grapplinghook"),
+    USE_TRIDENT("use.trident"),
+    USE_ENDER_BOW("use.enderbow"),
 
     NOTIFY_WDL("notify.antiwdl");
 
