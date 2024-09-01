@@ -5,6 +5,7 @@ import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.enums.TridentSounds;
 import me.calrl.hubbly.items.TridentItem;
 import net.minecraft.world.entity.projectile.EntityThrownTrident;
+import net.minecraft.world.item.ItemFishingRod;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +17,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
+import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -88,9 +90,21 @@ public class MovementItemListener implements Listener {
             }
         }
     }
-
     private TridentSounds randomSound() {
         int pick = new Random().nextInt(TridentSounds.values().length);
         return TridentSounds.values()[pick];
+    }
+
+    @EventHandler
+    private void onFishingRodUse(PlayerFishEvent event) {
+        if(!config.getBoolean("movementitems.fishing_rod.enabled")) return;
+        Player player = event.getPlayer();
+        ItemMeta meta = player.getInventory().getItemInMainHand().getItemMeta();
+        if(event.getState() != PlayerFishEvent.State.FAILED_ATTEMPT || event.getState() != PlayerFishEvent.State.IN_GROUND) return;
+        if(meta != null && meta.getPersistentDataContainer().has(PluginKeys.FISHING_ROD.getKey())){
+            if(event.getHook().getLocation() != player.getLocation()) {
+                player.playSound(player.getLocation(), Sound.ENTITY_DRAGON_FIREBALL_EXPLODE, 1.0F, 1.0F);
+            }
+        }
     }
 }
