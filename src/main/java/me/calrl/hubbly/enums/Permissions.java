@@ -37,6 +37,7 @@ public enum Permissions {
     USE_GRAPPLING_HOOK("use.grapplinghook"),
     USE_TRIDENT("use.trident"),
     USE_ENDER_BOW("use.enderbow"),
+    USE_AOTE("use.aote"),
 
     NOTIFY_WDL("notify.antiwdl");
 

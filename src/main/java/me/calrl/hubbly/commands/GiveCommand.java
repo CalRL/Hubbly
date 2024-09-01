@@ -33,6 +33,7 @@ import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,7 +64,8 @@ public class GiveCommand implements TabExecutor {
         items.put("playervisibility", new PlayerVisibilityItem());
         items.put("enderbow", new EnderbowItem(plugin));
         items.put("trident", new TridentItem(plugin));
-        items.put("fishing_rod", new RodItem(plugin));
+        items.put("grappling_hook", new RodItem(plugin));
+        items.put("aote", new AoteItem(plugin));
 
         if (itemsConfig.getConfigurationSection("items") != null) {
             for (String itemKey : itemsConfig.getConfigurationSection("items").getKeys(false)) {

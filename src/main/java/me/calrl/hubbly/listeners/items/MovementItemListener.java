@@ -20,6 +20,7 @@ import org.bukkit.event.entity.EntityShootBowEvent;
 import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerFishEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -137,6 +138,28 @@ public class MovementItemListener implements Listener {
             Vector velocity = direction.multiply(distance / 3.5);
             player.setVelocity(velocity);
         }
+    }
+
+    @EventHandler
+    private void onInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        ItemStack item = player.getInventory().getItemInMainHand();
+        ItemMeta meta = item.getItemMeta();
+        if(meta != null && meta.getPersistentDataContainer().has(PluginKeys.AOTE.getKey())) {
+            if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.AOTE, config.getLong("movementitems.aote.cooldown"))) return;
+            if(!player.hasPermission(Permissions.USE_AOTE.getPermission())) return;
+            player.teleport(getLocationInFront(player, 10));
+
+        }
+    }
+
+    private Location getLocationInFront(Player player, double distance) {
+        Location currentLocation = player.getLocation();
+        Vector direction = currentLocation.getDirection();
+        Vector frontVector = direction.normalize().multiply(distance);
+        Location targetLocation = currentLocation.add(frontVector);
+
+        return targetLocation;
     }
 
 }

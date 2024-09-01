@@ -102,6 +102,10 @@ movementitems:
     enabled: true
     name: "Grappling Hook"
     cooldown: 3
+  aote:
+    enabled: true
+    name: "Aspect of the End"
+    cooldown: 3
 #---------------#
 # Teleportation #
 #---------------#

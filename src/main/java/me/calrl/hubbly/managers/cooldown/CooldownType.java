@@ -24,5 +24,6 @@ public enum CooldownType {
     OPEN_GUI,
     ENDER_BOW,
     TRIDENT,
-    GRAPPLING_HOOK
+    GRAPPLING_HOOK,
+    AOTE
 }
