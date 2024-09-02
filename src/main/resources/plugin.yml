@@ -44,7 +44,6 @@ permissions:
   hubbly.*:
     description: Gives access to all hubbly commands
     default: op
-
   hubbly.hubbly:
     default: true
 
@@ -54,6 +53,10 @@ permissions:
       hubbly.use.launchpad: true
       hubbly.use.playervisibility: true
       hubbly.use.socials: true
+      hubbly.use.trident: true
+      hubbly.use.enderbow: true
+      hubbly.use.aote: true
+      hubbly.use.grapplinghook: true
   hubbly.use.compass:
     default: true
   hubbly.use.launchpad:

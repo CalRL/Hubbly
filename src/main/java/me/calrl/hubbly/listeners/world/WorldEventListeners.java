@@ -17,6 +17,7 @@
 package me.calrl.hubbly.listeners.world;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.managers.DebugMode;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -29,6 +30,10 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.projectiles.ProjectileSource;
 
 import java.util.logging.Logger;
@@ -125,17 +130,48 @@ public class WorldEventListeners implements Listener {
     }
     @EventHandler
     private void onItemThrow(ProjectileLaunchEvent event) {
+
         ProjectileSource source = event.getEntity().getShooter();
+
         if(config.getBoolean("cancel_events.item_throw", true)) {
             if (source instanceof Player player) {
                 if (player.hasPermission("hubbly.bypass.item.throw") || player.isOp()) return;
                 if (checkWorld(player)) return;
-                event.setCancelled(true);
+
+                boolean hasKey = doesPlayerHaveItemWithKey(player);
+                if(!hasKey) {
+                    event.setCancelled(true);
+                }
+
             } else {
                 event.setCancelled(true);
             }
         }
     }
+    private static final PluginKeys[] CHECK_KEYS = {
+            PluginKeys.ENDER_BOW,
+            PluginKeys.TRIDENT,
+            PluginKeys.GRAPPLING_HOOK,
+            PluginKeys.AOTE
+    };
+
+    public boolean doesPlayerHaveItemWithKey(Player player) {
+        ItemStack item = player.getInventory().getItemInMainHand(); // Or offhand if you want to check both
+        if (item == null || !item.hasItemMeta()) return false;
+
+        ItemMeta meta = item.getItemMeta();
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+
+        // Loop through the subset of keys and check if the item has any of these keys
+        for (PluginKeys key : CHECK_KEYS) {
+            if (container.has(key.getKey(), PersistentDataType.STRING)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     @EventHandler
     private void onFoodLevelChange(FoodLevelChangeEvent event) {
         if (event.getEntity() instanceof Player) {

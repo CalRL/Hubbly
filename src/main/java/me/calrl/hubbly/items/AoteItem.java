@@ -3,6 +3,7 @@ package me.calrl.hubbly.items;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.interfaces.CustomItem;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,7 +20,9 @@ public class AoteItem implements CustomItem {
         ItemStack item = new ItemStack(Material.DIAMOND_SWORD);
         ItemMeta meta = item.getItemMeta();
         if(meta != null) {
-            meta.setDisplayName(plugin.getConfig().getString("movementitems.aote.name", "AOTE"));
+            meta.setDisplayName(
+                    ChatUtils.translateHexColorCodes(
+                    plugin.getConfig().getString("movementitems.aote.name", "AOTE")));
             meta.getPersistentDataContainer().set(PluginKeys.AOTE.getKey(), PersistentDataType.STRING, "aote");
         }
         item.setItemMeta(meta);

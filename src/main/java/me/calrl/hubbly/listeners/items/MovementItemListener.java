@@ -44,7 +44,12 @@ public class MovementItemListener implements Listener {
         if(!config.getBoolean("movementitems.enderbow.enabled")) return;
         if(!(event.getBow().getItemMeta().getPersistentDataContainer().has(PluginKeys.ENDER_BOW.getKey()))) return;
         if(event.getEntity() instanceof Player player) {
-            if(!player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())) return;
+
+            if(!player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())) {
+                player.sendMessage(String.valueOf(player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())));
+                return;
+            }
+
             if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.ENDER_BOW, config.getLong("movementitems.enderbow.cooldown"))) {
                 event.setCancelled(true);
                 return;
@@ -53,6 +58,7 @@ public class MovementItemListener implements Listener {
             if(!(event.getProjectile() instanceof Arrow arrow)) return;
             PersistentDataContainer container = arrow.getPersistentDataContainer();
             container.set(PluginKeys.ENDER_BOW.getKey(), PersistentDataType.STRING, "arrow");
+
         }
     }
     @EventHandler
