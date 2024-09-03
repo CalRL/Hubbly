@@ -171,6 +171,7 @@ cancel_events:
   block_burn: true
   death_messages: true
   leaf_decay: true
+  projectiles: false
 
 anti_world_download:
   enabled: true

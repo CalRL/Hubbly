@@ -83,6 +83,7 @@ permissions:
       hubbly.bypass.blockedcommands: true
       hubbly.bypass.item.throw: true
       hubbly.bypass.antiwdl: true
+      hubbly.bypass.projectiles: true
   hubbly.bypass.forceinventory:
     default: op
   hubbly.bypass.antiswear:

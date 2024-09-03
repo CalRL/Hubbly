@@ -17,6 +17,7 @@
 package me.calrl.hubbly.listeners.world;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.managers.DebugMode;
 import org.bukkit.World;
@@ -129,13 +130,13 @@ public class WorldEventListeners implements Listener {
         }
     }
     @EventHandler
-    private void onItemThrow(ProjectileLaunchEvent event) {
+    private void onProjectile(ProjectileLaunchEvent event) {
 
         ProjectileSource source = event.getEntity().getShooter();
 
-        if(config.getBoolean("cancel_events.item_throw", true)) {
+        if(config.getBoolean("cancel_events.projectiles", true)) {
             if (source instanceof Player player) {
-                if (player.hasPermission("hubbly.bypass.item.throw") || player.isOp()) return;
+                if (player.hasPermission(Permissions.BYPASS_PROJECTILES.getPermission())) return;
                 if (checkWorld(player)) return;
 
                 boolean hasKey = doesPlayerHaveItemWithKey(player);
@@ -147,6 +148,18 @@ public class WorldEventListeners implements Listener {
                 event.setCancelled(true);
             }
         }
+    }
+    @EventHandler
+    private void onItemThrow(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        if(config.getBoolean("cancel_events.item_throw", true)) {
+            if (player.hasPermission("hubbly.bypass.item.throw") || player.isOp()) return;
+            if (checkWorld(player)) return;
+
+        } else {
+            event.setCancelled(true);
+        }
+
     }
     private static final PluginKeys[] CHECK_KEYS = {
             PluginKeys.ENDER_BOW,
