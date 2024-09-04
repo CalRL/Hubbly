@@ -50,6 +50,9 @@ public class PlayerVisibilityListener implements Listener {
 
 
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
+        if(itemInHand == null || itemInHand.getType() == Material.AIR) {
+            return;
+        }
         ItemMeta meta = itemInHand.getItemMeta();
 
         if (meta != null && meta.getPersistentDataContainer().has(PluginKeys.PLAYER_VISIBILITY.getKey())) {

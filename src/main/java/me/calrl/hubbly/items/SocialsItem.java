@@ -18,6 +18,7 @@
 package me.calrl.hubbly.items;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.utils.ChatUtils;
@@ -26,6 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataType;
 
 public class SocialsItem implements CustomItem {
 
@@ -36,23 +38,22 @@ public class SocialsItem implements CustomItem {
         String textureValue = config.getString("socials.item.value");
         String itemName = ChatUtils.translateHexColorCodes(config.getString("socials.item.name"));
         String itemType = config.getString("socials.item.type");
+        ItemMeta meta;
         if("PLAYER_HEAD".equalsIgnoreCase(itemType)) {
             item = CreateCustomHead.createCustomHead(textureValue, itemName);
-        } else {
-            try {
-                Material itemMat = Material.valueOf(itemType.toUpperCase());
-                item = new ItemStack(itemMat);
-                ItemMeta meta = item.getItemMeta();
-                if(meta != null) {
-                    meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', itemName));
-                    item.setItemMeta(meta);
-                }
-            } catch (IllegalArgumentException e) {
-                System.out.println(e);
-                item = new ItemStack(Material.STONE);
-            }
 
+        } else {
+            Material itemMat = Material.valueOf(itemType.toUpperCase());
+            item = new ItemStack(itemMat);
+            meta = item.getItemMeta();
+
+            if(meta != null) {
+                meta.setDisplayName(ChatUtils.translateHexColorCodes(itemName));
+            }
         }
+        meta = item.getItemMeta();
+        if(meta != null) meta.getPersistentDataContainer().set(PluginKeys.SOCIALS.getKey(), PersistentDataType.STRING, "socials");
+        item.setItemMeta(meta);
         return item;
     }
 }
