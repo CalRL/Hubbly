@@ -56,6 +56,10 @@ public class SocialsListener implements Listener {
     private void onPlayerInteract(PlayerInteractEvent event) {
         if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
         ItemStack item = event.getItem();
+
+        if (item == null) {
+            return;
+        }
         ItemMeta meta = item.getItemMeta();
         if(meta == null) return;
         if(event.getAction() != Action.PHYSICAL && meta.getPersistentDataContainer().has(PluginKeys.SOCIALS.getKey())) {
