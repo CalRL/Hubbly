@@ -20,8 +20,10 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.managers.DebugMode;
+import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -149,6 +151,17 @@ public class WorldEventListeners implements Listener {
             }
         }
     }
+
+    @EventHandler
+    private void onAnimalEat(EntityChangeBlockEvent event) {
+        EntityType type = event.getEntityType();
+        if(type != EntityType.SHEEP) return;
+        if(event.getTo() == Material.DIRT) {
+            event.getBlock().setType(Material.DIRT);
+        }
+    }
+
+
     @EventHandler
     private void onItemThrow(PlayerDropItemEvent event) {
         Player player = event.getPlayer();

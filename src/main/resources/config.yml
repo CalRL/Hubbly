@@ -129,6 +129,9 @@ spawn:
 
 
 player:
+  experience:
+    enabled: true
+    level: 2024
   fly:
     enabled: true
   join_message:
