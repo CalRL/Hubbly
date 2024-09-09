@@ -85,7 +85,7 @@ public class BossBarManager {
                     this.cancel();
                     return;
                 }
-                String text = ChatUtils.translateHexColorCodes(texts.get(index));
+                String text = ChatUtils.translateHexColorCodes(ChatUtils.parsePlaceholders(player, texts.get(index)));
                 bar.setTitle(text);
                 index = (index + 1) % texts.size();
             }

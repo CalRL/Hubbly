@@ -28,10 +28,7 @@ import me.calrl.hubbly.listeners.chat.CommandBlockerListener;
 import me.calrl.hubbly.listeners.items.ConfigItemListener;
 import me.calrl.hubbly.listeners.items.MovementItemListener;
 import me.calrl.hubbly.listeners.items.PlayerVisibilityListener;
-import me.calrl.hubbly.listeners.player.DoubleJumpListener;
-import me.calrl.hubbly.listeners.player.PlayerJoinListener;
-import me.calrl.hubbly.listeners.player.PlayerOffHandListener;
-import me.calrl.hubbly.listeners.player.VoidDamageListener;
+import me.calrl.hubbly.listeners.player.*;
 import me.calrl.hubbly.listeners.world.AntiWDL;
 import me.calrl.hubbly.listeners.world.LaunchpadListener;
 import me.calrl.hubbly.listeners.world.WorldEventListeners;
@@ -142,6 +139,7 @@ public final class Hubbly extends JavaPlugin {
         registerListener(new CommandBlockerListener(this));
         registerListener(new ChatListener(this));
         registerListener(new MovementItemListener(this));
+        registerListener(new XPListener(this), "player.experience.enabled");
     }
     @Override
     public void onEnable() {
