@@ -54,6 +54,7 @@ public class DoubleJumpListener implements Listener {
         if(!plugin.canPlayerFly(player) && config.getBoolean("double_jump.enabled")) {
                 event.setCancelled(true);
                 player.setFlying(false);
+                player.setAllowFlight(false);
                 UUID uuid = player.getUniqueId();
 
                 if(!plugin.getCooldownManager().tryCooldown(uuid, CooldownType.DOUBLE_JUMP, config.getLong("double_jump.cooldown")))  return;
@@ -71,7 +72,12 @@ public class DoubleJumpListener implements Listener {
 
                 player.setVelocity(direction);
 
-
+                new BukkitRunnable() {
+                    @Override
+                    public void run() {
+                        player.setAllowFlight(true);
+                    }
+                }.runTaskLater(plugin, plugin.getConfig().getLong("double_jump.cooldown") * 20L);
             }
     }
     @EventHandler
