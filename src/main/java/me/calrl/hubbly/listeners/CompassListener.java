@@ -19,6 +19,8 @@ package me.calrl.hubbly.listeners;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
+import me.calrl.hubbly.enums.Permissions;
+import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
@@ -80,29 +82,13 @@ public class CompassListener implements Listener {
         if (event.getAction() != Action.PHYSICAL) {
             Player player = event.getPlayer();
             ItemStack item = player.getInventory().getItemInMainHand();
+
             if (item == null || !item.hasItemMeta()) {
                 return;
             }
 
-            String materialName = config.getString("selector.material").toUpperCase();
-            String itemName = ChatUtils.translateHexColorCodes(
-                    config.getString("selector.name"));
-
-            if (materialName == null || itemName == null) {
-                debugMode.warn("Configuration for selector.material or selector.name is missing.");
-                return;
-            }
-
-            Material material;
-            try {
-                material = Material.valueOf(materialName.toUpperCase());
-            } catch (IllegalArgumentException e) {
-                debugMode.warn("Invalid material specified for selector: " + materialName);
-                return;
-            }
-
-            if (item.getType() == material && ChatColor.translateAlternateColorCodes('&', itemName).equals(item.getItemMeta().getDisplayName())) {
-                if (player.hasPermission("hubbly.use.compass") || player.isOp()) {
+            if (item.getItemMeta() != null &&  item.getItemMeta().getPersistentDataContainer().has(PluginKeys.SELECTOR.getKey())) {
+                if (player.hasPermission(Permissions.USE_SELECTOR.getPermission())) {
                     event.setCancelled(true);
                     openCompassGUI(player);
                 } else {
@@ -149,7 +135,9 @@ public class CompassListener implements Listener {
 
     public void openCompassGUI(Player player) {
         if (Objects.equals(config.getString("selector.enabled"), "true")) {
-            Inventory gui = Bukkit.createInventory(null, config.getInt("selector.gui.size"), Objects.requireNonNull(config.getString("selector.gui.title")));
+            Inventory gui = Bukkit.createInventory(null, config.getInt("selector.gui.size"),
+                    ChatUtils.translateHexColorCodes(config.getString("selector.gui.title", "unconfigured")));
+
             for (String itemKey : Objects.requireNonNull(config.getConfigurationSection("selector.gui.items")).getKeys(false)) {
                 ItemStack item = createItemFromConfig(player, itemKey);
                 if (item != null) {

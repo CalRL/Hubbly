@@ -11,6 +11,7 @@ public enum Permissions {
     COMMAND_VERSION("command.version"),
     COMMAND_LOCK_CHAT("command.lockchat"),
     COMMAND_ADMIN("command.admin"),
+    COMMAND_SELECTOR("command.selector"),
 
     BYPASS_FORCE_INVENTORY("bypass.forceinvenory"),
     BYPASS_ANTI_SWEAR("bypass.antiswear"),
@@ -29,11 +30,16 @@ public enum Permissions {
     BYPASS_BLOCK_BREAK("bypass.break"),
     BYPASS_INTERACT("bypass.interact"),
     BYPASS_FOOD_CHANCE("bypass.food"),
+    BYPASS_PROJECTILES("bypass.projectiles"),
 
     USE_SELECTOR("use.compass"),
     USE_PLAYER_VISIBILITY("use.playervisibility"),
     USE_SOCIALS("use.socials"),
     USE_LAUNCHPAD("use.launchpad"),
+    USE_GRAPPLING_HOOK("use.grapplinghook"),
+    USE_TRIDENT("use.trident"),
+    USE_ENDER_BOW("use.enderbow"),
+    USE_AOTE("use.aote"),
 
     NOTIFY_WDL("notify.antiwdl");
 

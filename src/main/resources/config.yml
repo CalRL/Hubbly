@@ -1,4 +1,4 @@
-debug: false
+debug: true
 
 
 #----------------#
@@ -89,6 +89,23 @@ close_button:
   material: "BARRIER"
   name: "&aClose"
 
+movementitems:
+  enderbow:
+    enabled: true
+    name: "<#A020F0>Enderbow"
+    cooldown: 3
+  trident:
+    enabled: true
+    name: "<#40E0D0>Trident"
+    cooldown: 3
+  grappling_hook:
+    enabled: true
+    name: "<#FFFF00>Grappling Hook"
+    cooldown: 3
+  aote:
+    enabled: true
+    name: "<#2d0043>Aspect of the End"
+    cooldown: 1
 #---------------#
 # Teleportation #
 #---------------#
@@ -112,7 +129,6 @@ spawn:
 
 
 player:
-  spawn_on_join: true
   fly:
     enabled: true
   join_message:
@@ -155,6 +171,7 @@ cancel_events:
   block_burn: true
   death_messages: true
   leaf_decay: true
+  projectiles: false
 
 anti_world_download:
   enabled: true

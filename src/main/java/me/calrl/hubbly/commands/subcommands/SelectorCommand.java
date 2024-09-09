@@ -1,8 +1,10 @@
 package me.calrl.hubbly.commands.subcommands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.listeners.CompassListener;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.entity.Player;
 
 public class SelectorCommand implements SubCommand {
@@ -16,8 +18,14 @@ public class SelectorCommand implements SubCommand {
     }
     @Override
     public void execute(Player player, String[] args) {
-        if(player.hasPermission("hubbly.command.selector") || player.isOp()) {
+        if(player.hasPermission(Permissions.COMMAND_SELECTOR.getPermission())) {
             new CompassListener(plugin).openCompassGUI(player);
+        } else {
+            player.sendMessage(
+                    ChatUtils.translateHexColorCodes(
+                            plugin.getConfig().getString("messages.no_permission", "No permission")
+                    )
+            );
         }
 
     }

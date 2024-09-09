@@ -47,9 +47,11 @@ public class PlayerVisibilityListener implements Listener {
         if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
 
         Player player = event.getPlayer();
+        ItemStack itemInHand = event.getItem();
 
-
-        ItemStack itemInHand = player.getInventory().getItemInMainHand();
+        if (itemInHand == null) {
+            return;
+        }
         ItemMeta meta = itemInHand.getItemMeta();
 
         if (meta != null && meta.getPersistentDataContainer().has(PluginKeys.PLAYER_VISIBILITY.getKey())) {

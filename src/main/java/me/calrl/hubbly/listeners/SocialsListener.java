@@ -18,6 +18,7 @@
 package me.calrl.hubbly.listeners;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.functions.CreateCloseItem;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
@@ -54,17 +55,23 @@ public class SocialsListener implements Listener {
     @EventHandler
     private void onPlayerInteract(PlayerInteractEvent event) {
         if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
-        if(event.getAction() != Action.PHYSICAL && event.getPlayer().getInventory().getItemInMainHand().getType() == Material.valueOf(config.getString("socials.item.type"))) {
-            ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-            if (item.getItemMeta().getDisplayName().equals(ChatUtils.translateHexColorCodes(config.getString("socials.item.name")))) {
-                if(event.getPlayer().hasPermission("hubbly.use.socials") || event.getPlayer().isOp()) {
-                    openSocialsGUI(event.getPlayer());
-                } else {
-                    event.getPlayer().sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_use")));
+        ItemStack item = event.getItem();
 
-                }
-            }
+        if (item == null) {
+            return;
         }
+        ItemMeta meta = item.getItemMeta();
+        if(meta == null) return;
+        if(event.getAction() != Action.PHYSICAL && meta.getPersistentDataContainer().has(PluginKeys.SOCIALS.getKey())) {
+
+            if(event.getPlayer().hasPermission("hubbly.use.socials") || event.getPlayer().isOp()) {
+                openSocialsGUI(event.getPlayer());
+            } else {
+                event.getPlayer().sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_use")));
+            }
+
+        }
+
     }
 
     @EventHandler

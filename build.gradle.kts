@@ -29,12 +29,12 @@ repositories {
 dependencies {
     api("org.jetbrains:annotations:24.1.0")
     compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT")
-    compileOnly("org.spigotmc:spigot:1.21-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot:1.20.6-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
 }
 
 group = "me.calrl"
-version = "2.3.2"
+version = "2.4.1"
 description = "Hubbly"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -58,17 +58,3 @@ tasks.processResources {
         expand("project" to project, "version" to project.version)
     }
 }
-
-// Define a custom task to copy the JAR file
-// Define a custom task to copy the JAR file
-//tasks.register<Copy>("copyJar") {
-//    val jarTask = tasks.named("jar") // Get reference to the jar task
-//    from(jarTask.get().outputs.files)  // Source directory (where the JAR file is located)
-//    into("C:\\Users\\Callum\\Desktop\\server 1.21\\plugins")  // Destination directory
-//    include("*.jar")  // Include only JAR files
-//}
-//
-//// Make sure the custom task runs after the JAR is created
-//tasks.named("build") {
-//    finalizedBy("copyJar")
-//}
