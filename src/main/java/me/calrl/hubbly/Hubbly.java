@@ -71,6 +71,7 @@ public final class Hubbly extends JavaPlugin {
     private AnnouncementsManager announcementsManager;
     public LockChat lockChat;
     public NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
+    private String prefix;
 
     private List<Listener> listeners;
     public boolean needsUpdate;
@@ -150,6 +151,7 @@ public final class Hubbly extends JavaPlugin {
         debugMode = new DebugMode();
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
+        prefix = this.getConfig().getString("prefix");
 
         this.saveDefaultConfig();
         config = this.getConfig();
@@ -280,4 +282,7 @@ public final class Hubbly extends JavaPlugin {
     public DebugMode getDebugMode() { return debugMode; }
     public AnnouncementsManager getAnnouncementsManager() { return announcementsManager; }
     public LockChat getLockChat() {return lockChat;}
+    public String getPrefix() {
+        return prefix;
+    }
 }
