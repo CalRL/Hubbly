@@ -100,8 +100,6 @@ public class AnnouncementsManager {
                 }
             }
             currentAnnouncementIndex = (currentAnnouncementIndex + 1) % announcements.size();
-        } else {
-            debugMode.warn("No announcements to send...");
         }
     }
 

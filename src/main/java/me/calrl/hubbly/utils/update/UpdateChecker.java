@@ -1,4 +1,4 @@
-package me.calrl.hubbly.utils;
+package me.calrl.hubbly.utils.update;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
