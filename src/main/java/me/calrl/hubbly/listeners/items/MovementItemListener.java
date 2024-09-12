@@ -1,13 +1,26 @@
+/*
+ * This file is part of Hubbly.
+ *
+ * Hubbly is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * Hubbly is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
+ */
 package me.calrl.hubbly.listeners.items;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.enums.TridentSounds;
-import me.calrl.hubbly.items.TridentItem;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
-import net.minecraft.world.entity.projectile.EntityThrownTrident;
-import net.minecraft.world.item.ItemFishingRod;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -21,6 +34,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -52,6 +66,7 @@ public class MovementItemListener implements Listener {
 
             if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.ENDER_BOW, config.getLong("movementitems.enderbow.cooldown"))) {
                 event.setCancelled(true);
+                player.getInventory().setItem(17, new ItemStack(Material.ARROW));
                 return;
             }
 
@@ -59,6 +74,7 @@ public class MovementItemListener implements Listener {
             PersistentDataContainer container = arrow.getPersistentDataContainer();
             container.set(PluginKeys.ENDER_BOW.getKey(), PersistentDataType.STRING, "arrow");
 
+            player.getInventory().setItem(17, new ItemStack(Material.ARROW));
         }
     }
     @EventHandler
@@ -76,6 +92,19 @@ public class MovementItemListener implements Listener {
                 player.playSound(player, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
             }
         }
+    }
+
+    @EventHandler
+    private void onPlayerJoin(PlayerJoinEvent event) {
+        if(!config.getBoolean("movementitems.enderbow.enabled")) return;
+        final Player player = event.getPlayer();
+
+        if(!player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())) {
+            player.sendMessage(String.valueOf(player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())));
+            return;
+        }
+
+        player.getInventory().setItem(17, new ItemStack(Material.ARROW));
     }
 
     @EventHandler

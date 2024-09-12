@@ -38,7 +38,8 @@ import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.metrics.Metrics;
-import me.calrl.hubbly.utils.UpdateChecker;
+import me.calrl.hubbly.utils.update.UpdateChecker;
+import me.calrl.hubbly.utils.update.UpdateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -61,7 +62,6 @@ public final class Hubbly extends JavaPlugin {
     private final Logger logger = getLogger();
     private FileConfiguration config;
     private static Hubbly instance;
-    private static final String FLY_METADATA_KEY = "hubbly.canFly";
     private FileConfiguration itemsConfig;
     private FileConfiguration serverSelectorConfig;
     private ActionManager actionManager;
@@ -69,8 +69,9 @@ public final class Hubbly extends JavaPlugin {
     private CooldownManager cooldownManager;
     private DebugMode debugMode;
     private AnnouncementsManager announcementsManager;
-    public LockChat lockChat;
-    public NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
+    private LockChat lockChat;
+    public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
+    private String prefix;
 
     private List<Listener> listeners;
     public boolean needsUpdate;
@@ -89,7 +90,7 @@ public final class Hubbly extends JavaPlugin {
 
             debugMode.info("Restarted.");
 
-        } catch(Error e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
@@ -137,7 +138,7 @@ public final class Hubbly extends JavaPlugin {
         registerListener(new LaunchpadListener(this), "launchpad.enabled");
         registerListener(new PlayerJoinListener(this));
         registerListener(new CommandBlockerListener(this));
-        registerListener(new ChatListener(this));
+        registerListener(new ChatListener(this), "blocked_words.enabled");
         registerListener(new MovementItemListener(this));
         registerListener(new XPListener(this), "player.experience.enabled");
     }
@@ -150,6 +151,7 @@ public final class Hubbly extends JavaPlugin {
         debugMode = new DebugMode();
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
+        prefix = this.getConfig().getString("prefix");
 
         this.saveDefaultConfig();
         config = this.getConfig();
@@ -163,37 +165,15 @@ public final class Hubbly extends JavaPlugin {
             debugMode.info("BungeeCord channel registered");
             loadFiles();
             loadComponents();
-            BossBarManager.initialize(Hubbly.getInstance().getConfig());
+            BossBarManager.initialize(this.getConfig());
             BossBarManager.getInstance().reAddAllBossBars();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        int pluginId = 22219;
-        Metrics metrics = new Metrics(this, pluginId);
-        UpdateChecker.init(this, 117243).requestUpdateCheck().whenComplete((result, exception) -> {
-            if(result.requiresUpdate()) {
-                needsUpdate = true;
-                logger.info(String.format("An update is available! Hubbly %s can be downloaded on SpigotMC", result.getNewestVersion()));
-            }
-            UpdateChecker.UpdateReason reason = result.getReason();
-            if(reason == UpdateChecker.UpdateReason.UP_TO_DATE) {
-                logger.info(String.format("Hubbly (%s) is up to date", result.getNewestVersion()));
-            } else if (reason == UpdateChecker.UpdateReason.UNRELEASED_VERSION) {
-                needsUpdate = false;
-                logger.info(String.format("You're running a development build (%s)...", this.getDescription().getVersion()));
-                logger.info("Proceed with caution.");
-            } else {
-                logger.info("Could not check for a new version...");
-                logger.info("Reason: " + reason);
-            }
-        });
-
-        for(Player player : Bukkit.getOnlinePlayers()) {
-            player.setMetadata(FLY_METADATA_KEY, new FixedMetadataValue(this, false));
-        }
-
+        final int pluginId = 22219;
+        new Metrics(this, pluginId);
+        new UpdateUtil().checkForUpdate(this);
 
         logger.info("Hubbly has been enabled!");
     }
@@ -213,7 +193,7 @@ public final class Hubbly extends JavaPlugin {
 
 
     public static Hubbly getInstance() {
-        return getPlugin(Hubbly.class);
+        return instance;
     }
     @Override
     public @NotNull FileConfiguration getConfig() {
@@ -239,12 +219,6 @@ public final class Hubbly extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(this);
     }
 
-
-// todo:
-//    private void registerListener(Listener listener, String isEnabledPath) {
-//
-//    }
-
     public void setPlayerFlight(Player player) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
 
@@ -256,11 +230,6 @@ public final class Hubbly extends JavaPlugin {
     public boolean canPlayerFly(Player player) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
         return dataContainer.getOrDefault(this.FLY_KEY, PersistentDataType.BYTE, (byte) 0) == 1;
-    }
-
-    public void setPlayerContainer(Player player, boolean canFly) {
-        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
-        dataContainer.set(this.FLY_KEY, PersistentDataType.BYTE, canFly ? (byte) 1 : (byte) 0);
     }
 
 
@@ -280,4 +249,7 @@ public final class Hubbly extends JavaPlugin {
     public DebugMode getDebugMode() { return debugMode; }
     public AnnouncementsManager getAnnouncementsManager() { return announcementsManager; }
     public LockChat getLockChat() {return lockChat;}
+    public String getPrefix() {
+        return prefix;
+    }
 }
