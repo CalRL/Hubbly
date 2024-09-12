@@ -44,6 +44,7 @@ public class EnderbowItem implements CustomItem {
             container.set(PluginKeys.ENDER_BOW.getKey(), PersistentDataType.STRING, "enderbow");
             String itemName = ChatUtils.translateHexColorCodes(config.getString("movementitems.enderbow.name", "<#A020F0>Enderbow"));
             meta.setDisplayName(itemName);
+            meta.setUnbreakable(true);
             item.setItemMeta(meta);
         }
         return item;

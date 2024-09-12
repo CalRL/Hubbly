@@ -34,6 +34,7 @@ import org.bukkit.event.entity.ProjectileHitEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -65,6 +66,7 @@ public class MovementItemListener implements Listener {
 
             if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.ENDER_BOW, config.getLong("movementitems.enderbow.cooldown"))) {
                 event.setCancelled(true);
+                player.getInventory().setItem(17, new ItemStack(Material.ARROW));
                 return;
             }
 
@@ -72,6 +74,7 @@ public class MovementItemListener implements Listener {
             PersistentDataContainer container = arrow.getPersistentDataContainer();
             container.set(PluginKeys.ENDER_BOW.getKey(), PersistentDataType.STRING, "arrow");
 
+            player.getInventory().setItem(17, new ItemStack(Material.ARROW));
         }
     }
     @EventHandler
@@ -89,6 +92,19 @@ public class MovementItemListener implements Listener {
                 player.playSound(player, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F);
             }
         }
+    }
+
+    @EventHandler
+    private void onPlayerJoin(PlayerJoinEvent event) {
+        if(!config.getBoolean("movementitems.enderbow.enabled")) return;
+        final Player player = event.getPlayer();
+
+        if(!player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())) {
+            player.sendMessage(String.valueOf(player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())));
+            return;
+        }
+
+        player.getInventory().setItem(17, new ItemStack(Material.ARROW));
     }
 
     @EventHandler
