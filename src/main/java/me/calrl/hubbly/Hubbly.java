@@ -171,7 +171,8 @@ public final class Hubbly extends JavaPlugin {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        new Metrics(this, 22219);
+        final int pluginId = 22219;
+        new Metrics(this, pluginId);
         new UpdateUtil().checkForUpdate(this);
 
         logger.info("Hubbly has been enabled!");
@@ -229,11 +230,6 @@ public final class Hubbly extends JavaPlugin {
     public boolean canPlayerFly(Player player) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
         return dataContainer.getOrDefault(this.FLY_KEY, PersistentDataType.BYTE, (byte) 0) == 1;
-    }
-
-    public void setPlayerContainer(Player player, boolean canFly) {
-        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
-        dataContainer.set(this.FLY_KEY, PersistentDataType.BYTE, canFly ? (byte) 1 : (byte) 0);
     }
 
 
