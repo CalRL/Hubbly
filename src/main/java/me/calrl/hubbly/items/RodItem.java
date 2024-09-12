@@ -38,7 +38,9 @@ public class RodItem implements CustomItem {
         if(meta != null) {
             meta.getPersistentDataContainer().set(PluginKeys.GRAPPLING_HOOK.getKey(), PersistentDataType.STRING, "rod");
             meta.setDisplayName(ChatUtils.translateHexColorCodes(plugin.getConfig().getString("movementitems.grappling_hook.name")));
+            meta.setUnbreakable(true);
         }
+
         item.setItemMeta(meta);
         return item;
     }
