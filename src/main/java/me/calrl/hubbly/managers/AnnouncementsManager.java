@@ -26,6 +26,7 @@ import org.bukkit.scheduler.BukkitTask;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class AnnouncementsManager {
     private List<String[]> announcements;
@@ -34,6 +35,7 @@ public class AnnouncementsManager {
     private DebugMode debugMode;
     private int currentAnnouncementIndex = 0;
     private BukkitTask task;
+    private AtomicBoolean state = new AtomicBoolean(true);
 
     public AnnouncementsManager(Hubbly plugin) {
         this.plugin = plugin;
@@ -44,14 +46,10 @@ public class AnnouncementsManager {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 loadAnnouncements();
                 startAnnouncementsTask();
+
             });
         }
-
-
-
     }
-
-
 
     public List<String[]> getAnnouncements() {
         return new ArrayList<>(announcements);
@@ -66,18 +64,32 @@ public class AnnouncementsManager {
                     String[] messageArray = messages.toArray(new String[0]);
                     announcements.add(messageArray);
                     debugMode.info(announcements.toString());
+                    state.set(true);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             debugMode.warn("No announcements found...");
+            debugMode.warn("Disabling Announcements...");
+            state.set(false);
         }
     }
 
+    /**
+     * Start the announcements task
+     * TODO: move interval into the method params
+     */
     private void startAnnouncementsTask() {
-        int interval = plugin.getConfig().getInt("announcements.interval", 1); // Default to 10 minutes if not set
-        long intervalTicks = interval * 20L; // Convert minutes to ticks (20 ticks = 1 second)
+
+        // Check to see if we start the task at all
+        if(!state.get()) {
+            debugMode.info("Disabled Announcements successfully");
+            return;
+        }
+
+        int interval = plugin.getConfig().getInt("announcements.interval", 1);
+        long intervalTicks = interval * 20L;
 
         task = Bukkit.getScheduler().runTaskTimer(plugin, this::sendNextAnnouncement, 0L, intervalTicks);
 
@@ -96,7 +108,7 @@ public class AnnouncementsManager {
             String[] announcement = announcements.get(currentAnnouncementIndex);
             for (String line : announcement) {
                 for(Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(ChatUtils.processMessage(line));
+                    player.sendMessage(ChatUtils.processMessage(player, line));
                 }
             }
             currentAnnouncementIndex = (currentAnnouncementIndex + 1) % announcements.size();

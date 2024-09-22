@@ -52,6 +52,16 @@ public class ChatUtils {
         return message;
     }
 
+    public static String processMessage(Player player, String message) {
+        message = translateHexColorCodes(message);
+        message = translateCenterMessage(message);
+        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            message = PlaceholderAPI.setPlaceholders(player, message);
+        }
+
+        return message;
+    }
+
     private static String translateCenterMessage(String message) {
         Pattern centerPattern = Pattern.compile("<center>(.*?)</center>");
         Matcher matcher = centerPattern.matcher(message);

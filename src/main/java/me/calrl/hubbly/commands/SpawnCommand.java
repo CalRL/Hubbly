@@ -50,6 +50,9 @@ public class SpawnCommand implements CommandExecutor {
             Player player = (Player) sender;
             Location location = player.getLocation();
             String worldName = config.getString("spawn.world");
+            if(worldName == null) {
+                worldName = "world";
+            }
             World world = Bukkit.getWorld(worldName);
             double x = config.getDouble("spawn.x");
             double y = config.getDouble("spawn.y");
