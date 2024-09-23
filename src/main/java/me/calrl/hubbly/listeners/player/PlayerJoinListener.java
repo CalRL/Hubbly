@@ -22,8 +22,6 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.Color;
-import org.bukkit.FireworkEffect;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -48,21 +46,11 @@ public class PlayerJoinListener implements Listener {
         this.actionManager = plugin.getActionManager();
     }
 
-    private FireworkEffect fireworkEffect() {
-        FireworkEffect.Builder builder = FireworkEffect.builder()
-                .withColor(Color.WHITE)
-                .with(FireworkEffect.Type.valueOf(config.getString("player.join_firework.type")))
-                .withTrail();
-
-        return builder.build();
-    }
-
-
-
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
         if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+
         if(player.isOp() && plugin.needsUpdate) {
             player.sendMessage("Please update Hubbly at cal.ceo/hubbly");
         }
@@ -92,16 +80,6 @@ public class PlayerJoinListener implements Listener {
                 debugMode.info(actions.toString());
             }
         }
-
-
-//        if (config.getBoolean("player.title.enabled")) {
-//            String text = ChatColor.translateAlternateColorCodes('&', config.getString("player.title.text"));
-//            String subtitle = ChatColor.translateAlternateColorCodes('&', config.getString("player.title.subtitle"));
-//            int fadeIn = config.getInt("player.title.fadein");
-//            int stay = config.getInt("player.title.stay");
-//            int fadeOut = config.getInt("player.title.fadeout");
-//            player.sendTitle(text, subtitle, fadeIn, stay, fadeOut);
-//        }
 
 
     }
