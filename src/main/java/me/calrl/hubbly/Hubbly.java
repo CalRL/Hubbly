@@ -144,6 +144,7 @@ public final class Hubbly extends JavaPlugin {
     }
     @Override
     public void onEnable() {
+        this.saveDefaultConfig();
         instance = this;
         disabledWorlds = new DisabledWorlds();
         cooldownManager = new CooldownManager();
@@ -153,7 +154,6 @@ public final class Hubbly extends JavaPlugin {
         lockChat = new LockChat(this);
         prefix = this.getConfig().getString("prefix");
 
-        this.saveDefaultConfig();
         config = this.getConfig();
         try {
 
