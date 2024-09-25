@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.utils;
 
+import me.calrl.hubbly.Hubbly;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -24,6 +25,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.regex.Matcher;
@@ -59,6 +61,14 @@ public class ChatUtils {
             message = PlaceholderAPI.setPlaceholders(player, message);
         }
 
+        return message;
+    }
+
+    public static String prefixMessage(Player player, String message) {
+        message = processMessage(player, message);
+        FileConfiguration config = Hubbly.getInstance().getConfig();
+        String prefix = config.getString("prefix");
+        message = prefix + " " + message;
         return message;
     }
 
