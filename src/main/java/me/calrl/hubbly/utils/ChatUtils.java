@@ -37,17 +37,17 @@ public class ChatUtils {
 
         Pattern hexPattern = Pattern.compile( "<#[a-fA-F0-9]{6}>");
         Matcher matcher = hexPattern.matcher(message);
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
         while(matcher.find()) {
             String hexColor = matcher.group();
             String chatColor = ChatColor.of(hexColor.substring(1, hexColor.length()-1)).toString();
-            matcher.appendReplacement(buffer, chatColor);
+            matcher.appendReplacement(builder, chatColor);
         }
-        matcher.appendTail(buffer);
-        return buffer.toString();
+        matcher.appendTail(builder);
+        return builder.toString();
     }
 
-    public static String processMessage(String message) {
+    public static String centerMessage(String message) {
         message = translateHexColorCodes(message);
         message = translateCenterMessage(message);
 
@@ -55,20 +55,20 @@ public class ChatUtils {
     }
 
     public static String processMessage(Player player, String message) {
-        message = translateHexColorCodes(message);
-        message = translateCenterMessage(message);
         if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             message = PlaceholderAPI.setPlaceholders(player, message);
         }
-
+        message = translateHexColorCodes(message);
         return message;
     }
 
     public static String prefixMessage(Player player, String message) {
-        message = processMessage(player, message);
+
         FileConfiguration config = Hubbly.getInstance().getConfig();
         String prefix = config.getString("prefix");
         message = prefix + " " + message;
+
+        message = processMessage(player, message);
         return message;
     }
 
