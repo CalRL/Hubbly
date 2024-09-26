@@ -52,7 +52,7 @@ public class HubblyCommand implements TabExecutor {
     }
 
     private void registerSubCommands() {
-        subCommands.put("reload", new ReloadCommand(plugin));
+        subCommands.put("reload", new ReloadCommand(logger, plugin));
         subCommands.put("selector", new SelectorCommand(plugin));
         subCommands.put("version", new VersionCommand(plugin));
         subCommands.put("nextannouncement", new NextAnnouncementCommand(plugin));
@@ -66,14 +66,14 @@ public class HubblyCommand implements TabExecutor {
         }
 
         if (args.length == 0) {
-            player.sendMessage(ChatUtils.prefixMessage(player,  "Usage: /hubbly <command> <args>"));
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /hubbly <command> <args>");
             return true;
         }
         SubCommand subCommand = subCommands.get(args[0].toLowerCase());
         if (subCommand != null) {
             subCommand.execute(player, args);
         } else {
-            player.sendMessage(ChatUtils.prefixMessage(player,  "Unknown command."));
+            sender.sendMessage(ChatColor.YELLOW + "Unknown command.");
         }
 
 

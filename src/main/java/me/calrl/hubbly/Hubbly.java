@@ -38,7 +38,6 @@ import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.metrics.Metrics;
-import me.calrl.hubbly.utils.Utils;
 import me.calrl.hubbly.utils.update.UpdateChecker;
 import me.calrl.hubbly.utils.update.UpdateUtil;
 import org.bukkit.Bukkit;
@@ -71,8 +70,6 @@ public final class Hubbly extends JavaPlugin {
     private DebugMode debugMode;
     private AnnouncementsManager announcementsManager;
     private LockChat lockChat;
-    private Utils utils;
-
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
 
@@ -155,9 +152,6 @@ public final class Hubbly extends JavaPlugin {
         debugMode = new DebugMode();
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
-        utils = new Utils(this);
-
-
         prefix = this.getConfig().getString("prefix");
 
         config = this.getConfig();
@@ -255,10 +249,7 @@ public final class Hubbly extends JavaPlugin {
     public DebugMode getDebugMode() { return debugMode; }
     public AnnouncementsManager getAnnouncementsManager() { return announcementsManager; }
     public LockChat getLockChat() {return lockChat;}
-    public Utils getUtils() { return utils; }
-    
     public String getPrefix() {
         return prefix;
     }
-
 }

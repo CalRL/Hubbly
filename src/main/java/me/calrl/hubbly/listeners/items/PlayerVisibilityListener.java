@@ -17,7 +17,6 @@
 package me.calrl.hubbly.listeners.items;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
@@ -47,38 +46,25 @@ public class PlayerVisibilityListener implements Listener {
     public void onItemClick(PlayerInteractEvent event) {
         if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
 
+        Player player = event.getPlayer();
         ItemStack itemInHand = event.getItem();
+
         if (itemInHand == null) {
             return;
         }
-
         ItemMeta meta = itemInHand.getItemMeta();
-        if(meta == null) {
-            return;
+
+        if (meta != null && meta.getPersistentDataContainer().has(PluginKeys.PLAYER_VISIBILITY.getKey())) {
+            if(event.getAction() != Action.PHYSICAL && (player.hasPermission("hubbly.use.playervisibility") || player.isOp())) {
+                Bukkit.getScheduler().runTaskLater(plugin, () -> swapDye(player, itemInHand), 2L);
+                event.setCancelled(true);
+
+            } else {
+                player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_use")));
+            }
+            debugMode.info("Holding: " + player.getInventory().getItemInMainHand());
         }
-
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        if(!container.has(PluginKeys.PLAYER_VISIBILITY.getKey())) return;
-
-
-        Action action = event.getAction();
-        if(action == Action.PHYSICAL) {
-            return;
-        }
-
-        Player player = event.getPlayer();
-        if(player.hasPermission(Permissions.USE_PLAYER_VISIBILITY.getPermission())) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> swapDye(player, itemInHand), 2L);
-            event.setCancelled(true);
-            
-        } else {
-            player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_use")));
-        }
-        debugMode.info("Holding: " + player.getInventory().getItemInMainHand());
     }
-
-
-
     private void swapDye(Player player, ItemStack itemInHand) {
         Material newMaterial;
         String displayName;

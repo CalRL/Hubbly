@@ -48,7 +48,6 @@ public enum Permissions {
     BYPASS_INTERACT("bypass.interact"),
     BYPASS_FOOD_CHANCE("bypass.food"),
     BYPASS_PROJECTILES("bypass.projectiles"),
-    BYPASS_OFF_HAND("bypass.offhand"),
 
     USE_SELECTOR("use.compass"),
     USE_PLAYER_VISIBILITY("use.playervisibility"),

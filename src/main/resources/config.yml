@@ -1,5 +1,5 @@
 debug: true
-prefix: '&e&lHubbly &7&l>&r'
+prefix: '&a&lHUBBLY &7&l>&r'
 
 
 #----------------#
@@ -234,5 +234,4 @@ messages:
   no_fly_enabled: "Flight is disabled in config"
   blocked_command: 'Unknown command. Type "/help" for help'
   blocked_message: 'Please do not use that word!'
-  success: "Success!"
 

@@ -18,37 +18,24 @@
 package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.enums.Permissions;
-import org.bukkit.entity.HumanEntity;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerSwapHandItemsEvent;
-import org.bukkit.inventory.ItemStack;
 
 public class PlayerOffHandListener implements Listener {
 
     @EventHandler
     private void onOffHandSwitch(PlayerSwapHandItemsEvent event) {
-        Player player = event.getPlayer();
-        if(event.getPlayer().hasPermission(Permissions.BYPASS_OFF_HAND.getPermission())) return;
-
+        if(event.getPlayer().hasPermission("hubbly.bypass") || event.getPlayer().isOp()) return;
         else if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
-
         event.setCancelled(true);
     }
 
     @EventHandler
     private void onInventorySwap(InventoryClickEvent event) {
-
-        HumanEntity player = event.getWhoClicked();
-        if(player.hasPermission(Permissions.BYPASS_OFF_HAND.getPermission())) return;
-
-        int rawSlot = event.getRawSlot();
-        int slot = event.getSlot();
-        ItemStack cursor = event.getCursor();
-        if(rawSlot != slot && cursor != null && slot == 40) {
+        if(event.getWhoClicked().hasPermission("hubbly.bypass") || event.getWhoClicked().isOp()) return;
+        if(event.getRawSlot() != event.getSlot() && event.getCursor() != null && event.getSlot() == 40) {
             event.setCancelled(true);
         }
     }
