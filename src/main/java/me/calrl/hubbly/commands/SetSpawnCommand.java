@@ -21,6 +21,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.AngleRounder;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.interfaces.SubCommand;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -73,11 +74,11 @@ public class SetSpawnCommand implements CommandExecutor {
             config.set("spawn.z", spawnRound(z));
             config.set("spawn.yaw", roundedYaw);
             config.set("spawn.pitch", roundedPitch);
-            player.sendMessage("Set spawn successfully.");
+            player.sendMessage(ChatUtils.prefixMessage(player, config.getString("messages.success", "Success!")));
             plugin.saveConfig();
 
         } else {
-            player.sendMessage(config.getString("messages.no_permission_command"));
+            player.sendMessage(config.getString("messages.no_permission_command", "No permission"));
         }
         return true;
     }
