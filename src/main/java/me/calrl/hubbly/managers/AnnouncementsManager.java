@@ -108,7 +108,9 @@ public class AnnouncementsManager {
             String[] announcement = announcements.get(currentAnnouncementIndex);
             for (String line : announcement) {
                 for(Player player : Bukkit.getOnlinePlayers()) {
-                    player.sendMessage(ChatUtils.processMessage(player, line));
+                    player.sendMessage(
+                            ChatUtils.centerMessage(ChatUtils.processMessage(player, line))
+                    );
                 }
             }
             currentAnnouncementIndex = (currentAnnouncementIndex + 1) % announcements.size();
