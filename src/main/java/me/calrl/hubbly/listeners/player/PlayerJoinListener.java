@@ -22,6 +22,7 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -72,12 +73,14 @@ public class PlayerJoinListener implements Listener {
         if(config.contains("actions_on_join")) {
             List<String> actions = config.getStringList("actions_on_join");
             if (!actions.isEmpty()) {
-                for(String action : actions) {
-                    actionManager.executeAction(Hubbly.getInstance(), player, action);
-                    debugMode.info("Executed " + action);
-                }
+                Bukkit.getScheduler().runTaskLater(plugin, () -> {
+                    for(String action : actions) {
+                        actionManager.executeAction(Hubbly.getInstance(), player, action);
+                        debugMode.info("Executed " + action);
+                    }
 
-                debugMode.info(actions.toString());
+                    debugMode.info(actions.toString());
+                }, 1L);
             }
         }
 

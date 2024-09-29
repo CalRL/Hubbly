@@ -19,6 +19,7 @@ package me.calrl.hubbly.commands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.managers.LockChat;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,9 +38,21 @@ public class LockChatCommand implements CommandExecutor {
         if(!commandSender.hasPermission(Permissions.COMMAND_LOCK_CHAT.getPermission())) return true;
         lockChat = plugin.getLockChat();
         if(lockChat.getChatLock()) {
-            Bukkit.broadcastMessage("Chat has been unlocked by " + commandSender.getName());
+            String message = plugin.getConfig().getString("messages.chat_unlocked", "Chat has been unlocked by:");
+            if(message.contains("%player%")) {
+                message = message.replace("%player%", commandSender.getName());
+            }
+            Bukkit.broadcastMessage(
+                    ChatUtils.translateHexColorCodes(message)
+            );
         } else {
-            Bukkit.broadcastMessage("Chat has been locked by " + commandSender.getName());
+            String message = plugin.getConfig().getString("messages.chat_locked", "Chat has been locked by:");
+            if(message.contains("%player%")) {
+                message = message.replace("%player%", commandSender.getName());
+            }
+            Bukkit.broadcastMessage(
+                    ChatUtils.translateHexColorCodes(message)
+            );
         }
         lockChat.flipChatLock();
 

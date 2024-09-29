@@ -181,23 +181,21 @@ public class SocialsListener implements Listener {
                 //logger.warning("Texture value or display name not set for PLAYER_HEAD item " + itemKey + " in configuration.");
                 return null;
             }
-            displayName = ParsePlaceholders.parsePlaceholders(player, displayName);
+            displayName = ChatUtils.processMessage(player, displayName);
             //logger.info("Creating custom head with texture value: " + textureValue + " and display name: " + displayName);
             item = CreateCustomHead.createCustomHead(textureValue, displayName);
         } else {
             item = new ItemStack(material);
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
-                String displayName = ChatColor.translateAlternateColorCodes('&', Objects.requireNonNull(config.getString("socials.items." + itemKey + ".name")));
-                if (displayName != null) {
-                    displayName = ParsePlaceholders.parsePlaceholders(player, displayName);
-                    meta.setDisplayName(displayName);
-                }
+                String displayName = ChatUtils.processMessage(player, config.getString("socials.items." + itemKey + ".name", "Socials"));
+                displayName = ParsePlaceholders.parsePlaceholders(player, displayName);
+                meta.setDisplayName(displayName);
 
                 List<String> lore = config.getStringList("socials.items." + itemKey + ".lore");
                 if (lore != null && !lore.isEmpty()) {
                     for (int i = 0; i < lore.size(); i++) {
-                        lore.set(i, ParsePlaceholders.parsePlaceholders(player, lore.get(i)));
+                        lore.set(i, ChatUtils.processMessage(player, lore.get(i)));
                     }
                     meta.setLore(lore);
                 }
