@@ -38,14 +38,17 @@ public class TitleAction implements Action {
         int fadeIn;
         int stay;
         int fadeOut;
-        try {
-            String[] args = data.split(";");
-            if(args.length != 5) {
-                debugMode.warn("Invalid data format, expected 4 args, got " + args.length);
-            }
 
-            title = ChatUtils.translateHexColorCodes(args[0]);
-            subtitle = ChatUtils.translateHexColorCodes(args[1]);
+        String[] args = data.split(";");
+        if(args.length != 5) {
+            debugMode.warn("Invalid data format, expected 4 args, got " + args.length);
+        }
+
+        title = ChatUtils.translateHexColorCodes(args[0]);
+
+        subtitle = args[1].isEmpty() ? "" : ChatUtils.translateHexColorCodes(args[1]);
+
+        try {
             fadeIn = Integer.parseInt(args[2]);
             stay = Integer.parseInt(args[3]);
             fadeOut = Integer.parseInt(args[4]);

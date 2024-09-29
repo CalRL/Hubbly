@@ -55,7 +55,12 @@ public class ItemJoinListener implements Listener {
         if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
         PlayerInventory playerInventory = event.getPlayer().getInventory();
         playerInventory.clear();
-        playerInventory.setHeldItemSlot(4);
+        playerInventory.setHeldItemSlot(config.getInt("item_on_join.features.compass.slot")-1);
+
+        /*
+         * Garbage, this is doodoo but I don't want to remove it in favor of [ITEM] because some people still use this, no clue why
+         * TODO: fix this
+         */
         if(Objects.equals(config.getBoolean("item_on_join.enabled"), true)) {
             if(Objects.equals(config.getBoolean("item_on_join.features.compass.enabled"), true)) {
                 event.getPlayer().getInventory().setItem(config.getInt("item_on_join.features.compass.slot")-1, new CompassItem().createItem());

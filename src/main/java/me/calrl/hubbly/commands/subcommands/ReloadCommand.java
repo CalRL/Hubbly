@@ -18,6 +18,7 @@
 package me.calrl.hubbly.commands.subcommands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.listeners.player.PlayerJoinListener;
@@ -37,13 +38,10 @@ import java.util.logging.Logger;
 public class ReloadCommand implements SubCommand {
 
 
-    private final Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final Hubbly plugin;
-    private PlayerJoinListener playerJoinListener;
 
-    public ReloadCommand(Logger logger, Hubbly plugin) {
-        this.logger = logger;
+    public ReloadCommand(Hubbly plugin) {
         this.plugin = plugin;
     }
 
@@ -52,20 +50,22 @@ public class ReloadCommand implements SubCommand {
     }
     @Override
     public void execute(Player player, String[] args) {
-        if(player.hasPermission("hubbly.command.reload") || player.isOp()) {
+        if(player.hasPermission(Permissions.COMMAND_RELOAD.getPermission())) {
 
             try {
                 BossBarManager bossBarManager = BossBarManager.getInstance();
                 if (bossBarManager != null) {
                     bossBarManager.removeAllBossBars();
                 }
-                Hubbly.getInstance().reloadPlugin();
-                player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.reload")));
+                plugin.reloadPlugin();
+                player.sendMessage(
+                        ChatUtils.prefixMessage(player, config.getString("messages.reload", "Config reloaded."))
+                );
                 BossBarManager.initialize(Hubbly.getInstance().getConfig());
                 bossBarManager = BossBarManager.getInstance();
                 bossBarManager.reAddAllBossBars();
             } catch (Exception e) {
-                logger.info(String.valueOf(e));
+                plugin.getLogger().info(String.valueOf(e));
             }
 
         }
