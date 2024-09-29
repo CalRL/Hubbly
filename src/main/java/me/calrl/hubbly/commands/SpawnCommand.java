@@ -21,6 +21,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.interfaces.SubCommand;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -36,27 +37,25 @@ import java.util.Map;
 
 public class SpawnCommand implements CommandExecutor {
 
-    private final JavaPlugin plugin;
-    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private final Hubbly plugin;
+    private FileConfiguration config;
     private final Map<String, CustomItem> items = new HashMap<>();
 
-    public SpawnCommand(JavaPlugin plugin) {
+    public SpawnCommand(Hubbly plugin) {
         this.plugin = plugin;
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if(sender.hasPermission("hubbly.command.spawn") || sender.isOp()) {
-            Player player = (Player) sender;
-            Location location = player.getLocation();
-            String worldName = config.getString("spawn.world");
-            World world = Bukkit.getWorld(worldName);
-            double x = config.getDouble("spawn.x");
-            double y = config.getDouble("spawn.y");
-            double z = config.getDouble("spawn.z");
-            float yaw = (float) config.getDouble("spawn.yaw");
-            float pitch = (float) config.getDouble("spawn.pitch");
-            player.teleport(new Location(world, x, y, z, yaw, pitch));
+
+        if(!(sender instanceof Player player)) {
+            sender.sendMessage(ChatColor.RED + config.getString("messages.no_console"));
+            return true;
+        }
+
+        if(sender.hasPermission("hubbly.command.spawn")) {
+            config = plugin.getConfig();
+            player.teleport(plugin.getUtils().getSpawn());
         }
 
         return true;

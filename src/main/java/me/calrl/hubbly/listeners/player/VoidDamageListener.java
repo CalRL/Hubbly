@@ -35,33 +35,27 @@ import java.util.logging.Logger;
 public class VoidDamageListener implements Listener {
 
     private FileConfiguration config = Hubbly.getInstance().getConfig();
-    private final Logger logger;
     private Hubbly plugin;
     public VoidDamageListener(Hubbly plugin) {
         this.plugin = plugin;
-        this.logger = plugin.getLogger();
     }
 
     @EventHandler
     private void onEntityDamage(EntityDamageEvent event) {
         if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getEntity().getLocation())) return;
         Entity entity = event.getEntity();
-        if (!(entity instanceof Player)) return;
-        Player player = (Player) event.getEntity();
-        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
-        else if(player.getGameMode() != GameMode.SURVIVAL) return;
+        if (!(entity instanceof Player player)) return;
+
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+
+        GameMode gameMode = player.getGameMode();
+        if(gameMode != GameMode.SURVIVAL && gameMode != GameMode.ADVENTURE) return;
 
         if(event.getEntity() instanceof Player && config.getBoolean("antivoid.enabled")) {
             if(event.getCause() == EntityDamageEvent.DamageCause.VOID) {
                 event.setCancelled(true);
-                String worldName = config.getString("spawn.world");
-                World world = Bukkit.getWorld(worldName);
-                double x = config.getDouble("spawn.x");
-                double y = config.getDouble("spawn.y");
-                double z = config.getDouble("spawn.z");
-                float yaw = (float) config.getDouble("spawn.yaw");
-                float pitch = (float) config.getDouble("spawn.pitch");
-                event.getEntity().teleport(new Location(world, x, y, z, yaw, pitch));
+
+                event.getEntity().teleport(plugin.getUtils().getSpawn());
 
             }
         }

@@ -84,6 +84,7 @@ permissions:
       hubbly.bypass.item.throw: true
       hubbly.bypass.antiwdl: true
       hubbly.bypass.projectiles: true
+      hubbly.bypass.offhand: true
   hubbly.bypass.forceinventory:
     default: op
   hubbly.bypass.antiswear:
@@ -102,6 +103,8 @@ permissions:
   hubbly.bypass.break:
     default: op
   hubbly.bypass.food:
+    default: op
+  hubbly.bypass.offhand:
     default: op
 
 hubbly.notify:

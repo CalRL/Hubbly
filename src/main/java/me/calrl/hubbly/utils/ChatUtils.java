@@ -17,6 +17,7 @@
 
 package me.calrl.hubbly.utils;
 
+import me.calrl.hubbly.Hubbly;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -24,6 +25,7 @@ import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 import java.util.regex.Matcher;
@@ -35,20 +37,38 @@ public class ChatUtils {
 
         Pattern hexPattern = Pattern.compile( "<#[a-fA-F0-9]{6}>");
         Matcher matcher = hexPattern.matcher(message);
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder builder = new StringBuilder();
         while(matcher.find()) {
             String hexColor = matcher.group();
             String chatColor = ChatColor.of(hexColor.substring(1, hexColor.length()-1)).toString();
-            matcher.appendReplacement(buffer, chatColor);
+            matcher.appendReplacement(builder, chatColor);
         }
-        matcher.appendTail(buffer);
-        return buffer.toString();
+        matcher.appendTail(builder);
+        return builder.toString();
     }
 
-    public static String processMessage(String message) {
+    public static String centerMessage(String message) {
         message = translateHexColorCodes(message);
         message = translateCenterMessage(message);
 
+        return message;
+    }
+
+    public static String processMessage(Player player, String message) {
+        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            message = PlaceholderAPI.setPlaceholders(player, message);
+        }
+        message = translateHexColorCodes(message);
+        return message;
+    }
+
+    public static String prefixMessage(Player player, String message) {
+
+        FileConfiguration config = Hubbly.getInstance().getConfig();
+        String prefix = config.getString("prefix");
+        message = prefix + " " + message;
+
+        message = processMessage(player, message);
         return message;
     }
 

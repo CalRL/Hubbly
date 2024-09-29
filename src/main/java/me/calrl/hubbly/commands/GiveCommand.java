@@ -20,6 +20,7 @@ package me.calrl.hubbly.commands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.Action;
 import me.calrl.hubbly.action.ActionManager;
+import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.items.*;
 import me.calrl.hubbly.managers.DebugMode;
@@ -86,7 +87,7 @@ public class GiveCommand implements TabExecutor {
                 return true;
             }
 
-            if (sender.hasPermission("hubbly.command.give") || sender.isOp()) {
+            if (sender.hasPermission(Permissions.COMMAND_GIVE.getPermission())) {
                 Player targetPlayer = Bukkit.getPlayer(args[0]);
                 if (targetPlayer == null) {
                     sender.sendMessage(ChatColor.RED + "Player not found: " + args[0]);

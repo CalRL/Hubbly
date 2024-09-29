@@ -18,6 +18,7 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
@@ -42,42 +43,40 @@ public class FlyCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
-        if (!(sender instanceof Player)) {
+        if (!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
             return true;
         }
-
-
-        Player player = (Player) sender;
-        if(player.getGameMode() == GameMode.SPECTATOR) return true;
+        GameMode gameMode = player.getGameMode();
+        if(gameMode == GameMode.SPECTATOR) return true;
 
         if (!config.getBoolean("player.fly.enabled")) {
             player.sendMessage(config.getString("messages.no_fly_enabled", "Flight is disabled in config"));
             return true;
         }
 
-        if (!player.hasPermission("hubbly.command.fly") && !player.isOp()) {
-            player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_command")));
+        if (!player.hasPermission(Permissions.COMMAND_FLY.getPermission()) && !player.isOp()) {
+            player.sendMessage(
+                    ChatUtils.prefixMessage(player, config.getString("messages.no_permission_command"))
+            );
             return true;
         }
 
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
 
-        // Check if the player already has flight data stored
         Byte canFly = dataContainer.get(plugin.FLY_KEY, PersistentDataType.BYTE);
 
-        // If no data is found, default to false (0)
         if (canFly == null) {
             canFly = 0;
         }
 
         if (canFly == 1) {
             player.setFlying(false);
-            player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.fly.disable")));
-            dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 0); // Update to no flight
+            player.sendMessage(ChatUtils.prefixMessage(player, config.getString("messages.fly.disable")));
+            dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 0);
         } else {
-            player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.fly.enable")));
-            dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 1); // Update to allow flight
+            player.sendMessage(ChatUtils.prefixMessage(player, config.getString("messages.fly.enable")));
+            dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 1);
         }
 
         return true;
