@@ -20,11 +20,9 @@ package me.calrl.hubbly.items;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.CreateCustomHead;
-import me.calrl.hubbly.functions.ParsePlaceholders;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -83,7 +81,7 @@ public class ConfigItems implements CustomItem {
             if (config.contains(path + ".lore")) {
                 List<String> lore = new ArrayList<>();
                 for (String line : config.getStringList(path + ".lore")) {
-                    lore.add(ChatUtils.translateHexColorCodes(ParsePlaceholders.parsePlaceholders(player, line)));
+                    lore.add(ChatUtils.processMessage(player, line));
                 }
                 meta.setLore(lore);
             }

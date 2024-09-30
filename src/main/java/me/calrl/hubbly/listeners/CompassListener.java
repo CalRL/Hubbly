@@ -25,7 +25,6 @@ import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -44,17 +43,14 @@ import org.bukkit.persistence.PersistentDataType;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Logger;
 
 public class CompassListener implements Listener {
-    
+
     private FileConfiguration config;
     private final Hubbly plugin;
     private final ActionManager actionManager;
     private final NamespacedKey actionsKey;
     private DebugMode debugMode;
-    private boolean isBungee;
-    private boolean isVelocity;
     private FileConfiguration pluginConfig;
 
 
@@ -177,18 +173,18 @@ public class CompassListener implements Listener {
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
         if (meta == null) {
-            logger.warning("Meta is null, cannot generate item...");
+            plugin.getLogger().warning("Meta is null, cannot generate item...");
             return null;
         }
 
         if (config.contains(path + ".name")) {
-            String itemName = ChatUtils.parsePlaceholders(player, config.getString(path + ".name"));
-            meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', itemName));
+            String itemName = config.getString(path + ".name");
+            meta.setDisplayName(ChatUtils.processMessage(player, itemName));
         }
 
         if (config.contains(path + ".lore")) {
             List<String> loreList = config.getStringList(path + ".lore");
-            loreList.replaceAll(message -> ChatUtils.translateHexColorCodes(ChatUtils.parsePlaceholders(player, message)));
+            loreList.replaceAll(message -> ChatUtils.processMessage(player, message));
             meta.setLore(loreList);
         }
 
@@ -226,15 +222,15 @@ public class CompassListener implements Listener {
 
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            String displayName = config.getString("selector.fill.name");
-            if (displayName != null) {
-                displayName = ChatUtils.parsePlaceholders(player, displayName);
-                meta.setDisplayName(displayName);
-            }
+        if (meta == null) return null;
 
-            item.setItemMeta(meta);
+        String displayName = config.getString("selector.fill.name");
+        if (displayName != null) {
+            displayName = ChatUtils.processMessage(player, displayName);
+            meta.setDisplayName(displayName);
         }
+
+        item.setItemMeta(meta);
 
         return item;
     }
