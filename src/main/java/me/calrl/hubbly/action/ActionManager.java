@@ -53,7 +53,8 @@ public class ActionManager {
                 new ItemAction(),
                 new BungeeAction(),
                 new MessageAction(),
-                new LaunchAction()
+                new LaunchAction(),
+                new SlotAction()
 
         );
     }

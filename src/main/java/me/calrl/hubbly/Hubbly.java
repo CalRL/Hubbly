@@ -33,13 +33,12 @@ import me.calrl.hubbly.listeners.world.AntiWDL;
 import me.calrl.hubbly.listeners.world.LaunchpadListener;
 import me.calrl.hubbly.listeners.world.WorldEventListeners;
 import me.calrl.hubbly.managers.AnnouncementsManager;
-import me.calrl.hubbly.managers.LockChat;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
+import me.calrl.hubbly.managers.LockChat;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.metrics.Metrics;
 import me.calrl.hubbly.utils.Utils;
-import me.calrl.hubbly.utils.update.UpdateChecker;
 import me.calrl.hubbly.utils.update.UpdateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -48,7 +47,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -99,15 +97,11 @@ public final class Hubbly extends JavaPlugin {
     }
 
     public void loadComponents() {
-        getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, this), this);
 
         loadListeners();
 
-        getServer().getPluginManager().registerEvents(new SocialsListener(logger),this);
-        getServer().getPluginManager().registerEvents(new VoidDamageListener(this), this);
         getServer().getPluginManager().registerEvents(new WorldEventListeners(this), this);
         getServer().getPluginManager().registerEvents(new ConfigItemListener(this), this);
-        getServer().getPluginManager().registerEvents(new DoubleJumpListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerOffHandListener(), this);
 
         getCommand("hubbly").setExecutor(new HubblyCommand(logger, this));
@@ -136,7 +130,12 @@ public final class Hubbly extends JavaPlugin {
         registerListener(listener, "null");
     }
     private void loadListeners() {
+        registerListener(new ItemJoinListener(this), "item_on_join.enabled");
+
         registerListener(new CompassListener(this));
+        registerListener(new SocialsListener(this), "socials.enabled");
+        registerListener(new VoidDamageListener(this), "antivoid.enabled");
+        registerListener(new DoubleJumpListener(this), "double_jump.enabled");
         registerListener(new PlayerVisibilityListener(), "playervisibility.enabled");
         registerListener(new LaunchpadListener(this), "launchpad.enabled");
         registerListener(new PlayerJoinListener(this));
