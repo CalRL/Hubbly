@@ -73,19 +73,6 @@ socials:
     name: " "
     type: "BLACK_STAINED_GLASS_PANE"
 
-## ItemOnJoin is deprecated as of 2.4.3 and will be deleted in a future update.
-item_on_join:
-  enabled: true
-  forceinventory: true
-  features:
-    compass:
-      enabled: true
-      slot: 5
-    playervisibility:
-      enabled: true
-      slot: 8
-
-
 close_button:
   slot: 23
   material: "BARRIER"
@@ -131,6 +118,7 @@ spawn:
 
 
 player:
+  forceinventory: true
   experience:
     enabled: true
     level: 2024
