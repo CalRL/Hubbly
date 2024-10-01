@@ -97,10 +97,9 @@ public class MovementItemListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         if(!config.getBoolean("movementitems.enderbow.enabled")) return;
-        final Player player = event.getPlayer();
 
+        final Player player = event.getPlayer();
         if(!player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())) {
-            player.sendMessage(String.valueOf(player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())));
             return;
         }
 
