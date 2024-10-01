@@ -23,6 +23,7 @@ import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.managers.holders.CompassHolder;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -35,14 +36,19 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import javax.crypto.KEMSpi;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+
+import static me.calrl.hubbly.functions.CreateCustomHead.setTextures;
 
 public class CompassListener implements Listener {
 
@@ -94,39 +100,33 @@ public class CompassListener implements Listener {
             debugMode.warn("Configuration for selector.gui.title is missing.");
             return;
         }
-
-        if (event.getView().getTitle().equals(config.getString("selector.gui.title"))) {
-            event.setCancelled(true);  // Prevent item movement
-
-            ItemStack clickedItem = event.getCurrentItem();
-            if(clickedItem == null) return;
-            ItemMeta meta = clickedItem.getItemMeta();
-            if(meta == null) return;
-
-            PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-            String actionsString = dataContainer.get(actionsKey, PersistentDataType.STRING);
-            if (actionsString != null) {
-                debugMode.info("Actions string found: " + actionsString);  // Debug log
-                String[] actions = actionsString.split(",");
-                Player player = (Player) event.getWhoClicked();
-                for (String actionData : actions) {
-                    actionManager.executeAction(plugin, player, actionData);
-                    debugMode.info("Executing action: " + actionData);
-                }
-                debugMode.info(Arrays.toString(actions));
-            }
-        }
+        InventoryHolder holder = event.getInventory().getHolder();
+        if(!(holder instanceof CompassHolder)) return;
+        event.setCancelled(true);  // Prevent item movement
 
         ItemStack clickedItem = event.getCurrentItem();
-        if (clickedItem == null || clickedItem.getType() == Material.AIR) {
-            return;
+        if(clickedItem == null || clickedItem.getType() == Material.AIR) return;
+
+        ItemMeta meta = clickedItem.getItemMeta();
+        if(meta == null) return;
+
+        PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
+        String actionsString = dataContainer.get(actionsKey, PersistentDataType.STRING);
+        if (actionsString != null) {
+            debugMode.info("Actions string found: " + actionsString);  // Debug log
+            String[] actions = actionsString.split(",");
+            Player player = (Player) event.getWhoClicked();
+            for (String actionData : actions) {
+                actionManager.executeAction(plugin, player, actionData);
+                debugMode.info("Executing action: " + actionData);
+            }
+            debugMode.info(Arrays.toString(actions));
         }
     }
 
     public void openCompassGUI(Player player) {
         if (Objects.equals(config.getString("selector.enabled"), "true")) {
-            Inventory gui = Bukkit.createInventory(null, config.getInt("selector.gui.size"),
-                    ChatUtils.translateHexColorCodes(config.getString("selector.gui.title", "unconfigured")));
+            Inventory gui = new CompassHolder(plugin).getInventory();
 
             for (String itemKey : Objects.requireNonNull(config.getConfigurationSection("selector.gui.items")).getKeys(false)) {
                 ItemStack item = createItemFromConfig(player, itemKey);
@@ -162,13 +162,8 @@ public class CompassListener implements Listener {
         }
 
         Material material;
-        try {
-            material = Material.valueOf(config.getString(path + ".material", "STONE").toUpperCase());
+        material = Material.valueOf(config.getString(path + ".material", "STONE").toUpperCase());
 
-        } catch (IllegalArgumentException | NullPointerException e) {
-            debugMode.warn("Invalid material specified for selector: " + config.getString(path + ".material"));
-            return null;
-        }
 
         ItemStack item = new ItemStack(material);
         ItemMeta meta = item.getItemMeta();
@@ -188,9 +183,7 @@ public class CompassListener implements Listener {
             meta.setLore(loreList);
         }
 
-        if (config.contains(path + ".value") && material == Material.PLAYER_HEAD) {
-            CreateCustomHead.createCustomHead(config.getString(path + ".value"), config.getString(path + ".name"));
-        }
+
 
         List<String> actions = config.getStringList(path + ".actions");
         if (!actions.isEmpty()) {
@@ -204,7 +197,9 @@ public class CompassListener implements Listener {
         dataContainer.set(PluginKeys.SELECTOR.getKey(), PersistentDataType.STRING, itemKey);
 
         item.setItemMeta(meta);
-
+        if(item.getType() == Material.PLAYER_HEAD) {
+            item.setItemMeta(setTextures(item, config.getString(path + ".value")));
+        }
         return item;
     }
     private ItemStack createFillItem(Player player) {
