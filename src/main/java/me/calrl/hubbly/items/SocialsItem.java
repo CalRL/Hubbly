@@ -27,6 +27,7 @@ import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class SocialsItem implements CustomItem {
@@ -37,8 +38,12 @@ public class SocialsItem implements CustomItem {
         ItemStack item;
         String textureValue = config.getString("socials.item.value");
         String itemName = ChatUtils.translateHexColorCodes(config.getString("socials.item.name"));
+
         String itemType = config.getString("socials.item.type");
+        if(itemType == null) { return null; }
+
         ItemMeta meta;
+
         if("PLAYER_HEAD".equalsIgnoreCase(itemType)) {
             item = CreateCustomHead.createCustomHead(textureValue, itemName);
 
@@ -52,8 +57,13 @@ public class SocialsItem implements CustomItem {
             }
         }
         meta = item.getItemMeta();
-        if(meta != null) meta.getPersistentDataContainer().set(PluginKeys.SOCIALS.getKey(), PersistentDataType.STRING, "socials");
+        if(meta == null) return null;
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        container.set(PluginKeys.SOCIALS.getKey(), PersistentDataType.STRING, "socials");
+
         item.setItemMeta(meta);
+
         return item;
     }
 }

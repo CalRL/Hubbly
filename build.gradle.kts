@@ -31,11 +31,10 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.20.6-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    implementation("org.json:json:20210307")
 }
 
 group = "me.calrl"
-version = "2.4.3"
+version = "2.5.0"
 description = "Hubbly"
 java.sourceCompatibility = JavaVersion.VERSION_21
 

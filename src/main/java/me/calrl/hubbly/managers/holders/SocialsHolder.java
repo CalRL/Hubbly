@@ -1,6 +1,7 @@
 package me.calrl.hubbly.managers.holders;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.Inventory;
@@ -21,7 +22,8 @@ public class SocialsHolder implements InventoryHolder {
         ConfigurationSection section = plugin.getConfig().getConfigurationSection("socials");
         if(section == null) return null;
 
-        Inventory gui = Bukkit.createInventory(this, section.getInt("size", 54));
+        Inventory gui = Bukkit.createInventory(this, section.getInt("size", 54),
+                ChatUtils.translateHexColorCodes(section.getString("title", "unconfigured")));
 
         return gui;
 

@@ -21,7 +21,6 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.commands.*;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.listeners.CompassListener;
-import me.calrl.hubbly.listeners.ItemJoinListener;
 import me.calrl.hubbly.listeners.SocialsListener;
 import me.calrl.hubbly.listeners.chat.ChatListener;
 import me.calrl.hubbly.listeners.chat.CommandBlockerListener;
@@ -119,8 +118,8 @@ public final class Hubbly extends JavaPlugin {
                 getServer().getPluginManager().registerEvents(listener, this);
             } catch(Exception e) {
                 logger.severe("PLEASE REPORT TO DEVELOPER");
-                logger.severe(listener  + " failed to load, printing stacktrace...");
-                e.printStackTrace();
+                logger.severe(listener.getClass().getName()  + " failed to load, printing stacktrace...");
+                debugMode.info(e.getMessage());
             }
 
         }
@@ -130,8 +129,6 @@ public final class Hubbly extends JavaPlugin {
         registerListener(listener, "null");
     }
     private void loadListeners() {
-        registerListener(new ItemJoinListener(this), "item_on_join.enabled");
-
         registerListener(new CompassListener(this));
         registerListener(new SocialsListener(this), "socials.enabled");
         registerListener(new VoidDamageListener(this), "antivoid.enabled");
@@ -140,6 +137,7 @@ public final class Hubbly extends JavaPlugin {
         registerListener(new LaunchpadListener(this), "launchpad.enabled");
         registerListener(new PlayerJoinListener(this));
         registerListener(new CommandBlockerListener(this));
+        registerListener(new ForceinvListener(this), "player.forceinventory");
         registerListener(new ChatListener(this), "blocked_words.enabled");
         registerListener(new MovementItemListener(this));
         registerListener(new XPListener(this), "player.experience.enabled");
@@ -148,6 +146,7 @@ public final class Hubbly extends JavaPlugin {
     public void onEnable() {
         this.saveDefaultConfig();
         instance = this;
+
         disabledWorlds = new DisabledWorlds();
         cooldownManager = new CooldownManager();
         actionManager = new ActionManager(this);
@@ -155,7 +154,6 @@ public final class Hubbly extends JavaPlugin {
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
         utils = new Utils(this);
-
 
         prefix = this.getConfig().getString("prefix");
 
