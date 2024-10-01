@@ -82,55 +82,64 @@ public class GiveCommand implements TabExecutor {
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-            if (args.length < 2) {
-                sender.sendMessage(ChatColor.YELLOW + "Usage: /give <player> <item> [amount] [slot]");
-                return true;
-            }
+        if (args.length < 2) {
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /give <player> <item> [amount] [slot]");
+            return true;
+        }
 
-            if (sender.hasPermission(Permissions.COMMAND_GIVE.getPermission())) {
-                Player targetPlayer = Bukkit.getPlayer(args[0]);
-                if (targetPlayer == null) {
-                    sender.sendMessage(ChatColor.RED + "Player not found: " + args[0]);
+        if(!sender.hasPermission(Permissions.COMMAND_GIVE.getPermission())) {
+            sender.sendMessage(ChatUtils.translateHexColorCodes(
+                    config.getString("messages.no_permission_use", "No permission")
+            ));
+            return true;
+        }
+
+        Player targetPlayer = Bukkit.getPlayer(args[0]);
+        if (targetPlayer == null) {
+            sender.sendMessage(ChatColor.RED + "Player not found: " + args[0]);
+            return true;
+        }
+
+        String itemName = ChatColor.stripColor(args[1].toLowerCase());
+        CustomItem customItem = items.get(itemName);
+
+        if (customItem == null) {
+            sender.sendMessage(ChatColor.RED + "Unknown item: " + itemName);
+            return true;
+        }
+
+        ItemStack item = customItem.createItem();
+        if(args.length == 3) {
+            int amount = Integer.parseInt(args[2]);
+            item.setAmount(amount);
+            targetPlayer.getInventory().addItem(item);
+            return true;
+        }
+
+
+        if (args.length == 4) {
+            try {
+                int amount = Integer.parseInt(args[2]);
+                item.setAmount(amount);
+
+                int slot = Integer.parseInt(args[3]);
+                if (slot < 0 || slot >= targetPlayer.getInventory().getSize()) {
+                    sender.sendMessage(ChatColor.RED + "Invalid slot: " + args[3]);
                     return true;
                 }
 
-                String itemName = ChatColor.stripColor(args[1].toLowerCase());
-                CustomItem customItem = items.get(itemName);
-
-                if (customItem != null) {
-                    ItemStack item = customItem.createItem();
-                    if(args.length == 3) {
-                        int amount = Integer.parseInt(args[2]);
-                        item.setAmount(amount);
-                        targetPlayer.getInventory().addItem(item);
-                        return true;
-                    }
-                    if (args.length == 4) {
-                        try {
-                            int amount = Integer.parseInt(args[2]);
-                            item.setAmount(amount);
-                            int slot = Integer.parseInt(args[3]);
-                            if (slot < 0 || slot >= targetPlayer.getInventory().getSize()) {
-                                sender.sendMessage(ChatColor.RED + "Invalid slot: " + args[3]);
-                                return true;
-                            }
-                            targetPlayer.getInventory().setItem(slot-1, item);
-                            sender.sendMessage(ChatColor.YELLOW + "Given " + itemName + " to " + targetPlayer.getName() + " in slot " + slot);
-                        } catch (NumberFormatException e) {
-                            sender.sendMessage(ChatColor.RED + "Slot must be a number: " + args[3]);
-                        }
-                    } else {
-                        targetPlayer.getInventory().addItem(item);
-                        debugMode.info("Given " + itemName + " to " + targetPlayer.getName());
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.RED + "Unknown item: " + itemName); // Debugging
-                }
-            } else {
-                sender.sendMessage(Objects.requireNonNull(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_use"))));
+                targetPlayer.getInventory().setItem(slot-1, item);
+                sender.sendMessage(ChatColor.YELLOW + "Given " + itemName + " to " + targetPlayer.getName() + " in slot " + slot);
+            } catch (NumberFormatException e) {
+                sender.sendMessage(ChatColor.RED + "Slot must be a number: " + args[3]);
             }
-            return true;
+        } else {
+            targetPlayer.getInventory().addItem(item);
+            debugMode.info("Given " + itemName + " to " + targetPlayer.getName());
         }
+
+        return true;
+    }
 
     @Nullable
     @Override
