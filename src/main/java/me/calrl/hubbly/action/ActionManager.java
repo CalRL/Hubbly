@@ -54,12 +54,14 @@ public class ActionManager {
                 new BungeeAction(),
                 new MessageAction(),
                 new LaunchAction(),
-                new SlotAction()
+                new SlotAction(),
+                new ClearAction()
 
         );
     }
     public void executeAction(Hubbly plugin, Player player, String actionData) {
         if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+
         if (actionData.startsWith("[") && actionData.contains("]")) {
             int endIndex = actionData.indexOf("]");
             String identifier = actionData.substring(1, endIndex).toUpperCase();
