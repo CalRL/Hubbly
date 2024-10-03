@@ -206,9 +206,9 @@ blocked_commands:
 # https://www.birdflop.com/resources/rgb/
 announcements:
   enabled: true
+  interval: 30 # In Seconds
   # Will send the message even if the player is in a disabled-world if true
   global: true
-  interval: 30 # In Seconds
   messages:
     message1:
       - '<#FAEDCB>+<#F9E6C9>-<#F8DEC7>-<#F7D7C4>-<#F6CFC2>-<#F5C8C0>-<#F5C0BE>-<#F4B9BC>-<#F3B1B9>-<#F2AAB7>-<#F1A2B5>-<#F09BB3>-<#EF94B1>-<#EE8CAE>-<#ED85AC>-<#EC7DAA>-<#EB76A8>-<#EA6EA5>-<#EA67A3>-<#E95FA1>-<#E8589F>-<#E7509D>-<#E6499A>-<#E54198>-<#E43A96>-<#E54098>-<#E6479A>-<#E64D9C>-<#E7549E>-<#E85A9F>-<#E960A1>-<#EA67A3>-<#EA6DA5>-<#EB74A7>-<#EC7AA9>-<#ED80AB>-<#ED87AD>-<#EE8DAF>-<#EF94B1>-<#F09AB2>-<#F1A0B4>-<#F1A7B6>-<#F2ADB8>-<#F3B3BA>-<#F4BABC>-<#F5C0BE>-<#F5C7C0>-<#F6CDC2>-<#F7D3C3>-<#F8DAC5>-<#F8E0C7>-<#F9E7C9>-<#FAEDCB>+'

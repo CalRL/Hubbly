@@ -19,9 +19,19 @@ public class WorldChangeListener implements Listener {
     private void onWorldChange(PlayerChangedWorldEvent event) {
 
         Player player = event.getPlayer();
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
+        plugin.getDebugMode().info(player.getName() + " switched worlds: " + player.getWorld());
 
         BossBarManager bossBarManager = BossBarManager.getInstance();
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) {
+            bossBarManager.removeBossBar(player);
+            return;
+        };
+
+        player.setHealth(20);
+
+        if (plugin.getConfig().getBoolean("cancel_events.hunger")) {
+            player.setFoodLevel(20);
+        }
 
         if(!bossBarManager.hasBossBar(player)) {
             bossBarManager.createBossBar(player);

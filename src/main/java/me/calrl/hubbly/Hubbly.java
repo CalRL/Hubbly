@@ -109,6 +109,7 @@ public final class Hubbly extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new ConfigItemListener(this), this);
         getServer().getPluginManager().registerEvents(new DoubleJumpListener(this), this);
         getServer().getPluginManager().registerEvents(new PlayerOffHandListener(), this);
+        getServer().getPluginManager().registerEvents(new WorldChangeListener(this), this);
 
         getCommand("hubbly").setExecutor(new HubblyCommand(logger, this));
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));

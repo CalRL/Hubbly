@@ -35,7 +35,7 @@ dependencies {
 }
 
 group = "me.calrl"
-version = "2.4.3"
+version = "2.4.4"
 description = "Hubbly"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
