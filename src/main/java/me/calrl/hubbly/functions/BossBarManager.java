@@ -85,7 +85,7 @@ public class BossBarManager {
                     this.cancel();
                     return;
                 }
-                String text = ChatUtils.translateHexColorCodes(ChatUtils.parsePlaceholders(player, texts.get(index)));
+                String text = ChatUtils.processMessage(player, texts.get(index));
                 bar.setTitle(text);
                 index = (index + 1) % texts.size();
             }
@@ -119,5 +119,14 @@ public class BossBarManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             createBossBar(player);
         }
+    }
+
+    public boolean hasBossBar(Player player) {
+        if(player.isOnline()) {
+            if(playerBossBars.get(player) != null) {
+                return true;
+            }
+        }
+        return false;
     }
 }

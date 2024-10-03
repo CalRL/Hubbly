@@ -206,6 +206,8 @@ blocked_commands:
 # https://www.birdflop.com/resources/rgb/
 announcements:
   enabled: true
+  # Will send the message even if the player is in a disabled-world if true
+  global: true
   interval: 30 # In Seconds
   messages:
     message1:
