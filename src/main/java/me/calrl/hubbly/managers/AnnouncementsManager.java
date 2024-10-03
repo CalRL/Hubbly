@@ -108,8 +108,6 @@ public class AnnouncementsManager {
             String[] announcement = announcements.get(currentAnnouncementIndex);
             for (String line : announcement) {
                 for(Player player : Bukkit.getOnlinePlayers()) {
-                    if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld()) && !config.getBoolean("announcements.global")) return;
-
                     player.sendMessage(
                             ChatUtils.centerMessage(ChatUtils.processMessage(player, line))
                     );
@@ -129,6 +127,5 @@ public class AnnouncementsManager {
     public void skipToNextAnnouncement() {
         sendNextAnnouncement();
     }
-
 
 }

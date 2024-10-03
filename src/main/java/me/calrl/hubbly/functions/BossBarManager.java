@@ -117,6 +117,8 @@ public class BossBarManager {
 
     public void reAddAllBossBars() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
+
             createBossBar(player);
         }
     }
