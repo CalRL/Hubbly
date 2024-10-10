@@ -58,8 +58,8 @@ import java.util.logging.Logger;
 public final class Hubbly extends JavaPlugin {
 
     private final Logger logger = getLogger();
-    private FileConfiguration config;
     private static Hubbly instance;
+    private FileConfiguration config;
     private FileConfiguration itemsConfig;
     private FileConfiguration serverSelectorConfig;
     private ActionManager actionManager;
@@ -160,7 +160,6 @@ public final class Hubbly extends JavaPlugin {
 
         config = this.getConfig();
         try {
-
             if(config.getBoolean("anti_world_download.enabled")) {
                 this.getServer().getMessenger().registerIncomingPluginChannel(this, "wdl:init", new AntiWDL(this));
                 this.getServer().getMessenger().registerOutgoingPluginChannel(this, "wdl:control");

@@ -231,3 +231,8 @@ messages:
   chat_locked: "Chat has been locked by %player%"
   chat_unlocked: "Chat has been unlocked by %player%"
 
+update:
+  new_update: "An update is available! Hubbly %new% can be downloaded on SpigotMC, you are on %current%"
+  no_update: "Hubbly %current% is up to date"
+  error: "Could not check for a new version..."
+

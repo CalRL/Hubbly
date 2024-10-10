@@ -25,9 +25,6 @@ public class LockChat {
         this.plugin = plugin;
         isChatLocked = false;
     }
-    public void setChatLocked(Boolean bool) {
-        isChatLocked = bool;
-    }
     public void flipChatLock() {
         isChatLocked = !isChatLocked;
     }
