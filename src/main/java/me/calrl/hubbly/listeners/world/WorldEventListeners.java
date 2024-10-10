@@ -82,7 +82,7 @@ public class WorldEventListeners implements Listener {
     @EventHandler
     private void cancelDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
-            if (player.hasPermission("hubbly.bypass.damage") || player.isOp()) return;
+            if (player.hasPermission("hubbly.bypass.damage")) return;
             if (checkWorld(player)) return;
             if(config.getBoolean("cancel_events.damage")) {
                 event.setCancelled(true);
@@ -203,7 +203,7 @@ public class WorldEventListeners implements Listener {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             if (checkWorld(player)) return;
-            if (player.hasPermission("hubbly.bypass.food") || player.isOp()) return;
+            if (player.hasPermission("hubbly.bypass.food")) return;
             if (config.getBoolean("cancel_events.hunger")) {
                 event.setCancelled(true);
             }

@@ -73,8 +73,7 @@ public final class Hubbly extends JavaPlugin {
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
 
-    private List<Listener> listeners;
-    public boolean needsUpdate;
+    public UpdateUtil updateUtil;
 
     public void reloadPlugin() {
         this.reloadConfig();
@@ -148,6 +147,7 @@ public final class Hubbly extends JavaPlugin {
         this.saveDefaultConfig();
         instance = this;
 
+        updateUtil = new UpdateUtil();
         disabledWorlds = new DisabledWorlds();
         cooldownManager = new CooldownManager();
         actionManager = new ActionManager(this);
@@ -176,7 +176,7 @@ public final class Hubbly extends JavaPlugin {
         }
         final int pluginId = 22219;
         new Metrics(this, pluginId);
-        new UpdateUtil().checkForUpdate(this);
+        updateUtil.checkForUpdate(this);
 
         logger.info("Hubbly has been enabled!");
     }
@@ -253,6 +253,7 @@ public final class Hubbly extends JavaPlugin {
     public AnnouncementsManager getAnnouncementsManager() { return announcementsManager; }
     public LockChat getLockChat() {return lockChat;}
     public Utils getUtils() { return utils; }
+    public UpdateUtil getUpdateUtil() { return updateUtil; }
     
     public String getPrefix() {
         return prefix;

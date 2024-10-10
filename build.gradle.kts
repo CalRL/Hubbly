@@ -55,6 +55,6 @@ tasks.withType<Javadoc>() {
 tasks.processResources {
     filesMatching("**/plugin.yml") {
         // Use a map to define the variables for substitution
-        expand("project" to project, "version" to project.version)
+        expand("project" to project, "version" to project.version.toString())
     }
 }
