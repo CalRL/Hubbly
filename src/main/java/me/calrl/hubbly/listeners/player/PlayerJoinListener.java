@@ -22,6 +22,7 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.update.UpdateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -52,14 +53,21 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
 
-        if(player.isOp() && plugin.needsUpdate) {
+        boolean needsUpdate = plugin.getUpdateUtil().checkForUpdate(plugin);
+        if(player.isOp() && needsUpdate) {
             player.sendMessage(
-
+                    ChatUtils.parsePlaceholders(
+                            player,
+                            plugin.getPrefix() + plugin.getUpdateUtil().getMessage()
+                    )
             );
         }
-        plugin.setPlayerFlight(player);
+        boolean doubleJump = config.getBoolean("double_jump.enabled");
+        if(doubleJump) {
+            plugin.setPlayerFlight(player);
+            player.setAllowFlight(true);
+        }
 
-        player.setAllowFlight(true);
 
         if (config.getBoolean("player.join_message.enabled")) {
             String joinMessage = config.getString("player.join_message.message");
