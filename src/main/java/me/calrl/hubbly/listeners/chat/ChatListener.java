@@ -70,8 +70,9 @@ public class ChatListener implements Listener {
                     return;
 
                 } else if (Objects.equals(method.toUpperCase(), "STAR")) {
-
-                    message = message.replace(word, ChatUtils.repeat("*", word.length()));
+                    message = message.replace(
+                            word, ChatUtils.repeat("*", word.length())
+                    );
                     event.setMessage(message);
                 }
             }

@@ -9,6 +9,8 @@ prefix: '&e&lHubbly &7&l>&r'
 disabled-worlds:
   - 'world_nether'
 
+invert: false
+
 #----------#
 # Movement #
 #----------#

@@ -57,23 +57,25 @@ public class AnnouncementsManager {
 
     private void loadAnnouncements() {
         ConfigurationSection section = plugin.getConfig().getConfigurationSection("announcements.messages");
-        if (section != null) {
-            try {
-                for (String key : section.getKeys(false)) {
-                    List<String> messages = section.getStringList(key);
-                    String[] messageArray = messages.toArray(new String[0]);
-                    announcements.add(messageArray);
-                    debugMode.info(announcements.toString());
-                    state.set(true);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
+        if(section == null) {
             debugMode.warn("No announcements found...");
             debugMode.warn("Disabling Announcements...");
             state.set(false);
+            return;
         }
+
+        try {
+            for (String key : section.getKeys(false)) {
+                List<String> messages = section.getStringList(key);
+                String[] messageArray = messages.toArray(new String[0]);
+                announcements.add(messageArray);
+                debugMode.info(announcements.toString());
+                state.set(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**

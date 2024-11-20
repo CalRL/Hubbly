@@ -52,7 +52,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.List;
 import java.util.logging.Logger;
 
 public final class Hubbly extends JavaPlugin {
@@ -148,7 +147,7 @@ public final class Hubbly extends JavaPlugin {
         instance = this;
 
         updateUtil = new UpdateUtil();
-        disabledWorlds = new DisabledWorlds();
+        disabledWorlds = new DisabledWorlds(this);
         cooldownManager = new CooldownManager();
         actionManager = new ActionManager(this);
         debugMode = new DebugMode();
