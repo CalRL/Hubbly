@@ -17,6 +17,8 @@
 package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.managers.DisabledWorlds;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -34,6 +36,7 @@ public class XPListener implements Listener {
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
+        if(!inDisabledWorld(player)) return;
         player.setLevel((int) plugin.getConfig().getDouble("player.experience.level"));
         player.setExp(1);
 
@@ -41,9 +44,21 @@ public class XPListener implements Listener {
 
     @EventHandler
     private void onPlayerXP(PlayerExpChangeEvent event) {
+        Player player = event.getPlayer();
+
+        if(!inDisabledWorld(player)) return;
         if(plugin.getConfig().getBoolean("player.experience.enabled")) {
             event.setAmount(0);
         }
-
     }
+
+    private boolean inDisabledWorld(Player player) {
+        World world = player.getWorld();
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        if(disabledWorlds.inDisabledWorld(world)) {
+            return false;
+        }
+        return true;
+    }
+
 }

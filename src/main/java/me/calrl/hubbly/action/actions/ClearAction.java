@@ -10,7 +10,7 @@ import org.bukkit.inventory.PlayerInventory;
 public class ClearAction implements Action {
     @Override
     public String getIdentifier() {
-        return "ACTION";
+        return "CLEAR";
     }
 
     @Override

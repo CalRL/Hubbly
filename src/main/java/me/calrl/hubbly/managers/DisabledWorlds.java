@@ -33,7 +33,7 @@ public class DisabledWorlds {
     private boolean isInverted;
     public DisabledWorlds(Hubbly plugin) {
         this.plugin = plugin;
-        isInverted = plugin.getConfig().getBoolean("invert");
+        isInverted = plugin.getConfig().getBoolean("invert", false);
         setDisabledWorlds();
     }
     public boolean inDisabledWorld(World world) {
