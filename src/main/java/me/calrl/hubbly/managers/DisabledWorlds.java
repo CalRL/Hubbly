@@ -29,9 +29,10 @@ import java.util.List;
 public class DisabledWorlds {
 
     private List<String> disabledWorlds;
-    private Hubbly plugin;
+    private final Hubbly plugin;
     private boolean isInverted;
     public DisabledWorlds(Hubbly plugin) {
+        this.plugin = plugin;
         isInverted = plugin.getConfig().getBoolean("invert");
         setDisabledWorlds();
     }
