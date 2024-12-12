@@ -31,10 +31,7 @@ import me.calrl.hubbly.listeners.player.*;
 import me.calrl.hubbly.listeners.world.AntiWDL;
 import me.calrl.hubbly.listeners.world.LaunchpadListener;
 import me.calrl.hubbly.listeners.world.WorldEventListeners;
-import me.calrl.hubbly.managers.AnnouncementsManager;
-import me.calrl.hubbly.managers.DebugMode;
-import me.calrl.hubbly.managers.DisabledWorlds;
-import me.calrl.hubbly.managers.LockChat;
+import me.calrl.hubbly.managers.*;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.metrics.Metrics;
 import me.calrl.hubbly.utils.Utils;
@@ -68,6 +65,7 @@ public final class Hubbly extends JavaPlugin {
     private AnnouncementsManager announcementsManager;
     private LockChat lockChat;
     private Utils utils;
+    private PlayerManager playerManager;
 
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
@@ -154,6 +152,7 @@ public final class Hubbly extends JavaPlugin {
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
         utils = new Utils(this);
+        playerManager = new PlayerManager(this);
 
         prefix = this.getConfig().getString("prefix");
 
@@ -221,17 +220,29 @@ public final class Hubbly extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(this);
     }
 
-    public void setPlayerFlight(Player player) {
+    /**
+     *
+     * @param player the target
+     * @param state 0 (djump) or 1 (flight)
+     */
+    public void setPlayerFlight(Player player, int state) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
 
+        Boolean hasFlyKey = dataContainer.has(this.FLY_KEY, PersistentDataType.BYTE);
+
         if (!dataContainer.has(this.FLY_KEY, PersistentDataType.BYTE)) {
-            dataContainer.set(this.FLY_KEY, PersistentDataType.BYTE, (byte) 0);
+            dataContainer.set(this.FLY_KEY, PersistentDataType.BYTE, (byte) state);
         }
     }
 
     public boolean canPlayerFly(Player player) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
-        return dataContainer.getOrDefault(this.FLY_KEY, PersistentDataType.BYTE, (byte) 0) == 1;
+        Byte state = dataContainer.get(this.FLY_KEY, PersistentDataType.BYTE);
+        if(state == null) {
+            debugMode.info("Critical error...");
+            return false;
+        }
+        return state == 1;
     }
 
 
@@ -253,6 +264,7 @@ public final class Hubbly extends JavaPlugin {
     public LockChat getLockChat() {return lockChat;}
     public Utils getUtils() { return utils; }
     public UpdateUtil getUpdateUtil() { return updateUtil; }
+    public PlayerManager getPlayerManager() { return playerManager; }
     
     public String getPrefix() {
         return prefix;

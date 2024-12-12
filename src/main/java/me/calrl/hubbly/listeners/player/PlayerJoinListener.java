@@ -35,7 +35,6 @@ import java.util.List;
 
 public class PlayerJoinListener implements Listener {
     private final FileConfiguration config;
-    private static final String FLY_METADATA_KEY = "hubbly.canFly";
 
     private final DebugMode debugMode;
     private final ActionManager actionManager;
@@ -51,7 +50,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
 
         boolean needsUpdate = plugin.getUpdateUtil().checkForUpdate(plugin);
         if(player.isOp() && needsUpdate) {
@@ -64,7 +63,7 @@ public class PlayerJoinListener implements Listener {
         }
         boolean doubleJump = config.getBoolean("double_jump.enabled");
         if(doubleJump) {
-            plugin.setPlayerFlight(player);
+            plugin.setPlayerFlight(player, (byte) 0);
             player.setAllowFlight(true);
         }
 

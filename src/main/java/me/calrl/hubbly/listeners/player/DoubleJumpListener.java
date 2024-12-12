@@ -20,6 +20,7 @@ package me.calrl.hubbly.listeners.player;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
 import org.bukkit.GameMode;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -43,12 +44,14 @@ public class DoubleJumpListener implements Listener {
     @EventHandler
     public void onToggleFlight(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) {
+            return;
+        }
+
         if(player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
         FileConfiguration config = Hubbly.getInstance().getConfig();
 
-
-        //boolean canFly = player.getMetadata(FLY_METADATA_KEY).get(0).asBoolean();
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
         if(!dataContainer.has(plugin.FLY_KEY)) return;
         if(!plugin.canPlayerFly(player) && config.getBoolean("double_jump.enabled")) {
@@ -75,15 +78,19 @@ public class DoubleJumpListener implements Listener {
                 new BukkitRunnable() {
                     @Override
                     public void run() {
-                        player.setAllowFlight(true);
+                        Location location = player.getLocation();
+                        if(!plugin.getDisabledWorldsManager().inDisabledWorld(location)) {
+                            player.setAllowFlight(true);
+                        }
                     }
                 }.runTaskLater(plugin, plugin.getConfig().getLong("double_jump.cooldown") * 20L);
             }
     }
     @EventHandler
     private void onGamemodeChange(PlayerGameModeChangeEvent event) {
+        Player player = event.getPlayer();
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
         if(event.getNewGameMode() == GameMode.ADVENTURE || event.getNewGameMode() == GameMode.SURVIVAL) {
-            Player player = event.getPlayer();
             FileConfiguration config = plugin.getConfig();
             if(config.getBoolean("double_jump.enabled")) {
                 new BukkitRunnable() {

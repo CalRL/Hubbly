@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
+import org.bukkit.persistence.PersistentDataContainer;
 
 public class WorldChangeListener implements Listener {
 
@@ -32,8 +33,7 @@ public class WorldChangeListener implements Listener {
         BossBarManager bossBarManager = BossBarManager.getInstance();
         if(disabledWorlds.inDisabledWorld(player.getWorld())) {
             bossBarManager.removeBossBar(player);
-            return;
-        };
+        }
 
         player.setHealth(20);
 
@@ -41,13 +41,13 @@ public class WorldChangeListener implements Listener {
             player.setFoodLevel(20);
         }
 
-        // Extra safety, the double jump will already not work if in disabled world, however this change disables flight, just incase.
-        if(config.getBoolean("double_jump.enabled")) {
-            if(disabledWorlds.inDisabledWorld(world)) {
-                player.setAllowFlight(false);
-            } else {
-                player.setAllowFlight(true);
-            }
+        if(disabledWorlds.inDisabledWorld(world)) {
+            //plugin.getPlayerManager().removeFlight(player);
+            player.setAllowFlight(false);
+            player.setFlying(false);
+        } else {
+            //plugin.getPlayerManager().addFlight(player);
+            player.setAllowFlight(true);
         }
 
         if(!bossBarManager.hasBossBar(player)) {

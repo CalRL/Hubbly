@@ -26,7 +26,9 @@ import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -38,7 +40,7 @@ import java.util.Objects;
 import java.util.logging.Logger;
 
 public class ConfigItems implements CustomItem {
-    private final JavaPlugin plugin;
+    private final Hubbly plugin;
     private final Logger logger;
     private final String itemKey;
     private final ActionManager actionManager;
@@ -87,6 +89,11 @@ public class ConfigItems implements CustomItem {
             }
             if(config.contains(path + ".value") && Objects.equals(material, Material.valueOf(config.getString(path + ".type")))) {
                 CreateCustomHead.createCustomHead(config.getString(path + ".value"), config.getString(".name"));
+            }
+
+            if(config.contains(path + ".enchanted")) {
+                meta.addEnchant(Enchantment.THORNS, 1, true);
+                meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
             }
 
             List<String> actions = config.getStringList(path + ".actions");
