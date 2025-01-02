@@ -44,9 +44,9 @@ public class TitleAction implements Action {
             debugMode.warn("Invalid data format, expected 4 args, got " + args.length);
         }
 
-        title = ChatUtils.translateHexColorCodes(args[0]);
+        title = ChatUtils.processMessage(player, args[0]);
 
-        subtitle = args[1].isEmpty() ? "" : ChatUtils.translateHexColorCodes(args[1]);
+        subtitle = args[1].isEmpty() ? "" : ChatUtils.processMessage(player, args[1]);
 
         try {
             fadeIn = Integer.parseInt(args[2]);

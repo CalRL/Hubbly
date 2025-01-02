@@ -29,6 +29,6 @@ public class GamemodeAction implements Action {
 
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
-        player.setGameMode(GameMode.valueOf(data));
+        player.setGameMode(GameMode.valueOf(data.toUpperCase()));
     }
 }
