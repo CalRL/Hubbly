@@ -51,6 +51,7 @@ public class ChatListener implements Listener {
             event.setCancelled(true);
         }
     }
+
     @EventHandler
     private void onPlayerChat(AsyncPlayerChatEvent event) {
         FileConfiguration config = plugin.getConfig();
@@ -58,7 +59,7 @@ public class ChatListener implements Listener {
 
             String playerName = event.getPlayer().getName();
             String message = event.getMessage().toLowerCase();
-            String method = config.getString("blocked_words.method");
+            String method = config.getString("blocked_words.method", "CANCEL");
 
             String regex = String.join("|", blockedWords.stream().map(Pattern::quote).toList());
             Pattern pattern = Pattern.compile(regex);
