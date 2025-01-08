@@ -2,7 +2,6 @@ package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.BossBarManager;
-import me.calrl.hubbly.managers.AnnouncementsManager;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -10,7 +9,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
-import org.bukkit.persistence.PersistentDataContainer;
 
 public class WorldChangeListener implements Listener {
 
@@ -30,7 +28,7 @@ public class WorldChangeListener implements Listener {
 
         plugin.getDebugMode().info(player.getName() + " switched worlds: " + player.getWorld());
 
-        BossBarManager bossBarManager = BossBarManager.getInstance();
+        BossBarManager bossBarManager = plugin.getBossBarManager();
         if(disabledWorlds.inDisabledWorld(player.getWorld())) {
             bossBarManager.removeBossBar(player);
         }
@@ -41,12 +39,11 @@ public class WorldChangeListener implements Listener {
             player.setFoodLevel(20);
         }
 
+        //TODO: put this in the playerManager class.
         if(disabledWorlds.inDisabledWorld(world)) {
-            //plugin.getPlayerManager().removeFlight(player);
             player.setAllowFlight(false);
             player.setFlying(false);
         } else {
-            //plugin.getPlayerManager().addFlight(player);
             player.setAllowFlight(true);
         }
 

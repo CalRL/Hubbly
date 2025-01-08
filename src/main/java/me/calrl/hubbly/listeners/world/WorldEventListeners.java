@@ -22,7 +22,6 @@ import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.managers.DebugMode;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -52,14 +51,14 @@ public class WorldEventListeners implements Listener {
 
     // FIXME Fix the bossbar manager to look like the rest of the code, major refactor needed:
     // - Seriously, this looks bad
-
-    private final BossBarManager bossBarManager = BossBarManager.getInstance();
+    // REVIEW: (8/1/2025) almost done, just needs to be testeds.
+    private final BossBarManager bossBarManager;
 
     public WorldEventListeners(Hubbly plugin) {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
         this.debugMode = plugin.getDebugMode();
-
+        this.bossBarManager = plugin.getBossBarManager();
     }
 
     /**

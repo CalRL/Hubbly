@@ -66,6 +66,7 @@ public final class Hubbly extends JavaPlugin {
     private LockChat lockChat;
     private Utils utils;
     private PlayerManager playerManager;
+    private BossBarManager bossBarManager;
 
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
@@ -153,6 +154,7 @@ public final class Hubbly extends JavaPlugin {
         lockChat = new LockChat(this);
         utils = new Utils(this);
         playerManager = new PlayerManager(this);
+        bossBarManager = new BossBarManager(this);
 
         prefix = this.getConfig().getString("prefix");
 
@@ -166,8 +168,7 @@ public final class Hubbly extends JavaPlugin {
             debugMode.info("BungeeCord channel registered");
             loadFiles();
             loadComponents();
-            BossBarManager.initialize(this.getConfig());
-            BossBarManager.getInstance().reAddAllBossBars();
+            bossBarManager.reAddAllBossBars();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -184,7 +185,7 @@ public final class Hubbly extends JavaPlugin {
         // Plugin shutdown logic
         cleanup();
 
-        BossBarManager.getInstance().removeAllBossBars();
+        bossBarManager.removeAllBossBars();
         logger.info("Hubbly has been disabled!");
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "wdl:init");
@@ -265,7 +266,7 @@ public final class Hubbly extends JavaPlugin {
     public Utils getUtils() { return utils; }
     public UpdateUtil getUpdateUtil() { return updateUtil; }
     public PlayerManager getPlayerManager() { return playerManager; }
-    
+    public BossBarManager getBossBarManager() { return bossBarManager; }
     public String getPrefix() {
         return prefix;
     }

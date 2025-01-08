@@ -22,7 +22,6 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
-import me.calrl.hubbly.utils.update.UpdateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -39,6 +38,7 @@ public class PlayerJoinListener implements Listener {
     private final DebugMode debugMode;
     private final ActionManager actionManager;
     private final Hubbly plugin;
+    private BossBarManager bossBarManager;
 
     public PlayerJoinListener(Hubbly plugin) {
         this.plugin = plugin;
@@ -76,7 +76,8 @@ public class PlayerJoinListener implements Listener {
         }
 
         if (config.getBoolean("player.bossbar.enabled")) {
-            BossBarManager.getInstance().createBossBar(player);
+            bossBarManager = plugin.getBossBarManager();
+            bossBarManager.createBossBar(player);
         }
 
         if(config.contains("actions_on_join")) {
@@ -99,7 +100,8 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        BossBarManager.getInstance().removeBossBar(player);
+        bossBarManager = plugin.getBossBarManager();
+        bossBarManager.removeBossBar(player);
         if (config.getBoolean("player.leave_message")) {
             String quitMessage = config.getString("player.leave_message.message");
             quitMessage = ChatUtils.parsePlaceholders(player, quitMessage);

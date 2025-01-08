@@ -8,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class ForceinvListener implements Listener {
 
@@ -21,7 +20,6 @@ public class ForceinvListener implements Listener {
         Player player = (Player) event.getWhoClicked();
         if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) { return; }
         boolean forceInventory = plugin.getConfig().getBoolean("player.forceinventory");
-
 
         if (forceInventory && !player.hasPermission(Permissions.BYPASS_FORCE_INVENTORY.getPermission())) {
             event.setCancelled(true);

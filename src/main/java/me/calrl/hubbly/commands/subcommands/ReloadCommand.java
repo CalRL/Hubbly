@@ -21,25 +21,16 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
-import me.calrl.hubbly.listeners.player.PlayerJoinListener;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.List;
-import java.util.logging.Logger;
 
 public class ReloadCommand implements SubCommand {
 
 
     private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final Hubbly plugin;
+    private BossBarManager bossBarManager;
 
     public ReloadCommand(Hubbly plugin) {
         this.plugin = plugin;
@@ -53,7 +44,7 @@ public class ReloadCommand implements SubCommand {
         if(player.hasPermission(Permissions.COMMAND_RELOAD.getPermission())) {
 
             try {
-                BossBarManager bossBarManager = BossBarManager.getInstance();
+                bossBarManager = plugin.getBossBarManager();
                 if (bossBarManager != null) {
                     bossBarManager.removeAllBossBars();
                 }
@@ -61,8 +52,8 @@ public class ReloadCommand implements SubCommand {
                 player.sendMessage(
                         ChatUtils.prefixMessage(player, config.getString("messages.reload", "Config reloaded."))
                 );
-                BossBarManager.initialize(Hubbly.getInstance().getConfig());
-                bossBarManager = BossBarManager.getInstance();
+
+                bossBarManager = plugin.getBossBarManager();
                 bossBarManager.reAddAllBossBars();
             } catch (Exception e) {
                 plugin.getLogger().info(String.valueOf(e));

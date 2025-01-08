@@ -24,13 +24,11 @@ import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -40,17 +38,26 @@ public class BossBarManager {
     private FileConfiguration config;
     private final Map<Player, BossBar> playerBossBars = new HashMap<>();
     private final Map<Player, BukkitRunnable> playerAnimations = new HashMap<>();
+    private final Hubbly plugin;
 
-    public BossBarManager(FileConfiguration config) {
-        this.config = config;
+    public BossBarManager(Hubbly plugin) {
+        this.plugin = plugin;
+        this.config = plugin.getConfig();
     }
 
+    /**
+     * @deprecated 8/1/2025 bad old code, refactor to the same system every other class uses
+     */
+    @Deprecated(since = "2.5.4", forRemoval = true)
     public static BossBarManager getInstance() {
         return instance;
     }
 
+    /**
+     * @deprecated 8/1/2025 bad old code, refactor to the same system every other class uses
+     */
+    @Deprecated(since = "2.5.4", forRemoval = true)
     public static void initialize(FileConfiguration config) {
-        instance = new BossBarManager(config);
     }
 
     public void createBossBar(Player player) {
@@ -124,11 +131,11 @@ public class BossBarManager {
     }
 
     public boolean hasBossBar(Player player) {
-        if(player.isOnline()) {
-            if(playerBossBars.get(player) != null) {
-                return true;
-            }
-        }
-        return false;
+        return player.isOnline() && playerBossBars.get(player) != null;
+    }
+
+
+    private void reload() {
+        // TODO: make this reload in here somehow (it's 8/1/2025):
     }
 }
