@@ -17,6 +17,9 @@
 
 package me.calrl.hubbly.functions;
 public class AngleRounder {
+    private AngleRounder() {
+        throw new IllegalStateException(AngleRounder.class + " is a Utility class");
+    }
 
     // Method to round an angle to the nearest 0, 90, 180, or 270 degrees
     public static float roundToNearestRightAngle(float angle) {

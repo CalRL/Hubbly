@@ -32,6 +32,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChatUtils {
+    private ChatUtils() {
+        throw new IllegalStateException(ChatUtils.class + " is a Utility class");
+    }
     public static String translateHexColorCodes(String message) {
         message = ChatColor.translateAlternateColorCodes('&', message);
 
@@ -127,9 +130,9 @@ public class ChatUtils {
                 messagePxSize++;
             }
         }
-        int CENTER_PX = 154;
+        int centerPx = 154;
         int halvedMessageSize = messagePxSize / 2;
-        int toCompensate = CENTER_PX - halvedMessageSize;
+        int toCompensate = centerPx - halvedMessageSize;
         int spaceLength = DefaultFontInfo.SPACE.getLength() + 1;
         int compensated = 0;
         StringBuilder sb = new StringBuilder();
