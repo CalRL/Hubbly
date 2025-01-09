@@ -28,7 +28,6 @@ public class CooldownManager {
 
     public long getCooldown(UUID uuid, CooldownType type) {
         long remainder = calculateRemainder(cooldowns.get(uuid.toString(), type));
-        //Hubbly.getInstance().getDebugMode().info(remainder + type.toString());
         return remainder;
     }
 

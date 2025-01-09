@@ -71,7 +71,7 @@ public final class Hubbly extends JavaPlugin {
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
 
-    public UpdateUtil updateUtil;
+    private UpdateUtil updateUtil;
 
     public void reloadPlugin() {
         this.reloadConfig();
@@ -149,7 +149,9 @@ public final class Hubbly extends JavaPlugin {
         disabledWorlds = new DisabledWorlds(this);
         cooldownManager = new CooldownManager();
         actionManager = new ActionManager(this);
+
         debugMode = new DebugMode();
+
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
         utils = new Utils(this);
@@ -229,7 +231,6 @@ public final class Hubbly extends JavaPlugin {
     public void setPlayerFlight(Player player, int state) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
 
-        Boolean hasFlyKey = dataContainer.has(this.FLY_KEY, PersistentDataType.BYTE);
 
         if (!dataContainer.has(this.FLY_KEY, PersistentDataType.BYTE)) {
             dataContainer.set(this.FLY_KEY, PersistentDataType.BYTE, (byte) state);

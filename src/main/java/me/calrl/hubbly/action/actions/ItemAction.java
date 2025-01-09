@@ -30,7 +30,6 @@ public class ItemAction implements Action {
 
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
-        DebugMode debugMode = plugin.getDebugMode();
         String[] args = data.split(";");
         String item = args[0];
         if(args.length > 1 && args[1] != null) {

@@ -22,7 +22,6 @@ import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
@@ -36,7 +35,6 @@ import java.util.stream.Collectors;
 
 public class ChatListener implements Listener {
     private final Hubbly plugin;
-    private boolean isChatLocked;
     private final List<String> blockedWords;
     private final DebugMode debugMode;
     public ChatListener(Hubbly plugin) {
@@ -74,7 +72,6 @@ public class ChatListener implements Listener {
                             Objects.requireNonNull(config.getString("messages.blocked_message"))
                     );
                     debugMode.info(playerName + " sent a blocked word: " + blockedWord);
-                    return;
                 } else if (Objects.equals(method.toUpperCase(), "STAR")) {
                     message = matcher.replaceAll(match -> ChatUtils.repeat("*", match.group().length()));
                     event.setMessage(message);

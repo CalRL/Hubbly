@@ -32,7 +32,7 @@ public class AnnouncementsManager {
     private List<String[]> announcements;
     private final Hubbly plugin;
     private final FileConfiguration config;
-    private DebugMode debugMode;
+    private final DebugMode debugMode;
     private int currentAnnouncementIndex = 0;
     private BukkitTask task;
     private AtomicBoolean state = new AtomicBoolean(true);
@@ -46,7 +46,6 @@ public class AnnouncementsManager {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 loadAnnouncements();
                 startAnnouncementsTask();
-
             });
         }
     }

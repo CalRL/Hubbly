@@ -43,6 +43,7 @@ public class DisabledWorlds {
     public boolean inDisabledWorld(Location location) {
         return disabledWorlds != null && disabledWorlds.contains(location.getWorld().getName());
     }
+    // TODO: make this actually check theres a world...
     public void setDisabledWorlds() {
         FileConfiguration config = plugin.getConfig();
         disabledWorlds = config.getStringList("disabled-worlds");
