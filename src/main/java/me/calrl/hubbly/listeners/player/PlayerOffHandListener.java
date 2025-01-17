@@ -29,12 +29,17 @@ import org.bukkit.inventory.ItemStack;
 
 public class PlayerOffHandListener implements Listener {
 
+    private final Hubbly plugin;
+    public PlayerOffHandListener(Hubbly plugin) {
+        this.plugin = plugin;
+    }
+
     @EventHandler
     private void onOffHandSwitch(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
         if(event.getPlayer().hasPermission(Permissions.BYPASS_OFF_HAND.getPermission())) return;
 
-        else if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
+        else if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
 
         event.setCancelled(true);
     }
@@ -42,7 +47,9 @@ public class PlayerOffHandListener implements Listener {
     @EventHandler
     private void onInventorySwap(InventoryClickEvent event) {
 
+
         HumanEntity player = event.getWhoClicked();
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
         if(player.hasPermission(Permissions.BYPASS_OFF_HAND.getPermission())) return;
 
         int rawSlot = event.getRawSlot();
