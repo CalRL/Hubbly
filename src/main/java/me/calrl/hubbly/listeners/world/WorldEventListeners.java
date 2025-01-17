@@ -30,6 +30,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -285,6 +286,20 @@ public class WorldEventListeners implements Listener {
         if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getRespawnLocation())) {
             bossBarManager.removeBossBar(player);
             return;
+        }
+    }
+
+    /**
+     * Cancel Interact events where necessary.
+     *
+     * @param event
+     */
+    @EventHandler
+    private void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
+        if(config.getBoolean("cancel_events.interact", false)) {
+            event.setCancelled(true);
         }
     }
 
