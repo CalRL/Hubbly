@@ -45,10 +45,8 @@ import java.util.logging.Logger;
 
 public class WorldEventListeners implements Listener {
 
-    private final Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final Hubbly plugin;
-    private final DebugMode debugMode;
 
     // FIXME Fix the bossbar manager to look like the rest of the code, major refactor needed:
     // - Seriously, this looks bad
@@ -57,8 +55,6 @@ public class WorldEventListeners implements Listener {
 
     public WorldEventListeners(Hubbly plugin) {
         this.plugin = plugin;
-        this.logger = plugin.getLogger();
-        this.debugMode = plugin.getDebugMode();
         this.bossBarManager = plugin.getBossBarManager();
     }
 

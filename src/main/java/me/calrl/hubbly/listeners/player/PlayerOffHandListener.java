@@ -37,17 +37,15 @@ public class PlayerOffHandListener implements Listener {
     @EventHandler
     private void onOffHandSwitch(PlayerSwapHandItemsEvent event) {
         Player player = event.getPlayer();
-        if(event.getPlayer().hasPermission(Permissions.BYPASS_OFF_HAND.getPermission())) return;
+        if(player.hasPermission(Permissions.BYPASS_OFF_HAND.getPermission())) return;
 
-        else if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
+        else if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
 
         event.setCancelled(true);
     }
 
     @EventHandler
     private void onInventorySwap(InventoryClickEvent event) {
-
-
         HumanEntity player = event.getWhoClicked();
         if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
         if(player.hasPermission(Permissions.BYPASS_OFF_HAND.getPermission())) return;

@@ -50,6 +50,7 @@ public class AnnouncementsManager {
         }
     }
 
+    
     public List<String[]> getAnnouncements() {
         return new ArrayList<>(announcements);
     }

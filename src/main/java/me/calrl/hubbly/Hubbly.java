@@ -71,7 +71,7 @@ public final class Hubbly extends JavaPlugin {
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
 
-    private UpdateUtil updateUtil;
+    private UpdateUtil updateUtil = null;
 
     public void reloadPlugin() {
         this.reloadConfig();
