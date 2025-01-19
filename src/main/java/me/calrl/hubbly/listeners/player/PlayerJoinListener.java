@@ -55,11 +55,7 @@ public class PlayerJoinListener implements Listener {
         if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
 
         UpdateUtil updateUtil = plugin.getUpdateUtil();
-        debugMode.info("Checking util...");
         if(updateUtil != null && config.getBoolean("check_for_update", true)) {
-            debugMode.info("1:" +updateUtil.getMessage());
-            boolean needsUpdate = plugin.getUpdateUtil().checkForUpdate(plugin);
-            debugMode.info(String.valueOf(needsUpdate));
             if(player.isOp()) {
                 player.sendMessage(
                         ChatUtils.parsePlaceholders(
