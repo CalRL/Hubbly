@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 
 public class UpdateUtil {
 
-    private String updateMessage;
+    private String updateMessage = null;
     public boolean checkForUpdate(Hubbly plugin) {
 
 
@@ -45,8 +45,9 @@ public class UpdateUtil {
                 }
                 case UpdateChecker.UpdateReason.UNRELEASED_VERSION -> {
                     needsUpdate = false;
+                    updateMessage = String.format("You're running a development build (%s)...", plugin.getDescription().getVersion());
 
-                    logger.info(String.format("You're running a development build (%s)...", plugin.getDescription().getVersion()));
+                    logger.info(updateMessage);
                     logger.info("Proceed with caution.");
                 }
                 default -> {

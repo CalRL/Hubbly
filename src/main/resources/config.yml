@@ -1,6 +1,6 @@
 debug: true
 prefix: '&e&lHubbly &7&l>&r'
-
+check_for_update: true
 
 #----------------#
 # Disable Worlds #

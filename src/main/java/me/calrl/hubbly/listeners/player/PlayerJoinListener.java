@@ -22,6 +22,8 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.update.UpdateUtil;
+import org.apache.commons.lang.exception.NestableError;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -52,15 +54,23 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
 
-        boolean needsUpdate = plugin.getUpdateUtil().checkForUpdate(plugin);
-        if(player.isOp() && needsUpdate) {
-            player.sendMessage(
-                    ChatUtils.parsePlaceholders(
-                            player,
-                            plugin.getPrefix() + plugin.getUpdateUtil().getMessage()
-                    )
-            );
+        UpdateUtil updateUtil = plugin.getUpdateUtil();
+        debugMode.info("Checking util...");
+        if(updateUtil != null && config.getBoolean("check_for_update", true)) {
+            debugMode.info("1:" +updateUtil.getMessage());
+            boolean needsUpdate = plugin.getUpdateUtil().checkForUpdate(plugin);
+            debugMode.info(String.valueOf(needsUpdate));
+            if(player.isOp()) {
+                player.sendMessage(
+                        ChatUtils.parsePlaceholders(
+                                player,
+                                plugin.getPrefix() + plugin.getUpdateUtil().getMessage()
+
+                        )
+                );
+            }
         }
+
         boolean doubleJump = config.getBoolean("double_jump.enabled");
         if(doubleJump) {
             plugin.setPlayerFlight(player, (byte) 0);
