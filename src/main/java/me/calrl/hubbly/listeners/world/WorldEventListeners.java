@@ -293,6 +293,8 @@ public class WorldEventListeners implements Listener {
     @EventHandler
     private void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+
+        if(player.hasPermission(Permissions.BYPASS_INTERACT.getPermission())) return;
         if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
         if(config.getBoolean("cancel_events.interact", false)) {
             event.setCancelled(true);
