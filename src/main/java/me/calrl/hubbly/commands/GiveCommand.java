@@ -82,8 +82,8 @@ public class GiveCommand implements TabExecutor {
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        if (args.length < 2) {
-            sender.sendMessage(ChatColor.YELLOW + "Usage: /give <player> <item> [amount] [slot]");
+        if (args.length < 3) {
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /hubbly give <player> <item> [amount] [slot]");
             return true;
         }
 
@@ -94,13 +94,13 @@ public class GiveCommand implements TabExecutor {
             return true;
         }
 
-        Player targetPlayer = Bukkit.getPlayer(args[0]);
+        Player targetPlayer = Bukkit.getPlayer(args[1]);
         if (targetPlayer == null) {
-            sender.sendMessage(ChatColor.RED + "Player not found: " + args[0]);
+            sender.sendMessage(ChatColor.RED + "Player not found: " + args[1]);
             return true;
         }
 
-        String itemName = ChatColor.stripColor(args[1].toLowerCase());
+        String itemName = ChatColor.stripColor(args[2].toLowerCase());
         CustomItem customItem = items.get(itemName);
 
         if (customItem == null) {

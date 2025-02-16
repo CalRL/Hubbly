@@ -67,6 +67,7 @@ public final class Hubbly extends JavaPlugin {
     private Utils utils;
     private PlayerManager playerManager;
     private BossBarManager bossBarManager;
+    private ItemsManager itemsManager;
 
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
@@ -106,7 +107,6 @@ public final class Hubbly extends JavaPlugin {
         getCommand("spawn").setExecutor(new SpawnCommand(this));
         getCommand("fly").setExecutor(new FlyCommand(this));
         getCommand("clearchat").setExecutor(new ClearChatCommand(this));
-        getCommand("give").setExecutor(new GiveCommand(this));
         getCommand("lockchat").setExecutor(new LockChatCommand(this));
     }
 
@@ -157,6 +157,7 @@ public final class Hubbly extends JavaPlugin {
         utils = new Utils(this);
         playerManager = new PlayerManager(this);
         bossBarManager = new BossBarManager(this);
+        itemsManager = new ItemsManager(this);
 
         prefix = this.getConfig().getString("prefix");
 
@@ -271,5 +272,6 @@ public final class Hubbly extends JavaPlugin {
     public String getPrefix() {
         return prefix;
     }
+    public ItemsManager getItemsManager() {return itemsManager;}
 
 }

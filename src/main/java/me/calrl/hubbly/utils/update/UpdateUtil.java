@@ -32,13 +32,13 @@ public class UpdateUtil {
             switch(reason) {
                 case UpdateChecker.UpdateReason.UP_TO_DATE -> {
                     needsUpdate = false;
-                    updateMessage = parseVersion(section.getString("no_update", "No update"), result);
+                    updateMessage = parsePlaceholders(section.getString("no_update", "No update"), result);
 
                     logger.info(updateMessage);
                     }
                 case UpdateChecker.UpdateReason.NEW_UPDATE -> {
                     needsUpdate = true;
-                    updateMessage = parseVersion(section.getString("new_update", "A new update for Hubbly is available"), result);
+                    updateMessage = parsePlaceholders(section.getString("new_update", "A new update for Hubbly is available"), result);
 
                     logger.info(updateMessage);
 
@@ -52,7 +52,7 @@ public class UpdateUtil {
                 }
                 default -> {
                     needsUpdate = false;
-                    updateMessage = parseVersion(section.getString("error", "Could not check for a new version..."), result);
+                    updateMessage = parsePlaceholders(section.getString("error", "Could not check for a new version..."), result);
 
                     logger.info(updateMessage);
                     logger.info("Reason: " + reason);
@@ -70,7 +70,7 @@ public class UpdateUtil {
         }
     }
 
-    public String parseVersion(String message, UpdateChecker.UpdateResult result) {
+    public String parsePlaceholders(String message, UpdateChecker.UpdateResult result) {
         if(message.contains("%current%")) {
             message = message.replace("%current%", Hubbly.getInstance().getDescription().getVersion());
         }
@@ -78,6 +78,10 @@ public class UpdateUtil {
             final String newest = result.getNewestVersion();
             message = message.replace("%new%", newest);
 
+        }
+        if(message.contains("%link%")) {
+            String link = "https://www.spigotmc.org/resources/hubbly-1-20-6-1-21-4-the-only-hub-plugin-you-will-ever-need.117243/";
+            message = message.replace("%link%", link);
         }
 
         return message;

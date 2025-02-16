@@ -19,6 +19,7 @@ package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.commands.subcommands.*;
+import me.calrl.hubbly.commands.subcommands.GiveCommand;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
@@ -43,7 +44,7 @@ public class HubblyCommand implements TabExecutor {
 
     private final Hubbly plugin;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
-    private final String[] commands = {"reload", "version", "selector", "nextannouncement"};
+    private final String[] commands = {"reload", "version", "selector", "nextannouncement", "give"};
     public HubblyCommand(Logger logger, Hubbly plugin) {
         this.logger = logger;
         this.plugin = plugin;
@@ -56,6 +57,7 @@ public class HubblyCommand implements TabExecutor {
         subCommands.put("selector", new SelectorCommand(plugin));
         subCommands.put("version", new VersionCommand(plugin));
         subCommands.put("nextannouncement", new NextAnnouncementCommand(plugin));
+        subCommands.put("give", new GiveCommand(plugin));
     }
 
     @Override
@@ -89,4 +91,5 @@ public class HubblyCommand implements TabExecutor {
         StringUtil.copyPartialMatches(args[0], List.of(commands), completions);
         return completions;
     }
+
 }
