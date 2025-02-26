@@ -4,7 +4,6 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.interfaces.SubCommand;
-import me.calrl.hubbly.items.*;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.ItemsManager;
 import me.calrl.hubbly.utils.ChatUtils;
@@ -14,8 +13,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GiveCommand implements SubCommand {
 
@@ -44,7 +43,7 @@ public class GiveCommand implements SubCommand {
         items = itemsManager.getItems();
 
         if (args.length < 3) {
-            player.sendMessage(ChatColor.YELLOW + "Usage: /hubbly give <player> <item> [amount] [slot]");
+            player.sendMessage(ChatColor.YELLOW + "Usage: /give <player> <item> [amount] [slot]");
             return;
         }
 

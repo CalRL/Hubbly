@@ -18,12 +18,15 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.commands.subcommands.*;
-import me.calrl.hubbly.commands.subcommands.GiveCommand;
+import me.calrl.hubbly.commands.subcommands.NextAnnouncementCommand;
+import me.calrl.hubbly.commands.subcommands.ReloadCommand;
+import me.calrl.hubbly.commands.subcommands.SelectorCommand;
+import me.calrl.hubbly.commands.subcommands.VersionCommand;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.ChatColor;
-import org.bukkit.command.*;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.util.StringUtil;
@@ -34,7 +37,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.locks.Lock;
 import java.util.logging.Logger;
 
 public class HubblyCommand implements TabExecutor {
@@ -44,7 +46,7 @@ public class HubblyCommand implements TabExecutor {
 
     private final Hubbly plugin;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
-    private final String[] commands = {"reload", "version", "selector", "nextannouncement", "give"};
+    private final String[] commands = {"reload", "version", "selector", "nextannouncement"};
     public HubblyCommand(Logger logger, Hubbly plugin) {
         this.logger = logger;
         this.plugin = plugin;
@@ -57,7 +59,6 @@ public class HubblyCommand implements TabExecutor {
         subCommands.put("selector", new SelectorCommand(plugin));
         subCommands.put("version", new VersionCommand(plugin));
         subCommands.put("nextannouncement", new NextAnnouncementCommand(plugin));
-        subCommands.put("give", new GiveCommand(plugin));
     }
 
     @Override
@@ -75,7 +76,7 @@ public class HubblyCommand implements TabExecutor {
         if (subCommand != null) {
             subCommand.execute(player, args);
         } else {
-            player.sendMessage(ChatUtils.prefixMessage(player,  "Unknown command."));
+            sender.sendMessage(ChatUtils.prefixMessage(player,  "Unknown command."));
         }
 
 
