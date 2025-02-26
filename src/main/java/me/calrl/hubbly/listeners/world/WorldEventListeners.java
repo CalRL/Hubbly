@@ -20,7 +20,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.functions.BossBarManager;
-import me.calrl.hubbly.managers.DebugMode;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
@@ -40,8 +40,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.projectiles.ProjectileSource;
-
-import java.util.logging.Logger;
 
 public class WorldEventListeners implements Listener {
 
@@ -278,10 +276,31 @@ public class WorldEventListeners implements Listener {
      */
     @EventHandler
     private void onPlayerRespawn(PlayerRespawnEvent event) {
+
+        Location location;
+        try {
+            location = event.getRespawnLocation();
+        } catch (NoSuchMethodError e) {
+            location = null;
+            plugin.getDebugMode().severe(e.getMessage());
+        }
+
         Player player = event.getPlayer();
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getRespawnLocation())) {
+        if(location == null) {
+            try {
+                location = player.getRespawnLocation();
+            } catch (NoSuchMethodError e) {
+                plugin.getDebugMode().severe(e.getMessage());
+            }
+        }
+
+        if(location == null) {
+            plugin.getLogger().severe("Could not get respawn location.");
+            plugin.getLogger().severe("Please report this to the developer.");
+        }
+
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(location)) {
             bossBarManager.removeBossBar(player);
-            return;
         }
     }
 
