@@ -106,6 +106,7 @@ public final class Hubbly extends JavaPlugin {
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
         getCommand("spawn").setExecutor(new SpawnCommand(this));
         getCommand("fly").setExecutor(new FlyCommand(this));
+        getCommand("give").setExecutor(new GiveCommand(this));
         getCommand("clearchat").setExecutor(new ClearChatCommand(this));
         getCommand("lockchat").setExecutor(new LockChatCommand(this));
     }
@@ -172,10 +173,12 @@ public final class Hubbly extends JavaPlugin {
             loadFiles();
             loadComponents();
             bossBarManager.reAddAllBossBars();
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+
+
         final int pluginId = 22219;
         new Metrics(this, pluginId);
         updateUtil.checkForUpdate(this);
@@ -205,14 +208,8 @@ public final class Hubbly extends JavaPlugin {
         return super.getConfig();
     }
 
-    private void loadFiles() {
-        File itemsFile = new File(getDataFolder(), "items.yml");
+    private void loadFiles() throws Exception {
         File serverSelectorFile = new File(getDataFolder(), "serverselector.yml");
-        if(!itemsFile.exists()) {
-            saveResource("items.yml", false);
-        }
-        itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
-
         if(!serverSelectorFile.exists()) {
             saveResource("serverselector.yml", false);
         }

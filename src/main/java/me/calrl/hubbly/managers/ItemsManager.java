@@ -5,9 +5,13 @@ import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.items.*;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
+import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -18,16 +22,17 @@ public class ItemsManager {
     private FileConfiguration itemsConfig;
     private DebugMode debugMode;
     private final Map<String, CustomItem> items = new HashMap<>();
+    private File itemsFile;
 
     public ItemsManager(Hubbly plugin) {
         this.plugin = plugin;
         this.debugMode = plugin.getDebugMode();
-        registerItems();
+        this.itemsFile =  new File(plugin.getDataFolder(), "items.yml");
+        this.loadConfig();
+        this.registerItems();
     }
 
     private void registerItems() {
-        itemsConfig = plugin.getItemsConfig();
-
         items.put("compass", new CompassItem());
         items.put("socials", new SocialsItem());
         items.put("playervisibility", new PlayerVisibilityItem());
@@ -44,10 +49,15 @@ public class ItemsManager {
             debugMode.warn("No items found in items.yml");
         }
     }
-
+    private void loadConfig() {
+        this.itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
+    }
     public Map<String, CustomItem> getItems() {
-
         return items;
+    }
+
+    public FileConfiguration getConfig() {
+        return itemsConfig;
     }
 
     public Set<String> getItemNames() {
@@ -56,4 +66,17 @@ public class ItemsManager {
         System.out.println(itemNames);
         return itemNames;
     }
+
+    private ItemStack createItemFromConfig(String itemKey, Player player) {
+
+    }
+
+    private ItemMeta createMetaFromConfig(ItemMeta meta) {
+
+    }
+
+    public void executeActions(Player player, ItemStack item) {
+
+    }
+
 }

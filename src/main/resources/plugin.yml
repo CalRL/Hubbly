@@ -30,6 +30,11 @@ commands:
     usage: /clearchat
     permission: hubbly.command.clearchat
     aliases: [cc, clearc, cchat]
+  give:
+    description: give command
+    usage: /give
+    permission: hubbly.command.give
+    aliases: [ gv ]
   lockchat:
     usage: /give
     aliases: [lc]

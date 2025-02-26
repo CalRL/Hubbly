@@ -22,6 +22,7 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.managers.ItemsManager;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -32,7 +33,6 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -45,7 +45,8 @@ public class ConfigItems implements CustomItem {
     private final String itemKey;
     private final ActionManager actionManager;
     private Player player;
-    private DebugMode debugMode;
+    private final DebugMode debugMode;
+    private final ItemsManager itemsManager;
 
     public ConfigItems(String itemKey, Hubbly plugin) {
         this.plugin = plugin;
@@ -53,6 +54,10 @@ public class ConfigItems implements CustomItem {
         this.itemKey = itemKey;
         this.actionManager = plugin.getActionManager();
         this.debugMode = plugin.getDebugMode();
+        this.itemsManager = plugin.getItemsManager();
+        if(itemsManager == null) {
+            plugin.getLogger().severe("null dumbass");
+        }
     }
 
     @Override
@@ -61,7 +66,7 @@ public class ConfigItems implements CustomItem {
     }
 
     public ItemStack createConfigItem(String itemKey, Player player) {
-        FileConfiguration config = Hubbly.getInstance().getItemsConfig(); // Use itemsConfig for the items.yml
+        FileConfiguration config = itemsManager.getConfig();
         String path = "items." + itemKey;
         Material material = null;
 
