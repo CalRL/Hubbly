@@ -147,6 +147,7 @@ actions_on_join:
   - '[SOUND] block.note_block.chime'
   - '[FIREWORK] BALL;255;0;255;2'
   - '[ITEM] socials;1'
+  - '[ITEM] compass;5'
   - '[ITEM] shop;9'
 
 #---------------------#

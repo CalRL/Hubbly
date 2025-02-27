@@ -32,9 +32,12 @@ import org.bukkit.plugin.Plugin;
 
 public class CompassItem implements CustomItem {
 
-
-    private final FileConfiguration config = Hubbly.getInstance().getServerSelectorConfig();
-
+    private final Hubbly plugin;
+    private final FileConfiguration config;
+    public CompassItem(Hubbly plugin) {
+        this.plugin = plugin;
+        this.config = plugin.getServerSelectorConfig();
+    }
 
     public final ItemStack createItem() {
         ItemStack compass = new ItemStack(Material.valueOf(config.getString("selector.material").toUpperCase()));

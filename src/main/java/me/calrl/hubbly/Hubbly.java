@@ -144,7 +144,15 @@ public final class Hubbly extends JavaPlugin {
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
+
+        try {
+            loadFiles();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         instance = this;
+
 
         updateUtil = new UpdateUtil();
         disabledWorlds = new DisabledWorlds(this);
@@ -152,13 +160,13 @@ public final class Hubbly extends JavaPlugin {
         actionManager = new ActionManager(this);
 
         debugMode = new DebugMode();
-
+        itemsManager = new ItemsManager(this);
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
         utils = new Utils(this);
         playerManager = new PlayerManager(this);
         bossBarManager = new BossBarManager(this);
-        itemsManager = new ItemsManager(this);
+
 
         prefix = this.getConfig().getString("prefix");
 
@@ -170,14 +178,11 @@ public final class Hubbly extends JavaPlugin {
             }
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
             debugMode.info("BungeeCord channel registered");
-            loadFiles();
             loadComponents();
             bossBarManager.reAddAllBossBars();
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-
 
         final int pluginId = 22219;
         new Metrics(this, pluginId);
@@ -208,7 +213,13 @@ public final class Hubbly extends JavaPlugin {
         return super.getConfig();
     }
 
-    private void loadFiles() throws Exception {
+    private void loadFiles() {
+        File itemsFile = new File(getDataFolder(), "items.yml");
+        if(!itemsFile.exists()) {
+            saveResource("items.yml", false);
+        }
+        itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
+
         File serverSelectorFile = new File(getDataFolder(), "serverselector.yml");
         if(!serverSelectorFile.exists()) {
             saveResource("serverselector.yml", false);

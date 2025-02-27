@@ -132,6 +132,7 @@ public class GiveCommand implements TabExecutor {
                 stringList.add(player.getName());
             }
         }
+
         if(args.length == 2)
             stringList.addAll(items.keySet());
         return stringList;
