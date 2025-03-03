@@ -1,6 +1,8 @@
 debug: true
 prefix: '&e&lHubbly &7&l>&r'
 check_for_update: true
+# Send message if no update?
+notify_on_no_update: false
 
 #----------------#
 # Disable Worlds #
@@ -123,7 +125,10 @@ player:
   forceinventory: true
   experience:
     enabled: true
-    level: 2024
+    level: 2025
+    # Takes a float 0.0 - 1.0
+    # Set progress to "YEAR", If you want the progress to be based on time elapsed in the year.
+    progress: 1.0
   fly:
     enabled: true
   join_message:

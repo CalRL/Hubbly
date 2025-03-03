@@ -59,7 +59,8 @@ public enum Permissions {
     USE_ENDER_BOW("use.enderbow"),
     USE_AOTE("use.aote"),
 
-    NOTIFY_WDL("notify.antiwdl");
+    NOTIFY_WDL("notify.antiwdl"),
+    NOTIFY_UPDATE("notify.update");
 
     private final String permission;
 

@@ -4,21 +4,18 @@ import me.calrl.hubbly.Hubbly;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Logger;
 
 public class UpdateUtil {
 
     private String updateMessage = null;
+    private boolean needsUpdate;
     public boolean checkForUpdate(Hubbly plugin) {
-
-
         Logger logger = plugin.getLogger();
 
         CompletableFuture<Boolean> updateFuture = new CompletableFuture<>();
 
         UpdateChecker.init(plugin, 117243).requestUpdateCheck().whenComplete((result, exception) -> {
-            boolean needsUpdate;
             UpdateChecker.UpdateReason reason = result.getReason();
             ConfigurationSection section = plugin.getConfig().getConfigurationSection("update");
 
@@ -33,7 +30,6 @@ public class UpdateUtil {
                 case UpdateChecker.UpdateReason.UP_TO_DATE -> {
                     needsUpdate = false;
                     updateMessage = parsePlaceholders(section.getString("no_update", "No update"), result);
-
                     logger.info(updateMessage);
                     }
                 case UpdateChecker.UpdateReason.NEW_UPDATE -> {
@@ -69,7 +65,6 @@ public class UpdateUtil {
             return false;
         }
     }
-
     public String parsePlaceholders(String message, UpdateChecker.UpdateResult result) {
         if(message.contains("%current%")) {
             message = message.replace("%current%", Hubbly.getInstance().getDescription().getVersion());
@@ -86,6 +81,10 @@ public class UpdateUtil {
 
         return message;
     }
+    public boolean getNeedsUpdate() {
+        return needsUpdate;
+    }
+
 
     public String getMessage() {
         return this.updateMessage;

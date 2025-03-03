@@ -19,11 +19,12 @@ package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
+import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.update.UpdateUtil;
-import org.apache.commons.lang.exception.NestableError;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -35,7 +36,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import java.util.List;
 
 public class PlayerJoinListener implements Listener {
-    private final FileConfiguration config;
+    private FileConfiguration config;
 
     private final DebugMode debugMode;
     private final ActionManager actionManager;
@@ -52,20 +53,11 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
 
-        UpdateUtil updateUtil = plugin.getUpdateUtil();
-        if(updateUtil != null && config.getBoolean("check_for_update", true)) {
-            if(player.isOp()) {
-                player.sendMessage(
-                        ChatUtils.parsePlaceholders(
-                                player,
-                                plugin.getPrefix() + plugin.getUpdateUtil().getMessage()
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        if(disabledWorlds.inDisabledWorld(player.getWorld())) return;
 
-                        )
-                );
-            }
-        }
+        this.sendUpdateMessage(player);
 
         boolean doubleJump = config.getBoolean("double_jump.enabled");
         if(doubleJump) {
@@ -76,7 +68,6 @@ public class PlayerJoinListener implements Listener {
 
         if (config.getBoolean("player.join_message.enabled")) {
             String joinMessage = config.getString("player.join_message.message");
-            // joinMessage = ParsePlaceholders.parsePlaceholders(player, joinMessage);
             joinMessage = ChatUtils.parsePlaceholders(player, joinMessage);
             event.setJoinMessage(ChatUtils.translateHexColorCodes(joinMessage));
         }
@@ -87,20 +78,52 @@ public class PlayerJoinListener implements Listener {
         }
 
         if(config.contains("actions_on_join")) {
-            List<String> actions = config.getStringList("actions_on_join");
-            if (!actions.isEmpty()) {
-                Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                    for(String action : actions) {
-                        actionManager.executeAction(Hubbly.getInstance(), player, action);
-                        debugMode.info("Executed " + action);
-                    }
+            this.handleActionsOnJoin(player);
+        }
+    }
 
-                    debugMode.info(actions.toString());
-                }, 1L);
-            }
+    private void sendUpdateMessage(Player player) {
+        UpdateUtil updateUtil = plugin.getUpdateUtil();
+        if(updateUtil == null) {
+            return;
         }
 
+        config = plugin.getConfig();
 
+        boolean checkForUpdate = config.getBoolean("check_for_update", true);
+        if(!checkForUpdate) {
+            return;
+        }
+        boolean sendMessage = config.getBoolean("notify_on_no_update", true);
+        if(!updateUtil.getNeedsUpdate() && !sendMessage) {
+            return;
+        }
+
+        if(player.hasPermission(Permissions.NOTIFY_UPDATE.getPermission())) {
+            player.sendMessage(
+                    ChatUtils.parsePlaceholders(
+                            player,
+                            plugin.getPrefix() + updateUtil.getMessage()
+
+                    )
+            );
+        }
+    }
+
+    private void handleActionsOnJoin(Player player) {
+        List<String> actions = config.getStringList("actions_on_join");
+        if(actions.isEmpty()) {
+            return;
+        }
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> {
+            for(String action : actions) {
+                actionManager.executeAction(Hubbly.getInstance(), player, action);
+                debugMode.info("Executed " + action);
+            }
+
+            debugMode.info(actions.toString());
+        }, 1L);
     }
 
     @EventHandler

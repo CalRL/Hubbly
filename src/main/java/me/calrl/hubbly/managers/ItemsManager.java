@@ -1,20 +1,13 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.action.Action;
 import me.calrl.hubbly.action.ActionManager;
-import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.items.*;
-import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -61,11 +54,9 @@ public class ItemsManager {
         } else {
             debugMode.warn("No items found in items.yml");
         }
-        debugMode.warn("1");
         for(String row : itemsConfig.getStringList("")) {
             debugMode.warn(row);
         }
-        debugMode.warn("2");
     }
     public Map<String, CustomItem> getItems() {
         return items;
