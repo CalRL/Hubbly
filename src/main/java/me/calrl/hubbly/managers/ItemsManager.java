@@ -94,7 +94,7 @@ public class ItemsManager {
             return;
         }
         for (String actionData : actions) {
-            actionManager.executeAction(Hubbly.getInstance(), player, actionData);
+            actionManager.executeActions(player, actions);
             debugMode.info("Executing action: " + actionData);
         }
 
