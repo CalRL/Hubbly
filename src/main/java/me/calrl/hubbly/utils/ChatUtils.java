@@ -21,9 +21,9 @@ import me.calrl.hubbly.Hubbly;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -145,7 +145,8 @@ public class ChatUtils {
 
     public static TextComponent textLinkBuilder(String message, String link, String hoverText) {
         TextComponent component = new TextComponent(message);
-        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatUtils.translateHexColorCodes(hoverText)).create()));
+        String parsedHoverText = ChatUtils.translateHexColorCodes(hoverText);
+        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(parsedHoverText)));
         component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
         return component;
     }
