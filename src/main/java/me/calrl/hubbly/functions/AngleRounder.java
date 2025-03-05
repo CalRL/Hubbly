@@ -17,20 +17,17 @@
 
 package me.calrl.hubbly.functions;
 public class AngleRounder {
-    private AngleRounder() {
-        throw new IllegalStateException(AngleRounder.class + " is a Utility class");
+    private float angle;
+    public AngleRounder(float angle) {
+        this.angle = angle;
     }
 
-    // Method to round an angle to the nearest 0, 90, 180, or 270 degrees
-    public static float roundToNearestRightAngle(float angle) {
-        // Define the target angles
+    public float round(float angle) {
         float[] targetAngles = {-135, -90, -45, 0, 45, 90, 135};
 
-        // Initialize the closest angle as the first target angle
         float closestAngle = targetAngles[0];
         float smallestDifference = Math.abs(angle - closestAngle);
 
-        // Iterate through target angles to find the closest one
         for (float target : targetAngles) {
             float difference = Math.abs(angle - target);
             if (difference < smallestDifference) {
@@ -40,5 +37,17 @@ public class AngleRounder {
         }
 
         return closestAngle;
+    }
+
+    public float getRoundedAngle() {
+        return round(angle);
+    }
+
+    public float getAngle() {
+        return this.angle;
+    }
+
+    public void setAngle(float angle) {
+        this.angle = angle;
     }
 }

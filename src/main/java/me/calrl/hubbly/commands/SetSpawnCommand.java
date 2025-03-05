@@ -19,11 +19,9 @@ package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.AngleRounder;
-import me.calrl.hubbly.interfaces.CustomItem;
-import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -32,14 +30,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.HashMap;
-import java.util.Map;
-
 public class SetSpawnCommand implements CommandExecutor {
 
     private final JavaPlugin plugin;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
-    private final Map<String, CustomItem> items = new HashMap<>();
 
     public SetSpawnCommand(JavaPlugin plugin) {
         this.plugin = plugin;
@@ -65,10 +59,11 @@ public class SetSpawnCommand implements CommandExecutor {
             double z = location.getZ();
             float yaw = location.getYaw();
             float pitch = location.getPitch();
-            float roundedYaw = AngleRounder.roundToNearestRightAngle(yaw);
-            float roundedPitch = AngleRounder.roundToNearestRightAngle(pitch);
+            float roundedYaw = new AngleRounder(yaw).getRoundedAngle();
+            float roundedPitch = new AngleRounder(pitch).getRoundedAngle();
 
-            config.set("spawn.world", location.getWorld().getName());
+            World world = location.getWorld();
+            config.set("spawn.world", world.getName());
             config.set("spawn.x", spawnRound(x));
             config.set("spawn.y", spawnRound(y));
             config.set("spawn.z", spawnRound(z));
