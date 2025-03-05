@@ -21,11 +21,10 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
-import me.calrl.hubbly.functions.CreateCustomHead;
+import me.calrl.hubbly.inventory.CompassInventory;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.holders.CompassHolder;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -39,16 +38,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-
-import javax.crypto.KEMSpi;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
-
-import static me.calrl.hubbly.functions.CreateCustomHead.setTextures;
 
 public class CompassListener implements Listener {
 
@@ -95,14 +86,14 @@ public class CompassListener implements Listener {
     }
 
     @EventHandler
-    public void onInventoryClick(InventoryClickEvent event) {;
-        if (config == null || !config.contains("selector.gui.title")) {
-            debugMode.warn("Configuration for selector.gui.title is missing.");
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (config == null) {
+            debugMode.warn("Configuration is missing.");
             return;
         }
         InventoryHolder holder = event.getInventory().getHolder();
         if(!(holder instanceof CompassHolder)) return;
-        event.setCancelled(true);  // Prevent item movement
+        event.setCancelled(true);
 
         ItemStack clickedItem = event.getCurrentItem();
         if(clickedItem == null || clickedItem.getType() == Material.AIR) return;
@@ -112,121 +103,24 @@ public class CompassListener implements Listener {
 
         PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
         String actionsString = dataContainer.get(actionsKey, PersistentDataType.STRING);
-        if (actionsString != null) {
-            debugMode.info("Actions string found: " + actionsString);  // Debug log
-            String[] actions = actionsString.split(",");
-            Player player = (Player) event.getWhoClicked();
-            for (String actionData : actions) {
-                actionManager.executeAction(plugin, player, actionData);
-                debugMode.info("Executing action: " + actionData);
-            }
-            debugMode.info(Arrays.toString(actions));
+        if (actionsString == null) {
+            return;
         }
+        debugMode.info("Actions string found: " + actionsString);
+        Player player = (Player) event.getWhoClicked();
+
+        actionManager.executeActions(player, actionsString);
     }
 
     public void openCompassGUI(Player player) {
-        if (Objects.equals(config.getString("selector.enabled"), "true")) {
-            Inventory gui = new CompassHolder(plugin).getInventory();
-
-            for (String itemKey : Objects.requireNonNull(config.getConfigurationSection("selector.gui.items")).getKeys(false)) {
-                ItemStack item = createItemFromConfig(player, itemKey);
-                if (item != null) {
-                    int slot = config.getInt("selector.gui.items." + itemKey + ".slot");
-                    if (slot >= 0 && slot < gui.getSize()) {
-                        gui.setItem(slot - 1, item);
-                    } else {
-                        debugMode.warn("Invalid slot on item " + itemKey);
-                    }
-                }
-            }
-
-            if (config.isConfigurationSection("selector.fill")) {
-                ItemStack fillItem = createFillItem(player);
-                if (fillItem != null) {
-                    for (int i = 0; i < gui.getSize(); i++) {
-                        if (gui.getItem(i) == null || gui.getItem(i).getType() == Material.AIR) {
-                            gui.setItem(i, fillItem);
-                        }
-                    }
-                }
-            }
-
-            player.openInventory(gui);
+        boolean isEnabled = config.getBoolean("selector.enabled", true);
+        if(!isEnabled) {
+            return;
         }
+
+        CompassInventory compassInventory = new CompassInventory(plugin, player);
+        Inventory gui = compassInventory.getInventory();
+        player.openInventory(gui);
     }
 
-    private ItemStack createItemFromConfig(Player player, String itemKey) {
-        String path = "selector.gui.items." + itemKey;
-        if (!config.contains(path)) {
-            return null;
-        }
-
-        Material material;
-        material = Material.valueOf(config.getString(path + ".material", "STONE").toUpperCase());
-
-
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) {
-            plugin.getLogger().warning("Meta is null, cannot generate item...");
-            return null;
-        }
-
-        if (config.contains(path + ".name")) {
-            String itemName = config.getString(path + ".name");
-            meta.setDisplayName(ChatUtils.processMessage(player, itemName));
-        }
-
-        if (config.contains(path + ".lore")) {
-            List<String> loreList = config.getStringList(path + ".lore");
-            loreList.replaceAll(message -> ChatUtils.processMessage(player, message));
-            meta.setLore(loreList);
-        }
-
-
-
-        List<String> actions = config.getStringList(path + ".actions");
-        if (!actions.isEmpty()) {
-            String actionsString = String.join(",", actions);
-            meta.getPersistentDataContainer().set(actionsKey, PersistentDataType.STRING, actionsString);
-            debugMode.info("Set actions for item " + itemKey + ": " + actionsString);
-            debugMode.info(actions.toString());
-        }
-
-        PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
-        dataContainer.set(PluginKeys.SELECTOR.getKey(), PersistentDataType.STRING, itemKey);
-
-        item.setItemMeta(meta);
-        if(item.getType() == Material.PLAYER_HEAD) {
-            item.setItemMeta(setTextures(item, config.getString(path + ".value")));
-        }
-        return item;
-    }
-    private ItemStack createFillItem(Player player) {
-        String materialName = config.getString("selector.fill.type");
-        if (materialName == null) {
-            debugMode.warn("Material not set for fill item in configuration.");
-            return null;
-        }
-
-        Material material = Material.getMaterial(materialName.toUpperCase());
-        if (material == null) {
-            debugMode.warn("Invalid material " + materialName + " for fill item in configuration.");
-            return null;
-        }
-
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) return null;
-
-        String displayName = config.getString("selector.fill.name");
-        if (displayName != null) {
-            displayName = ChatUtils.processMessage(player, displayName);
-            meta.setDisplayName(displayName);
-        }
-
-        item.setItemMeta(meta);
-
-        return item;
-    }
 }
