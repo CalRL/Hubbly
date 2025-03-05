@@ -34,7 +34,6 @@ import java.util.Map;
 
 public class BossBarManager {
 
-    private static BossBarManager instance;
     private FileConfiguration config;
     private final Map<Player, BossBar> playerBossBars = new HashMap<>();
     private final Map<Player, BukkitRunnable> playerAnimations = new HashMap<>();
@@ -43,21 +42,6 @@ public class BossBarManager {
     public BossBarManager(Hubbly plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
-    }
-
-    /**
-     * @deprecated 8/1/2025 bad old code, refactor to the same system every other class uses
-     */
-    @Deprecated(since = "2.5.4", forRemoval = true)
-    public static BossBarManager getInstance() {
-        return instance;
-    }
-
-    /**
-     * @deprecated 8/1/2025 bad old code, refactor to the same system every other class uses
-     */
-    @Deprecated(since = "2.5.4", forRemoval = true)
-    public static void initialize(FileConfiguration config) {
     }
 
     public void createBossBar(Player player) {
@@ -99,7 +83,7 @@ public class BossBarManager {
         };
 
         // Run task every 'changeInterval' ticks
-        task.runTaskTimer(Hubbly.getInstance(), 0, changeInterval);
+        task.runTaskTimer(plugin, 0, changeInterval);
         playerAnimations.put(player, task);
     }
 
