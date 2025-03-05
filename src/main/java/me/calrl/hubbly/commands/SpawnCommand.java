@@ -18,9 +18,9 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.events.HubblySpawnEvent;
 import me.calrl.hubbly.interfaces.CustomItem;
-import me.calrl.hubbly.interfaces.SubCommand;
-import org.bukkit.Bukkit;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -28,8 +28,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -52,10 +50,20 @@ public class SpawnCommand implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + config.getString("messages.no_console"));
             return true;
         }
+        Location spawn = plugin.getUtils().getSpawn();
+        HubblySpawnEvent event = new HubblySpawnEvent(player, spawn);
 
-        if(sender.hasPermission("hubbly.command.spawn")) {
+        if(!sender.hasPermission("hubbly.command.spawn")) {
+            String noPermission = config.getString("messages.no_permission_command");
+            player.sendMessage(
+                    ChatUtils.prefixMessage(player, noPermission)
+            );
+            return true;
+        }
+
+        if(!event.isCancelled()) {
             config = plugin.getConfig();
-            player.teleport(plugin.getUtils().getSpawn());
+            player.teleport(spawn);
         }
 
         return true;
