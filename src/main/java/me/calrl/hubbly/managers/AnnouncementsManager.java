@@ -91,7 +91,7 @@ public class AnnouncementsManager {
             return;
         }
 
-        int interval = plugin.getConfig().getInt("announcements.interval", 1);
+        int interval = plugin.getConfig().getInt("announcements.interval", 20);
         long intervalTicks = interval * 20L;
 
         task = Bukkit.getScheduler().runTaskTimer(plugin, this::sendNextAnnouncement, 0L, intervalTicks);
@@ -121,10 +121,10 @@ public class AnnouncementsManager {
     }
 
     public void reloadAnnouncements() {
-        stopAnnouncementsTask();
+        this.stopAnnouncementsTask();
         announcements.clear();
-        loadAnnouncements();
-        startAnnouncementsTask();
+        this.loadAnnouncements();
+        this.startAnnouncementsTask();
     }
 
     public void skipToNextAnnouncement() {
