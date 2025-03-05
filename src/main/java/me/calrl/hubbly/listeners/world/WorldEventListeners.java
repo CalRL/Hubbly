@@ -20,8 +20,11 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.functions.BossBarManager;
+import me.calrl.hubbly.managers.DisabledWorlds;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -43,7 +46,7 @@ import org.bukkit.projectiles.ProjectileSource;
 
 public class WorldEventListeners implements Listener {
 
-    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private FileConfiguration config;
     private final Hubbly plugin;
 
     // FIXME Fix the bossbar manager to look like the rest of the code, major refactor needed:
@@ -53,6 +56,7 @@ public class WorldEventListeners implements Listener {
 
     public WorldEventListeners(Hubbly plugin) {
         this.plugin = plugin;
+        this.config = plugin.getConfig();
         this.bossBarManager = plugin.getBossBarManager();
     }
 
@@ -62,16 +66,27 @@ public class WorldEventListeners implements Listener {
      * @param player the player
      * @return return true if the player is in a disabled world
      */
+    private boolean inDisabledWorld(Player player) {
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        return disabledWorlds.inDisabledWorld(player.getLocation());
+    }
 
-    private boolean checkWorld(Player player) {
-        return plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation());
+    /**
+     * Check if world is a disabled world
+     *
+     * @param world thr world
+     * @return return true if the world is a disabled world
+     */
+    private boolean inDisabledWorld(World world) {
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        return disabledWorlds.inDisabledWorld(world);
     }
 
 
     @EventHandler
     private void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
-        if(checkWorld(player)) return;
+        if(inDisabledWorld(player)) return;
         if(player.hasPermission("hubbly.bypass.place") || player.isOp()) return;
         if(config.getBoolean("cancel_events.block_place")) {
             event.setCancelled(true);
@@ -81,7 +96,7 @@ public class WorldEventListeners implements Listener {
     @EventHandler
     private void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
-        if(checkWorld(player)) return;
+        if(inDisabledWorld(player)) return;
         if(player.hasPermission("hubbly.bypass.break") || player.isOp()) return;
         if (config.getBoolean("cancel_events.block_break")) {
 
@@ -93,7 +108,7 @@ public class WorldEventListeners implements Listener {
     private void cancelDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
             if (player.hasPermission("hubbly.bypass.damage")) return;
-            if (checkWorld(player)) return;
+            if (inDisabledWorld(player)) return;
             if(config.getBoolean("cancel_events.damage")) {
                 event.setCancelled(true);
             }
@@ -101,7 +116,7 @@ public class WorldEventListeners implements Listener {
     }
     @EventHandler
     private void onWeatherChange(WeatherChangeEvent event) {
-        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getWorld())) return;
+        if(inDisabledWorld(event.getWorld())) return;
         if(config.getBoolean("cancel_events.weather")) {
             event.setCancelled(true);
         }
@@ -125,7 +140,7 @@ public class WorldEventListeners implements Listener {
     @EventHandler
     private void onItemDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
-        if(checkWorld(player)) return;
+        if(inDisabledWorld(player)) return;
         if (player.hasPermission("hubbly.bypass.item.drop") || player.isOp()) return;
         if(config.getBoolean("cancel_events.item_drop")) {
                 event.setCancelled(true);
@@ -134,7 +149,7 @@ public class WorldEventListeners implements Listener {
     @EventHandler
     private void onItemPickup(EntityPickupItemEvent event) {
         if (event.getEntity() instanceof Player player) {
-            if (checkWorld(player)) return;
+            if (inDisabledWorld(player)) return;
             if (player.hasPermission("hubbly.bypass.item.pickup") || player.isOp()) return;
             if (config.getBoolean("cancel_events.item_pickup")) {
                 event.setCancelled(true);
@@ -149,7 +164,7 @@ public class WorldEventListeners implements Listener {
         if(config.getBoolean("cancel_events.projectiles", true)) {
             if (source instanceof Player player) {
                 if (player.hasPermission(Permissions.BYPASS_PROJECTILES.getPermission())) return;
-                if (checkWorld(player)) return;
+                if (inDisabledWorld(player)) return;
 
                 boolean hasKey = doesPlayerHaveItemWithKey(player);
                 if(!hasKey) {
@@ -161,35 +176,6 @@ public class WorldEventListeners implements Listener {
             }
         }
     }
-
-    @EventHandler
-    private void onAnimalEat(EntityChangeBlockEvent event) {
-        EntityType type = event.getEntityType();
-        if(type != EntityType.SHEEP) return;
-        if(event.getTo() == Material.DIRT) {
-            event.getBlock().setType(Material.DIRT);
-        }
-    }
-
-
-    @EventHandler
-    private void onItemThrow(PlayerDropItemEvent event) {
-        Player player = event.getPlayer();
-        if(config.getBoolean("cancel_events.item_throw", true)) {
-            if (player.hasPermission("hubbly.bypass.item.throw") || player.isOp()) return;
-            if (checkWorld(player)) return;
-
-        } else {
-            event.setCancelled(true);
-        }
-
-    }
-    private static final PluginKeys[] CHECK_KEYS = {
-            PluginKeys.ENDER_BOW,
-            PluginKeys.TRIDENT,
-            PluginKeys.GRAPPLING_HOOK,
-            PluginKeys.AOTE
-    };
 
     public boolean doesPlayerHaveItemWithKey(Player player) {
         ItemStack item = player.getInventory().getItemInMainHand(); // Or offhand if you want to check both
@@ -209,10 +195,42 @@ public class WorldEventListeners implements Listener {
     }
 
     @EventHandler
+    private void onAnimalEat(EntityChangeBlockEvent event) {
+        EntityType type = event.getEntityType();
+        Block block = event.getBlock();
+        if(inDisabledWorld(block.getWorld()))
+        if(type != EntityType.SHEEP) return;
+        if(event.getTo() == Material.DIRT) {
+            block.setType(Material.DIRT);
+        }
+    }
+
+
+    @EventHandler
+    private void onItemThrow(PlayerDropItemEvent event) {
+        Player player = event.getPlayer();
+        if(config.getBoolean("cancel_events.item_throw", true)) {
+            if (player.hasPermission("hubbly.bypass.item.throw") || player.isOp()) return;
+            if (inDisabledWorld(player)) return;
+
+        } else {
+            event.setCancelled(true);
+        }
+
+    }
+    private static final PluginKeys[] CHECK_KEYS = {
+            PluginKeys.ENDER_BOW,
+            PluginKeys.TRIDENT,
+            PluginKeys.GRAPPLING_HOOK,
+            PluginKeys.AOTE
+    };
+
+
+
+    @EventHandler
     private void onFoodLevelChange(FoodLevelChangeEvent event) {
-        if (event.getEntity() instanceof Player) {
-            Player player = (Player) event.getEntity();
-            if (checkWorld(player)) return;
+        if (event.getEntity() instanceof Player player) {
+            if (inDisabledWorld(player)) return;
             if (player.hasPermission("hubbly.bypass.food")) return;
             if (config.getBoolean("cancel_events.hunger")) {
                 event.setCancelled(true);
@@ -221,7 +239,7 @@ public class WorldEventListeners implements Listener {
     }
     @EventHandler
     private void onMobSpawn(CreatureSpawnEvent event) {
-        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getLocation().getWorld())) return;
+        if(inDisabledWorld(event.getLocation().getWorld())) return;
         if (config.getBoolean("cancel_events.mob_spawn")) {
             if(!(event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.COMMAND || event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM)) {
                 event.setCancelled(true);
@@ -230,14 +248,14 @@ public class WorldEventListeners implements Listener {
     }
     @EventHandler
     private void onBlockBurn(BlockBurnEvent event) {
-        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getBlock().getWorld())) return;
+        if(inDisabledWorld(event.getBlock().getWorld())) return;
         if(config.getBoolean("cancel_events.block_burn")) {
             event.setCancelled(true);
         }
     }
     @EventHandler
     private void onBlockIgnite(BlockIgniteEvent event) {
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getBlock().getWorld())) return;
+        if(inDisabledWorld(event.getBlock().getWorld())) return;
         if(config.getBoolean("cancel_events.block_burn")) {
             event.setCancelled(true);
         }
@@ -245,7 +263,7 @@ public class WorldEventListeners implements Listener {
 
     @EventHandler
     private void onBlockSpread(BlockSpreadEvent event) {
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getBlock().getWorld())) return;
+        if(inDisabledWorld(event.getBlock().getWorld())) return;
         if(config.getBoolean("cancel_events.block_burn")) {
             event.setCancelled(true);
         }
@@ -255,7 +273,7 @@ public class WorldEventListeners implements Listener {
     private void onPlayerDeath(PlayerDeathEvent event) {
         Player player = event.getEntity();
 
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
+        if(inDisabledWorld(player.getWorld())) return;
         if(config.getBoolean("cancel_events.death_messages")) {
             event.setDeathMessage("");
         }
@@ -263,7 +281,7 @@ public class WorldEventListeners implements Listener {
     }
     @EventHandler
     private void onLeafDecay(LeavesDecayEvent event) {
-        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getBlock().getWorld())) return;
+        if(inDisabledWorld(event.getBlock().getWorld())) return;
         if(config.getBoolean("cancel_events.leaf_decay")) {
             event.setCancelled(true);
         }
@@ -278,6 +296,7 @@ public class WorldEventListeners implements Listener {
     private void onPlayerRespawn(PlayerRespawnEvent event) {
 
         Location location;
+        // Fix for paper, paper doesn't have Player#getRespawnLocation ..?
         try {
             location = event.getRespawnLocation();
         } catch (NoSuchMethodError e) {
@@ -297,9 +316,10 @@ public class WorldEventListeners implements Listener {
         if(location == null) {
             plugin.getLogger().severe("Could not get respawn location.");
             plugin.getLogger().severe("Please report this to the developer.");
+            return;
         }
 
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(location)) {
+        if(inDisabledWorld(location.getWorld())) {
             bossBarManager.removeBossBar(player);
         }
     }
@@ -314,7 +334,7 @@ public class WorldEventListeners implements Listener {
         Player player = event.getPlayer();
 
         if(player.hasPermission(Permissions.BYPASS_INTERACT.getPermission())) return;
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
+        if(inDisabledWorld(player.getWorld())) return;
         if(config.getBoolean("cancel_events.interact", false)) {
             event.setCancelled(true);
         }
