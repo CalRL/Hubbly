@@ -118,7 +118,7 @@ public class PlayerJoinListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             for(String action : actions) {
-                actionManager.executeAction(Hubbly.getInstance(), player, action);
+                actionManager.executeAction(player, action);
                 debugMode.info("Executed " + action);
             }
 
