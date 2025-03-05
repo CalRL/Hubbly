@@ -5,7 +5,7 @@ check_for_update: true
 notify_on_no_update: false
 
 #----------------#
-# Disable Worlds #
+# Disabled Worlds #
 #----------------#
 
 disabled-worlds:
@@ -72,7 +72,6 @@ socials:
       message: "&3Click me for youtube!"
       hover: '&7Our YouTube!'
       link: 'youtube.com'
-
   fill:
     name: " "
     type: "BLACK_STAINED_GLASS_PANE"
@@ -119,7 +118,6 @@ spawn:
 #-----------------#
 # PLAYER SETTINGS #
 #-----------------#
-
 
 player:
   forceinventory: true
@@ -180,7 +178,7 @@ anti_world_download:
   notify_admin: true
 
 #------------#
-# MANAGEMENT #
+# CHAT MANAGEMENT #
 #------------#
 
 lock_chat: false
