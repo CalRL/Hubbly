@@ -19,11 +19,11 @@ package me.calrl.hubbly.action;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.actions.*;
+import me.calrl.hubbly.events.ActionEvent;
+import me.calrl.hubbly.managers.DisabledWorlds;
 import org.bukkit.entity.Player;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class ActionManager {
     private final Hubbly plugin;
@@ -59,19 +59,63 @@ public class ActionManager {
 
         );
     }
-    public void executeAction(Hubbly plugin, Player player, String actionData) {
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+    public void executeAction(Player player, String actionData) {
+        DisabledWorlds disabledWorldsManager = plugin.getDisabledWorldsManager();
+        boolean inDisabledWorld = disabledWorldsManager.inDisabledWorld(player.getLocation());
+
+        if(inDisabledWorld) return;
 
         if (actionData.startsWith("[") && actionData.contains("]")) {
-            int endIndex = actionData.indexOf("]");
-            String identifier = actionData.substring(1, endIndex).toUpperCase();
-            String data = actionData.substring(endIndex + 1).trim();
+            String identifier = this.getIdentifier(actionData);
+            String data = this.getData(actionData);
 
             Action action = actions.get(identifier);
-            if (action != null) {
-                action.execute(plugin, player, data);
+            ActionEvent event = new ActionEvent(player, action, data);
+            if (action == null) {
+                String errorMessage = String.format("Action %s not found...", identifier);
+                plugin.getLogger().warning(errorMessage);
+                return;
             }
+
+            plugin.getDebugMode().info("Checking if ActionEvent is cancelled...");
+            if(event.isCancelled()) {
+                return;
+            }
+            plugin.getDebugMode().info("Executing action: " + identifier);
+            action.execute(plugin, player, data);
         }
     }
+
+    public void executeActions(Player player, String actionData) {
+        List<String> actionsData = Arrays.asList(actionData.split(","));
+        this.executeActions(player, actionsData);
+    }
+    public void executeActions(Player player, List<String> actionsData) {
+        List<String> identifiersList = this.getIdentifiers(actionsData);
+        plugin.getDebugMode().info("Executing actions: " + String.join(",", identifiersList));
+        for(String action : actionsData) {
+            executeAction(player, action);
+        }
+    }
+
+    public List<String> getIdentifiers(List<String> actionsData) {
+        List<String> identifiers = new ArrayList<>();
+        for(String action : actionsData) {
+            identifiers.add(this.getIdentifier(action));
+
+        }
+        return identifiers;
+    }
+
+    public String getIdentifier(String actionData) {
+        int endIndex = actionData.indexOf("]");
+        return actionData.substring(1, endIndex).toUpperCase();
+    }
+    public String getData(String actionData) {
+        int endIndex = actionData.indexOf("]");
+        return actionData.substring(endIndex + 1).trim();
+    }
+
+
 
 }
