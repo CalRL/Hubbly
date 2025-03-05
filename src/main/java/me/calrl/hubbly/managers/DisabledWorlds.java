@@ -28,41 +28,75 @@ import java.util.List;
 
 public class DisabledWorlds {
 
-    private List<String> disabledWorlds;
+    private final List<World> disabledWorlds = new ArrayList<>();
     private final Hubbly plugin;
-    private boolean isInverted;
     public DisabledWorlds(Hubbly plugin) {
         this.plugin = plugin;
-        isInverted = plugin.getConfig().getBoolean("invert", false);
-        setDisabledWorlds();
+        this.setDisabledWorlds();
     }
     public boolean inDisabledWorld(World world) {
-        return disabledWorlds != null && disabledWorlds.contains(world.getName());
+        return !disabledWorlds.isEmpty() && disabledWorlds.contains(world);
     }
 
     public boolean inDisabledWorld(Location location) {
-        return disabledWorlds != null && disabledWorlds.contains(location.getWorld().getName());
+        return !disabledWorlds.isEmpty() && disabledWorlds.contains(location.getWorld());
     }
     // TODO: make this actually check theres a world...
     public void setDisabledWorlds() {
-        FileConfiguration config = plugin.getConfig();
-        disabledWorlds = config.getStringList("disabled-worlds");
+        List<String> disabledWorldsList = this.getConfigWorldList();
 
-        if (isInverted) {
-            List<World> allWorlds = Bukkit.getWorlds();
-            List<String> invertedWorlds = new ArrayList<>();
-
-            for (World world : allWorlds) {
-                if (!disabledWorlds.contains(world.getName())) {
-                    invertedWorlds.add(world.getName());
-                }
+        for(String worldName : disabledWorldsList) {
+            boolean worldExists = this.isWorldValid(worldName);
+            if(!worldExists) {
+                String errorMessage = String.format("World not found: %s", worldName);
+                plugin.getLogger().warning(errorMessage);
+            } else {
+                World world = Bukkit.getWorld(worldName);
+                disabledWorlds.add(world);
             }
-            disabledWorlds = invertedWorlds;
         }
 
     }
 
-    public String getDisabledWorlds() {
-        return String.join(", ", disabledWorlds);
+    private boolean isWorldValid(String worldName) {
+        World world = Bukkit.getWorld(worldName);
+        return world != null;
+    }
+
+    private List<String> getConfigWorldList() {
+        FileConfiguration config = plugin.getConfig();
+        List<String> disabledWorldsList = config.getStringList("disabled-worlds");
+
+        boolean isInverted = config.getBoolean("invert", false);
+        if (isInverted) {
+            disabledWorldsList = this.getInvertedWorlds();
+        }
+
+        return disabledWorldsList;
+    }
+
+    private List<String> getInvertedWorlds() {
+        List<World> allWorlds = Bukkit.getWorlds();
+        List<String> invertedWorlds = new ArrayList<>();
+
+        for (World world : allWorlds) {
+            if (!disabledWorlds.contains(world)) {
+                invertedWorlds.add(world.getName());
+            }
+        }
+        return invertedWorlds;
+    }
+
+
+    public List<World> getDisabledWorlds() {
+        return this.disabledWorlds;
+    }
+
+    public void addDisabledWorld(World world) {
+        if(disabledWorlds.contains(world)) {
+            String message = String.format("World %s is already in the disabled worlds list!", world.getName());
+            throw new IllegalArgumentException(message);
+        }
+        disabledWorlds.add(world);
     }
 }
