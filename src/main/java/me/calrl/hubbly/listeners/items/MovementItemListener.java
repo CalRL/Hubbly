@@ -132,8 +132,10 @@ public class MovementItemListener implements Listener {
 
     @EventHandler
     private void onTridentLand(ProjectileHitEvent event) {
-        if(!config.getBoolean("movementitems.trident.enabled")) return;
         if (event.getEntity() instanceof Trident trident && event.getEntity().getShooter() instanceof Player player) {
+            config = plugin.getConfig();
+            if(!config.getBoolean("movementitems.trident.enabled")) return;
+
 
             if (trident.getPersistentDataContainer().has(PluginKeys.TRIDENT.getKey())) {
                 trident.remove();

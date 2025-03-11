@@ -18,7 +18,9 @@
 package me.calrl.hubbly.listeners.world;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -52,10 +54,21 @@ public class LaunchpadListener implements Listener {
 
         Material launchpadMaterial = Material.valueOf(config.getString("launchpad.type"));
         if (blockStandingOn.getType() == launchpadMaterial || blockBelow.getType() == launchpadMaterial) {
-            if (player.hasPermission("hubbly.use.launchpad") || player.isOp()) {
-                if(!Hubbly.getInstance().getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, config.getLong("launchpad.cooldown")));
-                plugin.getActionManager().executeAction(plugin, player, "[LAUNCH]");
+            if (player.hasPermission("hubbly.use.launchpad") && player.isOp()) {
+                String errorMessage = config.getString("messages.no_permission_use");
+                player.sendMessage(
+                        ChatUtils.parsePlaceholders(player, errorMessage)
+                );
+                return;
             }
+
+            CooldownManager cooldownManager = plugin.getCooldownManager();
+            long cooldown = config.getLong("launchpad.cooldown");
+            boolean cooldownResult = cooldownManager.tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, cooldown);
+
+            if(!cooldownResult) return;
+
+            plugin.getActionManager().executeAction(player, "[LAUNCH]");
         }
     }
 }

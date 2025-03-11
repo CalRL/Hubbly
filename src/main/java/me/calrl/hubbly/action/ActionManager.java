@@ -71,6 +71,7 @@ public class ActionManager {
 
             Action action = actions.get(identifier);
             ActionEvent event = new ActionEvent(player, action, data);
+
             if (action == null) {
                 String errorMessage = String.format("Action %s not found...", identifier);
                 plugin.getLogger().warning(errorMessage);
@@ -81,6 +82,7 @@ public class ActionManager {
             if(event.isCancelled()) {
                 return;
             }
+
             plugin.getDebugMode().info("Executing action: " + identifier);
             action.execute(plugin, player, data);
         }

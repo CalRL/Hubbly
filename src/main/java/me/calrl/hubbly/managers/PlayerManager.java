@@ -1,7 +1,6 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.enums.PluginKeys;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -37,6 +36,11 @@ public class PlayerManager {
         }
 
     }
+
+    /**
+     * @param player the target
+     * @param state either 0 or 1
+     */
     public void setState(Player player, byte state) {
         PersistentDataContainer container = player.getPersistentDataContainer();
 
