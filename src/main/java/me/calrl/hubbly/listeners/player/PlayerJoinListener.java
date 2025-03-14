@@ -131,7 +131,8 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         bossBarManager = plugin.getBossBarManager();
         bossBarManager.removeBossBar(player);
-        if (config.getBoolean("player.leave_message")) {
+        boolean isEnabled = config.getBoolean("player.leave_message.enabled");
+        if(isEnabled) {
             String quitMessage = config.getString("player.leave_message.message");
             quitMessage = ChatUtils.parsePlaceholders(player, quitMessage);
             event.setQuitMessage(ChatUtils.translateHexColorCodes(quitMessage));

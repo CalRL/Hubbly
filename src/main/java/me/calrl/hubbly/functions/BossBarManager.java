@@ -28,14 +28,16 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BossBarManager {
 
     private FileConfiguration config;
-    private final Map<Player, BossBar> playerBossBars = new HashMap<>();
+    private final Map<Player, BossBar> playerBossBars = new ConcurrentHashMap<>();
     private final Map<Player, BukkitRunnable> playerAnimations = new HashMap<>();
     private final Hubbly plugin;
 
@@ -101,7 +103,8 @@ public class BossBarManager {
     }
 
     public void removeAllBossBars() {
-        for (Player player : playerBossBars.keySet()) {
+        List<Player> players = new ArrayList<>(playerBossBars.keySet());
+        for (Player player : players) {
             removeBossBar(player);
         }
     }
