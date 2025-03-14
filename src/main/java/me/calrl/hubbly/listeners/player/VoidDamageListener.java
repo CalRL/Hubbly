@@ -50,19 +50,17 @@ public class VoidDamageListener implements Listener {
 
         Location playerLocation = player.getLocation();
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
-        plugin.getDebugMode().info("Checking disabled world");
         if(disabledWorlds.inDisabledWorld(playerLocation)) return;
 
         GameMode gameMode = player.getGameMode();
-        if(gameMode != GameMode.SURVIVAL && gameMode != GameMode.ADVENTURE) return;
+        if(gameMode == GameMode.SPECTATOR) return;
 
         this.config = plugin.getConfig();
         boolean isEnabled = config.getBoolean("antivoid.enabled");
         if(isEnabled) {
-            plugin.getDebugMode().info("ENABLED");
             DamageCause damageCause = event.getCause();
             if(damageCause == DamageCause.VOID) {
-                plugin.getDebugMode().info(player.getName() + " hit by void.. teleporting..");
+                plugin.getDebugMode().info(player.getName() + " was hit by the void.. teleporting..");
                 event.setCancelled(true);
 
                 Utils utils = plugin.getUtils();
