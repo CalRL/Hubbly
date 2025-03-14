@@ -18,6 +18,8 @@
 package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.managers.DisabledWorlds;
+import me.calrl.hubbly.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -28,13 +30,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 
 import java.util.Objects;
 import java.util.logging.Logger;
 
 public class VoidDamageListener implements Listener {
 
-    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private FileConfiguration config;
     private Hubbly plugin;
     public VoidDamageListener(Hubbly plugin) {
         this.plugin = plugin;
@@ -42,20 +45,29 @@ public class VoidDamageListener implements Listener {
 
     @EventHandler
     private void onEntityDamage(EntityDamageEvent event) {
-        if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getEntity().getLocation())) return;
         Entity entity = event.getEntity();
         if (!(entity instanceof Player player)) return;
 
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+        Location playerLocation = player.getLocation();
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        plugin.getDebugMode().info("Checking disabled world");
+        if(disabledWorlds.inDisabledWorld(playerLocation)) return;
 
         GameMode gameMode = player.getGameMode();
         if(gameMode != GameMode.SURVIVAL && gameMode != GameMode.ADVENTURE) return;
 
-        if(event.getEntity() instanceof Player && config.getBoolean("antivoid.enabled")) {
-            if(event.getCause() == EntityDamageEvent.DamageCause.VOID) {
+        this.config = plugin.getConfig();
+        boolean isEnabled = config.getBoolean("antivoid.enabled");
+        if(isEnabled) {
+            plugin.getDebugMode().info("ENABLED");
+            DamageCause damageCause = event.getCause();
+            if(damageCause == DamageCause.VOID) {
+                plugin.getDebugMode().info(player.getName() + " hit by void.. teleporting..");
                 event.setCancelled(true);
 
-                event.getEntity().teleport(plugin.getUtils().getSpawn());
+                Utils utils = plugin.getUtils();
+                Location spawn = utils.getSpawn();
+                event.getEntity().teleport(spawn);
 
             }
         }
