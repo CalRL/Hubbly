@@ -18,10 +18,8 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.commands.subcommands.NextAnnouncementCommand;
-import me.calrl.hubbly.commands.subcommands.ReloadCommand;
-import me.calrl.hubbly.commands.subcommands.SelectorCommand;
-import me.calrl.hubbly.commands.subcommands.VersionCommand;
+import me.calrl.hubbly.commands.subcommands.*;
+import me.calrl.hubbly.commands.subcommands.GiveCommand;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.command.Command;
@@ -33,10 +31,7 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class HubblyCommand implements TabExecutor {
@@ -46,12 +41,10 @@ public class HubblyCommand implements TabExecutor {
 
     private final Hubbly plugin;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
-    private final String[] commands = {"reload", "version", "selector", "nextannouncement"};
-    public HubblyCommand(Logger logger, Hubbly plugin) {
-        this.logger = logger;
+    public HubblyCommand(Hubbly plugin) {
         this.plugin = plugin;
+        this.logger = plugin.getLogger();
         registerSubCommands();
-
     }
 
     private void registerSubCommands() {
@@ -59,26 +52,31 @@ public class HubblyCommand implements TabExecutor {
         subCommands.put("selector", new SelectorCommand(plugin));
         subCommands.put("version", new VersionCommand(plugin));
         subCommands.put("nextannouncement", new NextAnnouncementCommand(plugin));
+        subCommands.put("give", new GiveCommand(plugin));
+        subCommands.put("saveitem", new SaveItemCommand(plugin));
+        subCommands.put("loaditem", new LoadItemCommand(plugin));
     }
 
+
+
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String String, @NotNull String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_console")));
-            return true;
-        }
-
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        // If no arguments are provided, show usage message
         if (args.length == 0) {
-            player.sendMessage(ChatUtils.prefixMessage(player,  "Usage: /hubbly <command> <args>"));
+            sender.sendMessage(ChatUtils.prefixMessage(plugin, "Usage: /hubbly <command> <args>"));
             return true;
         }
-        SubCommand subCommand = subCommands.get(args[0].toLowerCase());
-        if (subCommand != null) {
-            subCommand.execute(player, args);
-        } else {
-            sender.sendMessage(ChatUtils.prefixMessage(player,  "Unknown command."));
-        }
 
+        // Get the subcommand
+        String subCommandName = args[0].toLowerCase();
+        SubCommand subCommand = subCommands.get(subCommandName);
+
+        // If subcommand exists, execute it
+        if (subCommand != null) {
+            subCommand.execute(sender, args);
+        } else {
+            sender.sendMessage(ChatUtils.prefixMessage(plugin, "Unknown command. Use '/hubbly help' for a list of commands."));
+        }
 
         return true;
     }
@@ -87,10 +85,20 @@ public class HubblyCommand implements TabExecutor {
 
     @Nullable
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+        if(!(sender instanceof Player player)) return null;
+
         final List<String> completions = new ArrayList<>();
-        StringUtil.copyPartialMatches(args[0], List.of(commands), completions);
+
+        if (args.length == 1) {
+            StringUtil.copyPartialMatches(args[0], subCommands.keySet(), completions);
+        } else if (args.length > 1) {
+            SubCommand subCommand = subCommands.get(args[0].toLowerCase());
+            if (subCommand != null) {
+                return subCommand.tabComplete(player, Arrays.copyOfRange(args, 1, args.length));
+            }
+        }
         return completions;
     }
-
 }
+

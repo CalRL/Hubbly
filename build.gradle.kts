@@ -24,6 +24,12 @@ repositories {
     maven {
         url = uri("https://repo.maven.apache.org/maven2/")
     }
+    maven {
+        name = "CodeMC"
+        url = uri("https://repo.codemc.io/repository/maven-public/")
+    }
+
+
 }
 
 dependencies {
@@ -31,6 +37,8 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.20.6-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("com.google.code.gson:gson:2.10.1")
+    compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1")
 }
 
 group = "me.calrl"

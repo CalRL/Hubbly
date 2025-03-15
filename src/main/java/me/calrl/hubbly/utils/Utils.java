@@ -36,6 +36,5 @@ public class Utils {
         float pitch = (float) config.getDouble("spawn.pitch");
 
         return new Location(world, x, y, z, yaw, pitch);
-
     }
 }

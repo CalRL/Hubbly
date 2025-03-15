@@ -106,6 +106,16 @@ public class CompassListener implements Listener {
         if (actionsString == null) {
             return;
         }
+
+        /*
+        debug
+         */
+        boolean has = meta.hasCustomModelData();
+        if(has) {
+            debugMode.info(String.valueOf(meta.getCustomModelData()));
+        }
+        //
+
         debugMode.info("Actions string found: " + actionsString);
         Player player = (Player) event.getWhoClicked();
 

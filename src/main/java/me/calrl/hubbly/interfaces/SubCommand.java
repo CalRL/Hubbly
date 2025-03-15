@@ -17,11 +17,29 @@
 
 package me.calrl.hubbly.interfaces;
 
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
+import java.util.List;
+
 public interface SubCommand {
+    String getName();
 
-    String getIdentifier();
-    void execute(Player player, String[] args);
+    String getDescription();
 
+    String getUsage();
+
+    void execute(CommandSender sender, String[] args);
+
+    /**
+     * Provides tab completion suggestions for the subcommand (Players only).
+     *
+     * @param player the player requesting tab completion
+     * @param args   the current command arguments
+     * @return a list of possible completions
+     */
+    default List<String> tabComplete(Player player, String[] args) {
+        return Collections.emptyList();
+    }
 }

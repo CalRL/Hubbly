@@ -54,12 +54,9 @@ public class LaunchpadListener implements Listener {
 
         Material launchpadMaterial = Material.valueOf(config.getString("launchpad.type"));
         if (blockStandingOn.getType() == launchpadMaterial || blockBelow.getType() == launchpadMaterial) {
-            if (player.hasPermission("hubbly.use.launchpad") && player.isOp()) {
-                String errorMessage = config.getString("messages.no_permission_use");
-                player.sendMessage(
-                        ChatUtils.parsePlaceholders(player, errorMessage)
-                );
-                return;
+            if (player.hasPermission("hubbly.use.launchpad") || player.isOp()) {
+                if(!Hubbly.getInstance().getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, config.getLong("launchpad.cooldown")));
+                plugin.getActionManager().executeAction(player, "[LAUNCH]");
             }
 
             CooldownManager cooldownManager = plugin.getCooldownManager();
