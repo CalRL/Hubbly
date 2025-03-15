@@ -33,9 +33,7 @@ public class LaunchpadListener implements Listener {
 
     private final Logger logger;
     private final Hubbly plugin;
-    private FileConfiguration config = Hubbly.getInstance().getConfig();
-    private double powerY = config.getDouble("launchpad.power_y");
-    private double power = config.getDouble("launchpad.power");
+    private FileConfiguration config;
 
     public LaunchpadListener(Hubbly plugin) {
         this.plugin = plugin;
@@ -45,7 +43,8 @@ public class LaunchpadListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
-
+        
+        config = plugin.getConfig();
         if(!config.getBoolean("launchpad.enabled")) return;
         Player player = event.getPlayer();
         Block blockStandingOn = player.getLocation().getBlock(); // Get the block the player is standing on

@@ -21,11 +21,12 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
-import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -36,7 +37,7 @@ import java.util.UUID;
 
 public class CreateCustomHead {
 
-    public static final ItemStack createCustomHead(String textureValue, String itemName) {
+    public static ItemStack createCustomHead(String textureValue, String itemName) {
 
         ItemStack head = new ItemStack(Material.PLAYER_HEAD);
         SkullMeta skullMeta = (SkullMeta) head.getItemMeta();
@@ -71,7 +72,6 @@ public class CreateCustomHead {
             return head;
         }
 
-
         profile.setTextures(textures);
 
         skullMeta.setOwnerProfile(profile);
@@ -79,5 +79,43 @@ public class CreateCustomHead {
 
         head.setItemMeta(skullMeta);
         return head;
+    }
+
+    public static SkullMeta setTextures(ItemStack item, String textureValue) {
+        SkullMeta meta = (SkullMeta) item.getItemMeta();
+        if(meta == null) {
+            Hubbly.getInstance().getDebugMode().info("ItemMeta is null??");
+            return null;
+        }
+
+        PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID());
+        PlayerTextures textures = profile.getTextures();
+
+        if(textureValue.startsWith("http")) {
+            try {
+                URI uri = new URI(textureValue);
+                URL url = uri.toURL();
+                textures.setSkin(url);
+
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
+
+            }
+        } else {
+            Hubbly.getInstance().getDebugMode().info("Texture value: " + textureValue + " is malformed. Please add 'https://' in front of the URL if not there already.");
+            Hubbly.getInstance().getDebugMode().info("If that does not fix the issue, please get support in the discord");
+            return meta;
+        }
+
+        profile.setTextures(textures);
+
+        meta.setOwnerProfile(profile);
+
+        return meta;
+
     }
 }

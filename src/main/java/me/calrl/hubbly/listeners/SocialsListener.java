@@ -22,8 +22,8 @@ import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.functions.CreateCloseItem;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.functions.ParsePlaceholders;
+import me.calrl.hubbly.managers.holders.SocialsHolder;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,7 +36,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.InventoryView;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -46,10 +46,12 @@ import java.util.logging.Logger;
 
 public class SocialsListener implements Listener {
 
-    private Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
-    public SocialsListener(Logger logger) {
-        this.logger = logger;
+    private Hubbly plugin;
+    private Logger logger;
+    public SocialsListener(Hubbly plugin) {
+        this.plugin = plugin;
+        this.logger = plugin.getLogger();
     }
 
     @EventHandler
@@ -78,7 +80,14 @@ public class SocialsListener implements Listener {
     private void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         ItemStack heldItem = player.getInventory().getItemInMainHand();
-        if(heldItem.getType() == Material.PLAYER_HEAD && heldItem.getItemMeta().getDisplayName().equals(Objects.requireNonNull(ChatColor.translateAlternateColorCodes('&', config.getString("socials.item.name"))))) {
+
+        Material mat = heldItem.getType();
+        if(mat != Material.PLAYER_HEAD) return;
+
+        ItemMeta meta = heldItem.getItemMeta();
+        if(meta == null) return;
+
+        if(meta.getPersistentDataContainer().has(PluginKeys.SOCIALS.getKey())) {
             event.setCancelled(true);
         }
     }
@@ -87,7 +96,14 @@ public class SocialsListener implements Listener {
     private void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         ItemStack heldItem = player.getInventory().getItemInMainHand();
-        if(heldItem.getType() == Material.PLAYER_HEAD && heldItem.getItemMeta().getDisplayName().equals(Objects.requireNonNull(ChatColor.translateAlternateColorCodes('&', config.getString("socials.item.name"))))) {
+
+        Material mat = heldItem.getType();
+        if(mat != Material.PLAYER_HEAD) return;
+
+        ItemMeta meta = heldItem.getItemMeta();
+        if(meta == null) return;
+
+        if(meta.getPersistentDataContainer().has(PluginKeys.SOCIALS.getKey())) {
             event.setCancelled(true);
         }
     }
@@ -98,10 +114,10 @@ public class SocialsListener implements Listener {
         if(clickedItem == null || clickedItem.getType() == Material.AIR) {
             return;
         }
-        InventoryView view = event.getView();
-        if(!view.getTitle().equals(Objects.requireNonNull(config.getString("socials.title")))) {
-            return;
-        }
+
+        InventoryHolder holder = event.getInventory().getHolder();
+        if(!(holder instanceof SocialsHolder)) return;
+
 
         event.setCancelled(true);
 
@@ -118,12 +134,12 @@ public class SocialsListener implements Listener {
         String clickedDisplayName = meta.getDisplayName();
 
         for (String itemKey : Objects.requireNonNull(config.getConfigurationSection("socials.items")).getKeys(false)) {
-            String itemDisplayName = ParsePlaceholders.parsePlaceholders(player, ChatColor.translateAlternateColorCodes('&', config.getString("socials.items." + itemKey + ".name")));
+            String itemDisplayName = ChatUtils.processMessage(player, config.getString("socials.items." + itemKey + ".name"));
             if (itemDisplayName != null && itemDisplayName.equals(clickedDisplayName)) {
                 String message = config.getString("socials.items." + itemKey + ".message");
                 if (message != null) {
                     player.closeInventory();
-                    message = ParsePlaceholders.parsePlaceholders(player, ChatColor.translateAlternateColorCodes('&', message));
+                    message = ChatUtils.processMessage(player, message);
                     player.spigot().sendMessage(ChatUtils.textLinkBuilder(message, config.getString( "socials.items." + itemKey + ".link"), config.getString("socials.items." + itemKey + ".hover")));
 
                 }
@@ -133,7 +149,8 @@ public class SocialsListener implements Listener {
     }
 
     private void openSocialsGUI(Player player) {
-        Inventory gui = Bukkit.createInventory(null, config.getInt("socials.size"), Objects.requireNonNull(config.getString("socials.title")));
+        Inventory gui = new SocialsHolder(plugin).getInventory();
+
         CreateCloseItem closeItemCreator = new CreateCloseItem(config);
         gui.setItem(config.getInt("close_button.slot")-1, closeItemCreator.createItem(config, "close_button"));
 
@@ -157,6 +174,7 @@ public class SocialsListener implements Listener {
                 }
             }
         }
+
         player.openInventory(gui);
     }
 
@@ -189,7 +207,7 @@ public class SocialsListener implements Listener {
             ItemMeta meta = item.getItemMeta();
             if (meta != null) {
                 String displayName = ChatUtils.processMessage(player, config.getString("socials.items." + itemKey + ".name", "Socials"));
-                displayName = ParsePlaceholders.parsePlaceholders(player, displayName);
+                displayName = ChatUtils.processMessage(player, displayName);
                 meta.setDisplayName(displayName);
 
                 List<String> lore = config.getStringList("socials.items." + itemKey + ".lore");

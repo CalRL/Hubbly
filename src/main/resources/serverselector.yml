@@ -18,8 +18,4 @@ selector:
   fill:
     name: " "
     type: "BLACK_STAINED_GLASS_PANE"
-  close_button:
-    slot: 23
-    name: "&aClose"
-    material: BARRIER
 

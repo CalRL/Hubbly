@@ -18,9 +18,10 @@
 package me.calrl.hubbly.listeners.items;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.items.ConfigItems;
+import me.calrl.hubbly.items.ConfigItem;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.managers.ItemsManager;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -43,6 +44,7 @@ public class ConfigItemListener implements Listener {
     private final ActionManager actionManager;
     private final DebugMode debugMode;
     private final Hubbly plugin;
+    private final ItemsManager itemsManager;
 
     public ConfigItemListener(Hubbly plugin) {
         this.plugin = plugin;
@@ -50,6 +52,7 @@ public class ConfigItemListener implements Listener {
         this.customActionsKey = new NamespacedKey(plugin, "customActions");
         this.actionManager = plugin.getActionManager();
         this.debugMode = plugin.getDebugMode();
+        this.itemsManager = plugin.getItemsManager();
     }
 
     @EventHandler
@@ -70,8 +73,7 @@ public class ConfigItemListener implements Listener {
         if (event.getAction() != Action.PHYSICAL && event.getHand() == EquipmentSlot.HAND) {
             if (meta.getPersistentDataContainer().has(customActionsKey, PersistentDataType.STRING)) {
                 // Execute actions
-                ConfigItems configItems = new ConfigItems("", plugin);
-                configItems.executeActions(player, item);
+                itemsManager.executeActions(player, item);
                 event.setCancelled(true);
             }
         }

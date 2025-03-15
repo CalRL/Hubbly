@@ -19,9 +19,9 @@ package me.calrl.hubbly.listeners.world;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
-import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.functions.BossBarManager;
+import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -30,6 +30,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
@@ -39,20 +41,28 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.projectiles.ProjectileSource;
 
-import java.util.logging.Logger;
-
 public class WorldEventListeners implements Listener {
 
-    private final Logger logger;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
     private final Hubbly plugin;
-    private final DebugMode debugMode;
+
+    // FIXME Fix the bossbar manager to look like the rest of the code, major refactor needed:
+    // - Seriously, this looks bad
+    // REVIEW: (8/1/2025) almost done, just needs to be testeds.
+    private final BossBarManager bossBarManager;
+
     public WorldEventListeners(Hubbly plugin) {
         this.plugin = plugin;
-        this.logger = plugin.getLogger();
-        this.debugMode = plugin.getDebugMode();
-
+        this.bossBarManager = plugin.getBossBarManager();
     }
+
+    /**
+     * Check if player is in disabled world.
+     *
+     * @param player the player
+     * @return return true if the player is in a disabled world
+     */
+
     private boolean checkWorld(Player player) {
         return plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation());
     }
@@ -82,7 +92,7 @@ public class WorldEventListeners implements Listener {
     @EventHandler
     private void cancelDamage(EntityDamageEvent event) {
         if (event.getEntity() instanceof Player player) {
-            if (player.hasPermission("hubbly.bypass.damage") || player.isOp()) return;
+            if (player.hasPermission("hubbly.bypass.damage")) return;
             if (checkWorld(player)) return;
             if(config.getBoolean("cancel_events.damage")) {
                 event.setCancelled(true);
@@ -203,7 +213,7 @@ public class WorldEventListeners implements Listener {
         if (event.getEntity() instanceof Player) {
             Player player = (Player) event.getEntity();
             if (checkWorld(player)) return;
-            if (player.hasPermission("hubbly.bypass.food") || player.isOp()) return;
+            if (player.hasPermission("hubbly.bypass.food")) return;
             if (config.getBoolean("cancel_events.hunger")) {
                 event.setCancelled(true);
             }
@@ -243,15 +253,69 @@ public class WorldEventListeners implements Listener {
 
     @EventHandler
     private void onPlayerDeath(PlayerDeathEvent event) {
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getEntity().getWorld())) return;
+        Player player = event.getEntity();
+
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
         if(config.getBoolean("cancel_events.death_messages")) {
             event.setDeathMessage("");
         }
+
     }
     @EventHandler
     private void onLeafDecay(LeavesDecayEvent event) {
         if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getBlock().getWorld())) return;
         if(config.getBoolean("cancel_events.leaf_decay")) {
+            event.setCancelled(true);
+        }
+    }
+
+    /**
+     * Extra check to make sure players don't respawn with bossbars if they respawn in a disabled world.
+     *
+     * @param event bukkit event
+     */
+    @EventHandler
+    private void onPlayerRespawn(PlayerRespawnEvent event) {
+
+        Location location;
+        try {
+            location = event.getRespawnLocation();
+        } catch (NoSuchMethodError e) {
+            location = null;
+            plugin.getDebugMode().severe(e.getMessage());
+        }
+
+        Player player = event.getPlayer();
+        if(location == null) {
+            try {
+                location = player.getRespawnLocation();
+            } catch (NoSuchMethodError e) {
+                plugin.getDebugMode().severe(e.getMessage());
+            }
+        }
+
+        if(location == null) {
+            plugin.getLogger().severe("Could not get respawn location.");
+            plugin.getLogger().severe("Please report this to the developer.");
+        }
+
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(location)) {
+            bossBarManager.removeBossBar(player);
+        }
+    }
+
+    /**
+     * Cancel Interact events where necessary.
+     *
+     * @param event
+     */
+    @EventHandler
+    private void onPlayerInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+
+        if(player.hasPermission(Permissions.BYPASS_INTERACT.getPermission())) return;
+        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
+        if(config.getBoolean("cancel_events.interact", false)) {
             event.setCancelled(true);
         }
     }

@@ -24,33 +24,42 @@ import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.boss.KeyedBossBar;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class BossBarManager {
 
     private static BossBarManager instance;
     private FileConfiguration config;
-    private final Map<Player, BossBar> playerBossBars = new HashMap<>();
+    private final Map<Player, BossBar> playerBossBars = new ConcurrentHashMap<>();
     private final Map<Player, BukkitRunnable> playerAnimations = new HashMap<>();
+    private final Hubbly plugin;
 
-    public BossBarManager(FileConfiguration config) {
-        this.config = config;
+    public BossBarManager(Hubbly plugin) {
+        this.plugin = plugin;
+        this.config = plugin.getConfig();
     }
 
+    /**
+     * @deprecated 8/1/2025 bad old code, refactor to the same system every other class uses
+     */
+    @Deprecated(since = "2.5.4", forRemoval = true)
     public static BossBarManager getInstance() {
         return instance;
     }
 
+    /**
+     * @deprecated 8/1/2025 bad old code, refactor to the same system every other class uses
+     */
+    @Deprecated(since = "2.5.4", forRemoval = true)
     public static void initialize(FileConfiguration config) {
-        instance = new BossBarManager(config);
     }
 
     public void createBossBar(Player player) {
@@ -85,7 +94,7 @@ public class BossBarManager {
                     this.cancel();
                     return;
                 }
-                String text = ChatUtils.translateHexColorCodes(ChatUtils.parsePlaceholders(player, texts.get(index)));
+                String text = ChatUtils.processMessage(player, texts.get(index));
                 bar.setTitle(text);
                 index = (index + 1) % texts.size();
             }
@@ -110,14 +119,26 @@ public class BossBarManager {
     }
 
     public void removeAllBossBars() {
-        for (Player player : playerBossBars.keySet()) {
+        List<Player> players = new ArrayList<>(playerBossBars.keySet());
+        for (Player player : players) {
             removeBossBar(player);
         }
     }
 
     public void reAddAllBossBars() {
         for (Player player : Bukkit.getOnlinePlayers()) {
+            if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
+
             createBossBar(player);
         }
+    }
+
+    public boolean hasBossBar(Player player) {
+        return player.isOnline() && playerBossBars.get(player) != null;
+    }
+
+
+    private void reload() {
+        // TODO: make this reload in here somehow (it's 8/1/2025):
     }
 }

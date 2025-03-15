@@ -23,12 +23,17 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class DisabledWorlds {
 
     private List<String> disabledWorlds;
-    public DisabledWorlds() {
+    private final Hubbly plugin;
+    private boolean isInverted;
+    public DisabledWorlds(Hubbly plugin) {
+        this.plugin = plugin;
+        isInverted = plugin.getConfig().getBoolean("invert", false);
         setDisabledWorlds();
     }
     public boolean inDisabledWorld(World world) {
@@ -38,9 +43,23 @@ public class DisabledWorlds {
     public boolean inDisabledWorld(Location location) {
         return disabledWorlds != null && disabledWorlds.contains(location.getWorld().getName());
     }
+    // TODO: make this actually check theres a world...
     public void setDisabledWorlds() {
-        FileConfiguration config = Hubbly.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         disabledWorlds = config.getStringList("disabled-worlds");
+
+        if (isInverted) {
+            List<World> allWorlds = Bukkit.getWorlds();
+            List<String> invertedWorlds = new ArrayList<>();
+
+            for (World world : allWorlds) {
+                if (!disabledWorlds.contains(world.getName())) {
+                    invertedWorlds.add(world.getName());
+                }
+            }
+            disabledWorlds = invertedWorlds;
+        }
+
     }
 
     public String getDisabledWorlds() {

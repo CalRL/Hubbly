@@ -34,7 +34,7 @@ commands:
     description: give command
     usage: /give
     permission: hubbly.command.give
-    aliases: [gv]
+    aliases: [ gv ]
   lockchat:
     usage: /give
     aliases: [lc]

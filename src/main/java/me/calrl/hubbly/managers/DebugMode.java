@@ -33,13 +33,13 @@ public class DebugMode {
     }
     public void warn(String message) {
         if(config.getBoolean("debug")){
-            logger.log(Level.WARNING, message);
+            logger.log(Level.WARNING, "[DEBUG] " + message);
         }
     }
 
     public void severe(String message) {
         if(config.getBoolean("debug")){
-            logger.log(Level.SEVERE, message);
+            logger.log(Level.SEVERE, "[DEBUG] " + message);
         }
     }
 

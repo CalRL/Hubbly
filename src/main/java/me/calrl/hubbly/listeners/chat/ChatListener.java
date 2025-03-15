@@ -28,12 +28,13 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
 public class ChatListener implements Listener {
     private final Hubbly plugin;
-    private boolean isChatLocked;
     private final List<String> blockedWords;
     private final DebugMode debugMode;
     public ChatListener(Hubbly plugin) {
@@ -48,32 +49,35 @@ public class ChatListener implements Listener {
             event.setCancelled(true);
         }
     }
+
     @EventHandler
     private void onPlayerChat(AsyncPlayerChatEvent event) {
         FileConfiguration config = plugin.getConfig();
         if(config.getBoolean("blocked_words.enabled") && !plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) {
+
+            String playerName = event.getPlayer().getName();
             String message = event.getMessage().toLowerCase();
-            String method = config.getString("blocked_words.method");
+            String method = config.getString("blocked_words.method", "CANCEL");
 
-            for(String word : blockedWords) {
-                if(!message.contains(word)) return;
-                if(method == null) {
-                    debugMode.info("blocked_words.method is null in config");
-                    return;
-                }
-                if(event.getPlayer().hasPermission("hubbly.bypass.antiswear")) return;
+            String regex = String.join("|", blockedWords.stream().map(Pattern::quote).toList());
+            Pattern pattern = Pattern.compile(regex);
+            Matcher matcher = pattern.matcher(message);
 
-                if(Objects.equals(method.toUpperCase(), "CANCEL")) {
+            if (matcher.find()) {
+                String blockedWord = matcher.group();
 
+                if (Objects.equals(method.toUpperCase(), "CANCEL")) {
                     event.setCancelled(true);
-                    event.getPlayer().sendMessage(Objects.requireNonNull(config.getString("messages.blocked_message")));
-                    return;
-
+                    event.getPlayer().sendMessage(
+                            Objects.requireNonNull(config.getString("messages.blocked_message"))
+                    );
+                    debugMode.info(playerName + " sent a blocked word: " + blockedWord);
                 } else if (Objects.equals(method.toUpperCase(), "STAR")) {
-
-                    message = message.replace(word, ChatUtils.repeat("*", word.length()));
+                    message = matcher.replaceAll(match -> ChatUtils.repeat("*", match.group().length()));
                     event.setMessage(message);
+                    debugMode.info(playerName + " sent a blocked word: " + blockedWord);
                 }
+
             }
         }
     }

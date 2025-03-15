@@ -1,6 +1,8 @@
 debug: true
 prefix: '&e&lHubbly &7&l>&r'
-
+check_for_update: true
+# Send message if no update?
+notify_on_no_update: false
 
 #----------------#
 # Disable Worlds #
@@ -8,6 +10,8 @@ prefix: '&e&lHubbly &7&l>&r'
 
 disabled-worlds:
   - 'world_nether'
+
+invert: false
 
 #----------#
 # Movement #
@@ -73,19 +77,6 @@ socials:
     name: " "
     type: "BLACK_STAINED_GLASS_PANE"
 
-## ItemOnJoin is deprecated as of 2.4.3 and will be deleted in a future update.
-item_on_join:
-  enabled: true
-  forceinventory: true
-  features:
-    compass:
-      enabled: true
-      slot: 5
-    playervisibility:
-      enabled: true
-      slot: 8
-
-
 close_button:
   slot: 23
   material: "BARRIER"
@@ -131,9 +122,13 @@ spawn:
 
 
 player:
+  forceinventory: true
   experience:
     enabled: true
-    level: 2024
+    level: 2025
+    # Takes a float 0.0 - 1.0
+    # Set progress to "YEAR", If you want the progress to be based on time elapsed in the year.
+    progress: 1.0
   fly:
     enabled: true
   join_message:
@@ -157,6 +152,7 @@ actions_on_join:
   - '[SOUND] block.note_block.chime'
   - '[FIREWORK] BALL;255;0;255;2'
   - '[ITEM] socials;1'
+  - '[ITEM] compass;5'
   - '[ITEM] shop;9'
 
 #---------------------#
@@ -166,6 +162,7 @@ actions_on_join:
 cancel_events:
   block_place: true
   block_break: true
+  interact: true
   damage: true
   weather: true
   item_drop: true
@@ -207,6 +204,8 @@ blocked_commands:
 announcements:
   enabled: true
   interval: 30 # In Seconds
+  # Will send the message even if the player is in a disabled-world if true
+  global: true
   messages:
     message1:
       - '<#FAEDCB>+<#F9E6C9>-<#F8DEC7>-<#F7D7C4>-<#F6CFC2>-<#F5C8C0>-<#F5C0BE>-<#F4B9BC>-<#F3B1B9>-<#F2AAB7>-<#F1A2B5>-<#F09BB3>-<#EF94B1>-<#EE8CAE>-<#ED85AC>-<#EC7DAA>-<#EB76A8>-<#EA6EA5>-<#EA67A3>-<#E95FA1>-<#E8589F>-<#E7509D>-<#E6499A>-<#E54198>-<#E43A96>-<#E54098>-<#E6479A>-<#E64D9C>-<#E7549E>-<#E85A9F>-<#E960A1>-<#EA67A3>-<#EA6DA5>-<#EB74A7>-<#EC7AA9>-<#ED80AB>-<#ED87AD>-<#EE8DAF>-<#EF94B1>-<#F09AB2>-<#F1A0B4>-<#F1A7B6>-<#F2ADB8>-<#F3B3BA>-<#F4BABC>-<#F5C0BE>-<#F5C7C0>-<#F6CDC2>-<#F7D3C3>-<#F8DAC5>-<#F8E0C7>-<#F9E7C9>-<#FAEDCB>+'
@@ -240,4 +239,9 @@ messages:
   # No PAPI support, only %player% placeholder to get the person who locked the chat.
   chat_locked: "Chat has been locked by %player%"
   chat_unlocked: "Chat has been unlocked by %player%"
+
+update:
+  new_update: "An update is available! Hubbly %new% can be downloaded on SpigotMC, you are on %current%"
+  no_update: "Hubbly %current% is up to date"
+  error: "Could not check for a new version..."
 

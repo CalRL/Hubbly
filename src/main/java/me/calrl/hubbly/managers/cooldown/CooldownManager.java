@@ -16,9 +16,9 @@
  */
 
 package me.calrl.hubbly.managers.cooldown;
+
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
-import me.calrl.hubbly.Hubbly;
 
 import java.util.UUID;
 
@@ -28,7 +28,6 @@ public class CooldownManager {
 
     public long getCooldown(UUID uuid, CooldownType type) {
         long remainder = calculateRemainder(cooldowns.get(uuid.toString(), type));
-        //Hubbly.getInstance().getDebugMode().info(remainder + type.toString());
         return remainder;
     }
 

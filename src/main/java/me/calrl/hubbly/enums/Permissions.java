@@ -30,7 +30,7 @@ public enum Permissions {
     COMMAND_ADMIN("command.admin"),
     COMMAND_SELECTOR("command.selector"),
 
-    BYPASS_FORCE_INVENTORY("bypass.forceinvenory"),
+    BYPASS_FORCE_INVENTORY("bypass.forceinventory"),
     BYPASS_ANTI_SWEAR("bypass.antiswear"),
     BYPASS_BLOCKED_COMMANDS("bypass.blockedcommands"),
     BYPASS_ANTI_WDL("bypass.antiwdl"),
@@ -59,7 +59,8 @@ public enum Permissions {
     USE_ENDER_BOW("use.enderbow"),
     USE_AOTE("use.aote"),
 
-    NOTIFY_WDL("notify.antiwdl");
+    NOTIFY_WDL("notify.antiwdl"),
+    NOTIFY_UPDATE("notify.update");
 
     private final String permission;
 
@@ -69,6 +70,7 @@ public enum Permissions {
     public final String getPermission() {
         return "hubbly." + this.permission;
     }
+    public final String get() { return "hubbly." + this.permission; }
 }
 
 

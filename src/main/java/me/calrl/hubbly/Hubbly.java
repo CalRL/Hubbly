@@ -21,7 +21,6 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.commands.*;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.listeners.CompassListener;
-import me.calrl.hubbly.listeners.ItemJoinListener;
 import me.calrl.hubbly.listeners.SocialsListener;
 import me.calrl.hubbly.listeners.chat.ChatListener;
 import me.calrl.hubbly.listeners.chat.CommandBlockerListener;
@@ -32,14 +31,10 @@ import me.calrl.hubbly.listeners.player.*;
 import me.calrl.hubbly.listeners.world.AntiWDL;
 import me.calrl.hubbly.listeners.world.LaunchpadListener;
 import me.calrl.hubbly.listeners.world.WorldEventListeners;
-import me.calrl.hubbly.managers.AnnouncementsManager;
-import me.calrl.hubbly.managers.LockChat;
-import me.calrl.hubbly.managers.DebugMode;
-import me.calrl.hubbly.managers.DisabledWorlds;
+import me.calrl.hubbly.managers.*;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.metrics.Metrics;
 import me.calrl.hubbly.utils.Utils;
-import me.calrl.hubbly.utils.update.UpdateChecker;
 import me.calrl.hubbly.utils.update.UpdateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
@@ -48,21 +43,19 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.List;
 import java.util.logging.Logger;
 
 public final class Hubbly extends JavaPlugin {
 
     private final Logger logger = getLogger();
-    private FileConfiguration config;
     private static Hubbly instance;
+    private FileConfiguration config;
     private FileConfiguration itemsConfig;
     private FileConfiguration serverSelectorConfig;
     private ActionManager actionManager;
@@ -72,12 +65,14 @@ public final class Hubbly extends JavaPlugin {
     private AnnouncementsManager announcementsManager;
     private LockChat lockChat;
     private Utils utils;
+    private PlayerManager playerManager;
+    private BossBarManager bossBarManager;
+    private ItemsManager itemsManager;
 
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
 
-    private List<Listener> listeners;
-    public boolean needsUpdate;
+    private UpdateUtil updateUtil = null;
 
     public void reloadPlugin() {
         this.reloadConfig();
@@ -99,23 +94,20 @@ public final class Hubbly extends JavaPlugin {
     }
 
     public void loadComponents() {
-        getServer().getPluginManager().registerEvents(new ItemJoinListener(logger, this), this);
 
         loadListeners();
 
-        getServer().getPluginManager().registerEvents(new SocialsListener(logger),this);
-        getServer().getPluginManager().registerEvents(new VoidDamageListener(this), this);
         getServer().getPluginManager().registerEvents(new WorldEventListeners(this), this);
         getServer().getPluginManager().registerEvents(new ConfigItemListener(this), this);
-        getServer().getPluginManager().registerEvents(new DoubleJumpListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerOffHandListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerOffHandListener(this), this);
+        getServer().getPluginManager().registerEvents(new WorldChangeListener(this), this);
 
         getCommand("hubbly").setExecutor(new HubblyCommand(logger, this));
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
         getCommand("spawn").setExecutor(new SpawnCommand(this));
         getCommand("fly").setExecutor(new FlyCommand(this));
-        getCommand("clearchat").setExecutor(new ClearChatCommand(this));
         getCommand("give").setExecutor(new GiveCommand(this));
+        getCommand("clearchat").setExecutor(new ClearChatCommand(this));
         getCommand("lockchat").setExecutor(new LockChatCommand(this));
     }
 
@@ -125,8 +117,8 @@ public final class Hubbly extends JavaPlugin {
                 getServer().getPluginManager().registerEvents(listener, this);
             } catch(Exception e) {
                 logger.severe("PLEASE REPORT TO DEVELOPER");
-                logger.severe(listener  + " failed to load, printing stacktrace...");
-                e.printStackTrace();
+                logger.severe(listener.getClass().getName()  + " failed to load, printing stacktrace...");
+                debugMode.info(e.getMessage());
             }
 
         }
@@ -137,10 +129,14 @@ public final class Hubbly extends JavaPlugin {
     }
     private void loadListeners() {
         registerListener(new CompassListener(this));
+        registerListener(new SocialsListener(this), "socials.enabled");
+        registerListener(new VoidDamageListener(this), "antivoid.enabled");
+        registerListener(new DoubleJumpListener(this), "double_jump.enabled");
         registerListener(new PlayerVisibilityListener(), "playervisibility.enabled");
         registerListener(new LaunchpadListener(this), "launchpad.enabled");
         registerListener(new PlayerJoinListener(this));
         registerListener(new CommandBlockerListener(this));
+        registerListener(new ForceinvListener(this), "player.forceinventory");
         registerListener(new ChatListener(this), "blocked_words.enabled");
         registerListener(new MovementItemListener(this));
         registerListener(new XPListener(this), "player.experience.enabled");
@@ -148,38 +144,49 @@ public final class Hubbly extends JavaPlugin {
     @Override
     public void onEnable() {
         this.saveDefaultConfig();
+
+        try {
+            loadFiles();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+
         instance = this;
-        disabledWorlds = new DisabledWorlds();
+
+
+        updateUtil = new UpdateUtil();
+        disabledWorlds = new DisabledWorlds(this);
         cooldownManager = new CooldownManager();
         actionManager = new ActionManager(this);
+
         debugMode = new DebugMode();
+        itemsManager = new ItemsManager(this);
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
         utils = new Utils(this);
+        playerManager = new PlayerManager(this);
+        bossBarManager = new BossBarManager(this);
 
 
         prefix = this.getConfig().getString("prefix");
 
         config = this.getConfig();
         try {
-
             if(config.getBoolean("anti_world_download.enabled")) {
                 this.getServer().getMessenger().registerIncomingPluginChannel(this, "wdl:init", new AntiWDL(this));
                 this.getServer().getMessenger().registerOutgoingPluginChannel(this, "wdl:control");
             }
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
             debugMode.info("BungeeCord channel registered");
-            loadFiles();
             loadComponents();
-            BossBarManager.initialize(this.getConfig());
-            BossBarManager.getInstance().reAddAllBossBars();
-
+            bossBarManager.reAddAllBossBars();
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         final int pluginId = 22219;
         new Metrics(this, pluginId);
-        new UpdateUtil().checkForUpdate(this);
+        updateUtil.checkForUpdate(this);
 
         logger.info("Hubbly has been enabled!");
     }
@@ -189,7 +196,7 @@ public final class Hubbly extends JavaPlugin {
         // Plugin shutdown logic
         cleanup();
 
-        BossBarManager.getInstance().removeAllBossBars();
+        bossBarManager.removeAllBossBars();
         logger.info("Hubbly has been disabled!");
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "wdl:init");
@@ -208,12 +215,12 @@ public final class Hubbly extends JavaPlugin {
 
     private void loadFiles() {
         File itemsFile = new File(getDataFolder(), "items.yml");
-        File serverSelectorFile = new File(getDataFolder(), "serverselector.yml");
         if(!itemsFile.exists()) {
             saveResource("items.yml", false);
         }
         itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
 
+        File serverSelectorFile = new File(getDataFolder(), "serverselector.yml");
         if(!serverSelectorFile.exists()) {
             saveResource("serverselector.yml", false);
         }
@@ -225,17 +232,28 @@ public final class Hubbly extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(this);
     }
 
-    public void setPlayerFlight(Player player) {
+    /**
+     *
+     * @param player the target
+     * @param state 0 (djump) or 1 (flight)
+     */
+    public void setPlayerFlight(Player player, int state) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
 
+
         if (!dataContainer.has(this.FLY_KEY, PersistentDataType.BYTE)) {
-            dataContainer.set(this.FLY_KEY, PersistentDataType.BYTE, (byte) 0);
+            dataContainer.set(this.FLY_KEY, PersistentDataType.BYTE, (byte) state);
         }
     }
 
     public boolean canPlayerFly(Player player) {
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
-        return dataContainer.getOrDefault(this.FLY_KEY, PersistentDataType.BYTE, (byte) 0) == 1;
+        Byte state = dataContainer.get(this.FLY_KEY, PersistentDataType.BYTE);
+        if(state == null) {
+            debugMode.info("Critical error...");
+            return false;
+        }
+        return state == 1;
     }
 
 
@@ -256,9 +274,12 @@ public final class Hubbly extends JavaPlugin {
     public AnnouncementsManager getAnnouncementsManager() { return announcementsManager; }
     public LockChat getLockChat() {return lockChat;}
     public Utils getUtils() { return utils; }
-    
+    public UpdateUtil getUpdateUtil() { return updateUtil; }
+    public PlayerManager getPlayerManager() { return playerManager; }
+    public BossBarManager getBossBarManager() { return bossBarManager; }
     public String getPrefix() {
         return prefix;
     }
+    public ItemsManager getItemsManager() {return itemsManager;}
 
 }

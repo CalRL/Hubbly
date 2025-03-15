@@ -17,6 +17,7 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
+import org.bukkit.configuration.file.FileConfiguration;
 
 public class LockChat {
     private final Hubbly plugin;
@@ -25,14 +26,20 @@ public class LockChat {
         this.plugin = plugin;
         isChatLocked = false;
     }
-    public void setChatLocked(Boolean bool) {
-        isChatLocked = bool;
-    }
     public void flipChatLock() {
         isChatLocked = !isChatLocked;
+        saveState();
     }
 
     public boolean getChatLock() {
         return isChatLocked;
+    }
+    /*
+    TODO: make this logic actually save to config ig
+     */
+    private void saveState() {
+        FileConfiguration config = plugin.getConfig();
+        config.set("lock_chat", getChatLock());
+        plugin.saveConfig();
     }
 }

@@ -22,115 +22,106 @@ import me.calrl.hubbly.action.Action;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.interfaces.CustomItem;
-import me.calrl.hubbly.items.*;
 import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.managers.ItemsManager;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.checkerframework.checker.units.qual.A;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class GiveCommand implements TabExecutor {
 
     private final Hubbly plugin;
     private final FileConfiguration config;
-    private final Map<String, CustomItem> items = new HashMap<>();
+    private Map<String, CustomItem> items = new HashMap<>();
     private FileConfiguration itemsConfig;
     private ActionManager actionManager;
     private Map<String, Action> actions;
     private DebugMode debugMode;
+    private ItemsManager itemsManager;
 
     public GiveCommand(Hubbly plugin) {
         this.plugin = plugin;
-        this.itemsConfig = Hubbly.getInstance().getItemsConfig();
-        this.config = Hubbly.getInstance().getConfig();
+        this.itemsConfig = plugin.getItemsConfig();
+        this.config = plugin.getConfig();
         this.actionManager = plugin.getActionManager();
         this.debugMode = plugin.getDebugMode();
-        registerItems();
+        this.itemsManager = plugin.getItemsManager();
+        items = itemsManager.getItems();
     }
 
-    private void registerItems() {
-        items.put("compass", new CompassItem());
-        items.put("socials", new SocialsItem());
-        items.put("playervisibility", new PlayerVisibilityItem());
-        items.put("enderbow", new EnderbowItem(plugin));
-        items.put("trident", new TridentItem(plugin));
-        items.put("grappling_hook", new RodItem(plugin));
-        items.put("aote", new AoteItem(plugin));
-
-        if (itemsConfig.getConfigurationSection("items") != null) {
-            for (String itemKey : itemsConfig.getConfigurationSection("items").getKeys(false)) {
-                items.put(ChatColor.stripColor(itemKey.toLowerCase()), new ConfigItems(itemKey, plugin));
-            }
-        } else {
-            debugMode.warn("No items found in items.yml");
-        }
-    }
-
-    private String getItems() {
-        return items.toString();
-    }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-            if (args.length < 2) {
-                sender.sendMessage(ChatColor.YELLOW + "Usage: /give <player> <item> [amount] [slot]");
-                return true;
-            }
+        if (args.length < 3) {
+            sender.sendMessage(ChatColor.YELLOW + "Usage: /give <player> <item> [amount] [slot]");
+            return true;
+        }
 
-            if (sender.hasPermission(Permissions.COMMAND_GIVE.getPermission())) {
-                Player targetPlayer = Bukkit.getPlayer(args[0]);
-                if (targetPlayer == null) {
-                    sender.sendMessage(ChatColor.RED + "Player not found: " + args[0]);
+        if(!sender.hasPermission(Permissions.COMMAND_GIVE.getPermission())) {
+            sender.sendMessage(ChatUtils.translateHexColorCodes(
+                    config.getString("messages.no_permission_use", "No permission")
+            ));
+            return true;
+        }
+
+        Player targetPlayer = Bukkit.getPlayer(args[0]);
+        if (targetPlayer == null) {
+            sender.sendMessage(ChatColor.RED + "Player not found: " + args[0]);
+            return true;
+        }
+
+        String itemName = ChatColor.stripColor(args[1].toLowerCase());
+        CustomItem customItem = items.get(itemName);
+
+        if (customItem == null) {
+            sender.sendMessage(ChatColor.RED + "Unknown item: " + itemName);
+            return true;
+        }
+
+        ItemStack item = customItem.createItem();
+        if(args.length == 3) {
+            int amount = Integer.parseInt(args[2]);
+            item.setAmount(amount);
+            targetPlayer.getInventory().addItem(item);
+            return true;
+        }
+
+
+        if (args.length == 4) {
+            try {
+                int amount = Integer.parseInt(args[2]);
+                item.setAmount(amount);
+
+                int slot = Integer.parseInt(args[3]);
+                if (slot < 0 || slot >= targetPlayer.getInventory().getSize()) {
+                    sender.sendMessage(ChatColor.RED + "Invalid slot: " + args[3]);
                     return true;
                 }
 
-                String itemName = ChatColor.stripColor(args[1].toLowerCase());
-                CustomItem customItem = items.get(itemName);
-
-                if (customItem != null) {
-                    ItemStack item = customItem.createItem();
-                    if(args.length == 3) {
-                        int amount = Integer.parseInt(args[2]);
-                        item.setAmount(amount);
-                        targetPlayer.getInventory().addItem(item);
-                        return true;
-                    }
-                    if (args.length == 4) {
-                        try {
-                            int amount = Integer.parseInt(args[2]);
-                            item.setAmount(amount);
-                            int slot = Integer.parseInt(args[3]);
-                            if (slot < 0 || slot >= targetPlayer.getInventory().getSize()) {
-                                sender.sendMessage(ChatColor.RED + "Invalid slot: " + args[3]);
-                                return true;
-                            }
-                            targetPlayer.getInventory().setItem(slot-1, item);
-                            sender.sendMessage(ChatColor.YELLOW + "Given " + itemName + " to " + targetPlayer.getName() + " in slot " + slot);
-                        } catch (NumberFormatException e) {
-                            sender.sendMessage(ChatColor.RED + "Slot must be a number: " + args[3]);
-                        }
-                    } else {
-                        targetPlayer.getInventory().addItem(item);
-                        debugMode.info("Given " + itemName + " to " + targetPlayer.getName());
-                    }
-                } else {
-                    sender.sendMessage(ChatColor.RED + "Unknown item: " + itemName); // Debugging
-                }
-            } else {
-                sender.sendMessage(Objects.requireNonNull(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_use"))));
+                targetPlayer.getInventory().setItem(slot-1, item);
+                sender.sendMessage(ChatColor.YELLOW + "Given " + itemName + " to " + targetPlayer.getName() + " in slot " + slot);
+            } catch (NumberFormatException e) {
+                sender.sendMessage(ChatColor.RED + "Slot must be a number: " + args[3]);
             }
-            return true;
+        } else {
+            targetPlayer.getInventory().addItem(item);
+            debugMode.info("Given " + itemName + " to " + targetPlayer.getName());
         }
+
+        return true;
+    }
 
     @Nullable
     @Override
@@ -141,6 +132,7 @@ public class GiveCommand implements TabExecutor {
                 stringList.add(player.getName());
             }
         }
+
         if(args.length == 2)
             stringList.addAll(items.keySet());
         return stringList;

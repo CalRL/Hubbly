@@ -32,7 +32,7 @@ public class AnnouncementsManager {
     private List<String[]> announcements;
     private final Hubbly plugin;
     private final FileConfiguration config;
-    private DebugMode debugMode;
+    private final DebugMode debugMode;
     private int currentAnnouncementIndex = 0;
     private BukkitTask task;
     private AtomicBoolean state = new AtomicBoolean(true);
@@ -46,39 +46,42 @@ public class AnnouncementsManager {
             Bukkit.getScheduler().runTask(plugin, () -> {
                 loadAnnouncements();
                 startAnnouncementsTask();
-
             });
         }
     }
 
+    
     public List<String[]> getAnnouncements() {
         return new ArrayList<>(announcements);
     }
 
     private void loadAnnouncements() {
         ConfigurationSection section = plugin.getConfig().getConfigurationSection("announcements.messages");
-        if (section != null) {
-            try {
-                for (String key : section.getKeys(false)) {
-                    List<String> messages = section.getStringList(key);
-                    String[] messageArray = messages.toArray(new String[0]);
-                    announcements.add(messageArray);
-                    debugMode.info(announcements.toString());
-                    state.set(true);
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
+        if(section == null) {
             debugMode.warn("No announcements found...");
             debugMode.warn("Disabling Announcements...");
             state.set(false);
+            return;
         }
+
+        try {
+            for (String key : section.getKeys(false)) {
+                List<String> messages = section.getStringList(key);
+                String[] messageArray = messages.toArray(new String[0]);
+                announcements.add(messageArray);
+                debugMode.info(announcements.toString());
+                state.set(true);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     /**
      * Start the announcements task
      * TODO: move interval into the method params
+     * 7/1/2025 - why?
      */
     private void startAnnouncementsTask() {
 
