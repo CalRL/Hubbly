@@ -31,6 +31,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import java.util.Objects;
 import java.util.logging.Logger;
@@ -65,7 +66,15 @@ public class VoidDamageListener implements Listener {
 
                 Utils utils = plugin.getUtils();
                 Location spawn = utils.getSpawn();
-                event.getEntity().teleport(spawn);
+                /*
+                * Try this if player.teleport doesnt work.
+                Bukkit.getScheduler().runTaskLater(plugin, () -> player.teleport(spawn), 1L);
+                 */
+
+                player.setVelocity(player.getVelocity().setY(0));
+                player.setFallDistance(0f);
+
+                player.teleport(spawn, TeleportCause.PLUGIN);
 
             }
         }
