@@ -22,6 +22,8 @@ import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.listeners.CompassListener;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 public class SelectorCommand implements SubCommand {
@@ -30,11 +32,32 @@ public class SelectorCommand implements SubCommand {
         this.plugin = plugin;
     }
 
-    public String getIdentifier() {
-        return "SELECTOR";
-    }
     @Override
-    public void execute(Player player, String[] args) {
+    public String getName() {
+        return "selector";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Opens the selector menu";
+    }
+
+    @Override
+    public String getUsage() {
+        return "/hubbly selector";
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        FileConfiguration config = plugin.getConfig();
+        if(!(sender instanceof Player player)) {
+            String message = config.getString("messages.no_console");
+            sender.sendMessage(
+                    ChatUtils.prefixMessage(plugin, message)
+            );
+            return;
+        }
+
         if(player.hasPermission(Permissions.COMMAND_SELECTOR.getPermission())) {
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
 
@@ -43,11 +66,11 @@ public class SelectorCommand implements SubCommand {
 
         } else {
             player.sendMessage(
-                    ChatUtils.translateHexColorCodes(
-                            plugin.getConfig().getString("messages.no_permission", "No permission")
+                    ChatUtils.prefixMessage(
+                            plugin,
+                            config.getString("messages.no_permission", "No permission")
                     )
             );
         }
-
     }
 }

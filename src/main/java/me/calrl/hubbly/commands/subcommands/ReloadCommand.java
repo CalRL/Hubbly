@@ -22,8 +22,11 @@ import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class ReloadCommand implements SubCommand {
 
@@ -36,12 +39,24 @@ public class ReloadCommand implements SubCommand {
         this.plugin = plugin;
     }
 
-    public String getIdentifier() {
-        return "RELOAD";
-    }
     @Override
-    public void execute(Player player, String[] args) {
-        if(player.hasPermission(Permissions.COMMAND_RELOAD.getPermission())) {
+    public String getName() {
+        return "reload";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Reloads the plugin's configuration";
+    }
+
+    @Override
+    public String getUsage() {
+        return "/hubbly reload";
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        if(sender.hasPermission(Permissions.COMMAND_RELOAD.getPermission())) {
 
             try {
                 bossBarManager = plugin.getBossBarManager();
@@ -49,8 +64,8 @@ public class ReloadCommand implements SubCommand {
                     bossBarManager.removeAllBossBars();
                 }
                 plugin.reloadPlugin();
-                player.sendMessage(
-                        ChatUtils.prefixMessage(player, config.getString("messages.reload", "Config reloaded."))
+                sender.sendMessage(
+                        ChatUtils.prefixMessage(plugin, config.getString("messages.reload", "Config reloaded."))
                 );
 
                 bossBarManager = plugin.getBossBarManager();

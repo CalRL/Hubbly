@@ -3,8 +3,10 @@ package me.calrl.hubbly.inventory;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.managers.FileManager;
 import me.calrl.hubbly.managers.holders.CompassHolder;
 import me.calrl.hubbly.utils.ChatUtils;
+import org.apache.commons.lang.NullArgumentException;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
@@ -16,6 +18,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.io.File;
 import java.util.List;
 import java.util.Objects;
 
@@ -135,6 +138,9 @@ public class CompassInventory {
             item.setItemMeta(setTextures(item, section.getString("value")));
         }
 
+//        FileManager fileManager = new FileManager(plugin);
+//        item = fileManager.loadItemStack(new File(fileManager.getPath() + "saved_item.yml"));
+
         return item;
     }
 
@@ -143,6 +149,12 @@ public class CompassInventory {
             String itemName = this.getName(section);
             itemName = ChatUtils.parsePlaceholders(player, itemName);
             meta.setDisplayName(itemName);
+        }
+
+        if (section.contains("modeldata")) {
+            int modelData = section.getInt("modeldata");
+            debugMode.info("Applying Custom Model Data: " + modelData);
+            meta.setCustomModelData(modelData);
         }
 
         if(section.contains("lore")) {

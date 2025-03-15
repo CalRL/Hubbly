@@ -54,7 +54,7 @@ public class LaunchpadListener implements Listener {
         if (blockStandingOn.getType() == launchpadMaterial || blockBelow.getType() == launchpadMaterial) {
             if (player.hasPermission("hubbly.use.launchpad") || player.isOp()) {
                 if(!Hubbly.getInstance().getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, config.getLong("launchpad.cooldown")));
-                plugin.getActionManager().executeAction(plugin, player, "[LAUNCH]");
+                plugin.getActionManager().executeAction(player, "[LAUNCH]");
             }
         }
     }

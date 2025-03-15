@@ -25,6 +25,7 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -72,6 +73,21 @@ public class ChatUtils {
         message = prefix + " " + message;
 
         message = processMessage(player, message);
+        return message;
+    }
+
+    /**
+     * This method is for console use, otherwise use the other one.
+     * @param plugin
+     * @param message
+     * @return
+     */
+    public static String prefixMessage(Hubbly plugin, String message) {
+        FileConfiguration config = plugin.getConfig();
+        String prefix = config.getString("prefix");
+        message = prefix + " " + message;
+
+        message = translateHexColorCodes(message);
         return message;
     }
 
