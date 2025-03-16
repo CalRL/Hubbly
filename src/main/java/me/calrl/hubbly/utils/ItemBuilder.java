@@ -16,10 +16,6 @@ import java.util.stream.Collectors;
 public class ItemBuilder {
     private ItemStack itemStack;
     private ItemMeta itemMeta;
-    private Material material;
-    private String displayName;
-    private int modelData;
-    private List<String> lore;
     private Player player;
 
     public ItemBuilder(Material material) {
