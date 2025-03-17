@@ -18,9 +18,13 @@
 package me.calrl.hubbly.listeners.world;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.action.ActionManager;
+import me.calrl.hubbly.enums.Permissions;
+import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
 import me.calrl.hubbly.utils.ChatUtils;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -44,28 +48,41 @@ public class LaunchpadListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        if(disabledWorlds.inDisabledWorld(event.getPlayer().getLocation())) return;
         
         config = plugin.getConfig();
         if(!config.getBoolean("launchpad.enabled")) return;
+
         Player player = event.getPlayer();
-        Block blockStandingOn = player.getLocation().getBlock(); // Get the block the player is standing on
-        Block blockBelow = player.getLocation().subtract(0, 1, 0).getBlock(); // Get the block directly below the player
+        Location location = player.getLocation();
 
-        Material launchpadMaterial = Material.valueOf(config.getString("launchpad.type"));
-        if (blockStandingOn.getType() == launchpadMaterial || blockBelow.getType() == launchpadMaterial) {
-            if (player.hasPermission("hubbly.use.launchpad") || player.isOp()) {
-                if(!Hubbly.getInstance().getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, config.getLong("launchpad.cooldown")));
-                plugin.getActionManager().executeAction(player, "[LAUNCH]");
-            }
+        Block blockStandingOn = location.getBlock();
+        Block blockBelow = location.subtract(0, 1, 0).getBlock();
 
-            CooldownManager cooldownManager = plugin.getCooldownManager();
-            long cooldown = config.getLong("launchpad.cooldown");
-            boolean cooldownResult = cooldownManager.tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, cooldown);
-
-            if(!cooldownResult) return;
-
-            plugin.getActionManager().executeAction(player, "[LAUNCH]");
+        Material launchpadMaterial = Material.valueOf(config.getString("launchpad.type", "SLIME_BLOCK"));
+        if (blockStandingOn.getType() != launchpadMaterial && blockBelow.getType() != launchpadMaterial) {
+            return;
         }
+
+        if (!player.hasPermission(Permissions.USE_LAUNCHPAD.getPermission())) {
+            String noPermission = config.getString("messages.no_permission");
+            player.sendMessage(
+                    ChatUtils.prefixMessage(
+                            plugin,
+                            player,
+                            noPermission
+                    )
+            );
+        }
+
+        long cooldown = config.getLong("launchpad.cooldown");
+        CooldownManager cooldownManager = plugin.getCooldownManager();
+        boolean cooldownResult = cooldownManager.tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, cooldown);
+
+        if(!cooldownResult) return;
+
+        ActionManager actionManager = plugin.getActionManager();
+        actionManager.executeAction(player, "[LAUNCH]");
     }
 }
