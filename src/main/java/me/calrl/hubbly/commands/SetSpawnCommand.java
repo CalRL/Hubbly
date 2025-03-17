@@ -20,6 +20,7 @@ package me.calrl.hubbly.commands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.functions.AngleRounder;
 import me.calrl.hubbly.utils.ChatUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -32,11 +33,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class SetSpawnCommand implements CommandExecutor {
 
-    private final JavaPlugin plugin;
-    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private final Hubbly plugin;
+    private FileConfiguration config;
 
-    public SetSpawnCommand(JavaPlugin plugin) {
+    public SetSpawnCommand(Hubbly plugin) {
         this.plugin = plugin;
+        this.config = plugin.getConfig();
     }
 
     public double spawnRound(double value) {
@@ -45,36 +47,61 @@ public class SetSpawnCommand implements CommandExecutor {
         } else {
             return Math.round(value * 2) / 2.0;
         }
-
     }
 
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(!(sender instanceof Player player)) return true;
-        if (sender.hasPermission("hubbly.command.setspawn") || sender.isOp()) {
-            Location location = player.getServer().getPlayer(player.getName()).getLocation();
-            double x = location.getX();
-            double y = location.getY();
-            double z = location.getZ();
-            float yaw = location.getYaw();
-            float pitch = location.getPitch();
-            float roundedYaw = new AngleRounder(yaw).getRoundedAngle();
-            float roundedPitch = new AngleRounder(pitch).getRoundedAngle();
-
-            World world = location.getWorld();
-            config.set("spawn.world", world.getName());
-            config.set("spawn.x", spawnRound(x));
-            config.set("spawn.y", spawnRound(y));
-            config.set("spawn.z", spawnRound(z));
-            config.set("spawn.yaw", roundedYaw);
-            config.set("spawn.pitch", roundedPitch);
-            player.sendMessage(ChatUtils.prefixMessage(player, config.getString("messages.success", "Success!")));
-            plugin.saveConfig();
-
-        } else {
-            player.sendMessage(config.getString("messages.no_permission_command", "No permission"));
+        if (!sender.hasPermission("hubbly.command.setspawn")) {
+            String noPermission = config.getString("messages.no_permission_command");
+            player.sendMessage(
+                    ChatUtils.prefixMessage(
+                            plugin,
+                            player,
+                            noPermission
+                    )
+            );
+            return true;
         }
+
+        Location location = player.getLocation();
+
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
+        float yaw = location.getYaw();
+        float pitch = location.getPitch();
+        float roundedYaw = new AngleRounder(yaw).getRoundedAngle();
+        float roundedPitch = new AngleRounder(pitch).getRoundedAngle();
+
+        World world = location.getWorld();
+        if(world == null) {
+            player.sendMessage(
+                    ChatUtils.prefixMessage(
+                            plugin,
+                            player,
+                            config.getString("messages.console_error")
+                    )
+            );
+            throw new NullPointerException("World is null?");
+        }
+
+        config.set("spawn.world", world.getName());
+        config.set("spawn.x", spawnRound(x));
+        config.set("spawn.y", spawnRound(y));
+        config.set("spawn.z", spawnRound(z));
+        config.set("spawn.yaw", roundedYaw);
+        config.set("spawn.pitch", roundedPitch);
+        player.sendMessage(
+                ChatUtils.prefixMessage(
+                        plugin,
+                        player,
+                        config.getString("messages.success", "Success!")
+                )
+        );
+        plugin.saveConfig();
+
         return true;
     }
 }
