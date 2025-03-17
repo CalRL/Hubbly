@@ -21,6 +21,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.actions.*;
 import me.calrl.hubbly.events.ActionEvent;
 import me.calrl.hubbly.managers.DisabledWorlds;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -56,7 +57,6 @@ public class ActionManager {
                 new LaunchAction(),
                 new SlotAction(),
                 new ClearAction()
-
         );
     }
     public void executeAction(Player player, String actionData) {
@@ -71,6 +71,7 @@ public class ActionManager {
 
             Action action = actions.get(identifier);
             ActionEvent event = new ActionEvent(player, action, data);
+            Bukkit.getPluginManager().callEvent(event);
 
             if (action == null) {
                 String errorMessage = String.format("Action %s not found...", identifier);
