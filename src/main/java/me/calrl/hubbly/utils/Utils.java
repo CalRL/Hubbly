@@ -1,10 +1,16 @@
 package me.calrl.hubbly.utils;
 
 import me.calrl.hubbly.Hubbly;
+import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemStack;
+import org.bukkit.enchantments.Enchantment;
+import org.bukkit.inventory.ItemFlag;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class Utils {
 
@@ -23,21 +29,11 @@ public class Utils {
         }
 
         World world = Bukkit.getWorld(worldName);
-        if(world == null) {
-            plugin.getDebugMode().info("UTILS: Spawn World is null");
-            return null;
-        }
-
-
-        double x = config.getDouble("spawn.x", 0);
-        double z = config.getDouble("spawn.z", 0);
-
-        double defaultY = world.getHighestBlockAt((int) x, (int) z).getY();
-        double y = config.getDouble("spawn.y", defaultY);
-
-        float yaw = (float) config.getDouble("spawn.yaw", 0);
-        float pitch = (float) config.getDouble("spawn.pitch", 0);
-
+        double x = config.getDouble("spawn.x");
+        double y = config.getDouble("spawn.y");
+        double z = config.getDouble("spawn.z");
+        float yaw = (float) config.getDouble("spawn.yaw");
+        float pitch = (float) config.getDouble("spawn.pitch");
 
         return new Location(world, x, y, z, yaw, pitch);
 

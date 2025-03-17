@@ -23,6 +23,7 @@ import me.calrl.hubbly.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -30,6 +31,10 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
+import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
+
+import java.util.Objects;
+import java.util.logging.Logger;
 
 public class VoidDamageListener implements Listener {
 
@@ -57,20 +62,20 @@ public class VoidDamageListener implements Listener {
             DamageCause damageCause = event.getCause();
             if(damageCause == DamageCause.VOID) {
                 plugin.getDebugMode().info(player.getName() + " was hit by the void.. teleporting..");
+                event.setCancelled(true);
 
                 Utils utils = plugin.getUtils();
                 Location spawn = utils.getSpawn();
+                /*
+                * Try this if player.teleport doesnt work.
+                Bukkit.getScheduler().runTaskLater(plugin, () -> player.teleport(spawn), 1L);
+                 */
 
                 player.setVelocity(player.getVelocity().setY(0));
                 player.setFallDistance(0f);
 
-                Bukkit.getScheduler().runTaskLater(
-                        plugin,
-                        () -> player.teleport(spawn),
-                        1L
-                );
+                player.teleport(spawn, TeleportCause.PLUGIN);
 
-                event.setCancelled(true);
             }
         }
     }
