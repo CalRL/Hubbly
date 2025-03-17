@@ -66,9 +66,9 @@ public class ChatUtils {
         return message;
     }
 
-    public static String prefixMessage(Player player, String message) {
+    public static String prefixMessage(Hubbly plugin, Player player, String message) {
 
-        FileConfiguration config = Hubbly.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         String prefix = config.getString("prefix");
         message = prefix + " " + message;
 
