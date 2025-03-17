@@ -21,6 +21,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.events.HubblySpawnEvent;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.utils.ChatUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -52,11 +53,12 @@ public class SpawnCommand implements CommandExecutor {
         }
         Location spawn = plugin.getUtils().getSpawn();
         HubblySpawnEvent event = new HubblySpawnEvent(player, spawn);
+        Bukkit.getPluginManager().callEvent(event);
 
-        if(!sender.hasPermission("hubbly.command.spawn")) {
+        if(!player.hasPermission("hubbly.command.spawn")) {
             String noPermission = config.getString("messages.no_permission_command");
             player.sendMessage(
-                    ChatUtils.prefixMessage(player, noPermission)
+                    ChatUtils.prefixMessage(plugin, player, noPermission)
             );
             return true;
         }
