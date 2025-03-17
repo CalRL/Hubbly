@@ -57,7 +57,7 @@ public class FlyCommand implements CommandExecutor {
 
         if (!player.hasPermission(Permissions.COMMAND_FLY.getPermission()) && !player.isOp()) {
             player.sendMessage(
-                    ChatUtils.prefixMessage(player, config.getString("messages.no_permission_command"))
+                    ChatUtils.prefixMessage(plugin, player, config.getString("messages.no_permission_command"))
             );
             return true;
         }
@@ -72,10 +72,10 @@ public class FlyCommand implements CommandExecutor {
 
         if (canFly == 1) {
             player.setFlying(false);
-            player.sendMessage(ChatUtils.prefixMessage(player, config.getString("messages.fly.disable")));
+            player.sendMessage(ChatUtils.prefixMessage(plugin, player, config.getString("messages.fly.disable")));
             dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 0);
         } else {
-            player.sendMessage(ChatUtils.prefixMessage(player, config.getString("messages.fly.enable")));
+            player.sendMessage(ChatUtils.prefixMessage(plugin, player, config.getString("messages.fly.enable")));
             dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 1);
         }
 
