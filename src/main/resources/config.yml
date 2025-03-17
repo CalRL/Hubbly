@@ -233,6 +233,7 @@ messages:
   blocked_command: 'Unknown command. Type "/help" for help'
   blocked_message: 'Please do not use that word!'
   success: "Success!"
+  console_error: "Error. Please check console"
 
   # No PAPI support, only %player% placeholder to get the person who locked the chat.
   chat_locked: "Chat has been locked by %player%"
