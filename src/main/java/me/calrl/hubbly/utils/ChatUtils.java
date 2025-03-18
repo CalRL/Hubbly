@@ -25,7 +25,6 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -59,7 +58,7 @@ public class ChatUtils {
     }
 
     public static String processMessage(Player player, String message) {
-        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        if(player != null && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             message = PlaceholderAPI.setPlaceholders(player, message);
         }
         message = translateHexColorCodes(message);
