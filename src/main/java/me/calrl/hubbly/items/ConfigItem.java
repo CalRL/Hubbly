@@ -22,10 +22,13 @@ import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.managers.FileManager;
 import me.calrl.hubbly.managers.ItemsManager;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.ItemBuilder;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.enchantments.Enchantment;
@@ -60,63 +63,31 @@ public class ConfigItem implements CustomItem {
 
     @Override
     public ItemStack createItem() {
-        return createItemFromConfig(itemKey, player);
-    }
+        FileManager manager = plugin.getFileManager();
+        FileConfiguration config = manager.getConfig("items.yml");
 
-    public ItemStack createItemFromConfig(String itemKey, Player player) {
-        File itemsFile = new File(plugin.getDataFolder(), "items.yml");
-        FileConfiguration config = YamlConfiguration.loadConfiguration(itemsFile);
-        String path = "items." + itemKey;
-        Material material = null;
-
-        try {
-            material = Material.valueOf(config.getString(path + ".type"));
-        } catch (IllegalArgumentException e) {
-            logger.info("Failed to get material for item: " + e.getMessage());
+        if (!config.contains("items." + itemKey)) {
+            debugMode.warn("Item '" + itemKey + "' not found in items.yml.");
+            return null;
         }
 
-        ItemStack item = new ItemStack(material);
-        ItemMeta meta = item.getItemMeta();
-        if (meta != null) {
-            meta = createMeta(player, meta, config, path, material);
-            item.setItemMeta(meta);
+        ConfigurationSection section = config.getConfigurationSection("items." + itemKey);
+        if (section == null) {
+            debugMode.warn("Section for item '" + itemKey + "' is null.");
+            return null;
         }
+
+        ItemStack item = new ItemBuilder()
+                .setPlayer(player)
+                .fromConfig(player, section);
+
+        if (item == null || item.getType() == Material.AIR) {
+            debugMode.warn("Item '" + itemKey + "' is invalid or returned AIR.");
+            return null;
+        }
+
         return item;
     }
 
-    private ItemMeta createMeta(Player player, ItemMeta meta, FileConfiguration config, String path, Material material) {
-        if(meta == null) {
-
-        }
-        if (config.contains(path + ".name")) {
-            meta.setDisplayName(ChatUtils.translateHexColorCodes(config.getString(path + ".name")));
-        }
-
-        // Set item lore
-        if (config.contains(path + ".lore")) {
-            List<String> lore = new ArrayList<>();
-            for (String line : config.getStringList(path + ".lore")) {
-                lore.add(ChatUtils.processMessage(player, line));
-            }
-            meta.setLore(lore);
-        }
-        if(config.contains(path + ".value") && Objects.equals(material, Material.valueOf(config.getString(path + ".type")))) {
-            CreateCustomHead.createCustomHead(config.getString(path + ".value"), config.getString(".name"));
-        }
-
-        if(config.contains(path + ".enchanted")) {
-            meta.addEnchant(Enchantment.THORNS, 1, true);
-            meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        }
-
-        List<String> actions = config.getStringList(path + ".actions");
-        if (!actions.isEmpty()) {
-
-            String actionsString = String.join(",", actions);
-            meta.getPersistentDataContainer().set(new NamespacedKey(plugin, "customActions"), PersistentDataType.STRING, String.join(",", actions));
-            debugMode.info("Set actions for item " + itemKey + ": " + actionsString);
-        }
-    return meta;
-    }
 
 }
