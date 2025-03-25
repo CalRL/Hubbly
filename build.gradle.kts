@@ -9,6 +9,8 @@ plugins {
 
 repositories {
     mavenLocal()
+    mavenCentral()
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven {
         url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     }
@@ -25,9 +27,10 @@ repositories {
         url = uri("https://repo.maven.apache.org/maven2/")
     }
     maven {
-        name = "CodeMC"
         url = uri("https://repo.codemc.io/repository/maven-public/")
     }
+
+
 
 
 }
@@ -37,12 +40,14 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.20.6-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("com.google.code.gson:gson:2.10.1")
-    compileOnly("de.tr7zw:item-nbt-api-plugin:2.14.1")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.93.2")
+    testImplementation("org.slf4j:slf4j-simple:2.0.9")
 }
 
 group = "me.calrl"
-version = "2.6.0"
+version = "3.0.0"
 description = "Hubbly"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -58,6 +63,19 @@ tasks.withType<JavaCompile>() {
 
 tasks.withType<Javadoc>() {
     options.encoding = "UTF-8"
+}
+
+tasks.test {
+    useJUnitPlatform()
+
+    testLogging {
+        events("passed", "failed", "skipped", "standard_out", "standard_error")
+        showStandardStreams = true
+    }
+
+    // Disable parallel forks for MockBukkit stability
+    maxParallelForks = 1
+
 }
 
 tasks.processResources {
