@@ -20,8 +20,10 @@ package me.calrl.hubbly.commands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.commands.subcommands.*;
 import me.calrl.hubbly.commands.subcommands.GiveCommand;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -36,14 +38,13 @@ import java.util.logging.Logger;
 
 public class HubblyCommand implements TabExecutor {
 
-    private Logger logger;
-    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private final FileConfiguration config;
 
     private final Hubbly plugin;
     private final Map<String, SubCommand> subCommands = new HashMap<>();
     public HubblyCommand(Hubbly plugin) {
         this.plugin = plugin;
-        this.logger = plugin.getLogger();
+        this.config = plugin.getConfig();
         registerSubCommands();
     }
 
@@ -53,17 +54,16 @@ public class HubblyCommand implements TabExecutor {
         subCommands.put("version", new VersionCommand(plugin));
         subCommands.put("nextannouncement", new NextAnnouncementCommand(plugin));
         subCommands.put("give", new GiveCommand(plugin));
-        subCommands.put("saveitem", new SaveItemCommand(plugin));
-        subCommands.put("loaditem", new LoadItemCommand(plugin));
     }
-
-
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         // If no arguments are provided, show usage message
         if (args.length == 0) {
-            sender.sendMessage(ChatUtils.prefixMessage(plugin, "Usage: /hubbly <command> <args>"));
+            new MessageBuilder(plugin)
+                    .setPlayer(sender)
+                    .setKey(LocaleKey.USAGE_HUBBLY)
+                    .send();
             return true;
         }
 
@@ -75,7 +75,10 @@ public class HubblyCommand implements TabExecutor {
         if (subCommand != null) {
             subCommand.execute(sender, args);
         } else {
-            sender.sendMessage(ChatUtils.prefixMessage(plugin, "Unknown command. Use '/hubbly help' for a list of commands."));
+            new MessageBuilder(plugin)
+                    .setPlayer(sender)
+                    .setKey(LocaleKey.UNKNOWN_COMMAND)
+                    .send();
         }
 
         return true;
