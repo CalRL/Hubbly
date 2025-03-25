@@ -4,6 +4,7 @@ import me.calrl.hubbly.Hubbly;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
+import org.yaml.snakeyaml.Yaml;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,49 +13,98 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.Path;
-import java.util.List;
+import java.util.*;
 
 public class FileManager {
     private FileConfiguration serverSelectorConfig;
     private FileConfiguration itemsConfig;
     private Hubbly plugin;
-    private Path path;
+    private final File baseFolder;
+    private final Map<String, YamlConfiguration> loadedConfigs = new HashMap<>();
+    private final Set<String> lockedFiles = new HashSet<>();
     public FileManager(Hubbly plugin) {
         this.plugin = plugin;
+        this.baseFolder = plugin.getDataFolder();
+    }
 
-        path = Path.of(plugin.getDataFolder() + "/items/");
+    public File resolve(String relativePath) {
+        if (!relativePath.endsWith(".yml")) {
+            relativePath += ".yml";
+        }
 
-        File directory = path.toFile();
-        if (!directory.exists()) {
-            directory.mkdirs();
+        File file = new File(baseFolder, relativePath);
+        File parent = file.getParentFile();
+
+        if (!parent.exists()) {
+            boolean mkDir = parent.mkdirs();
+            if(!mkDir) plugin.getLogger().warning("Couldn't create directory: " + parent);
+        }
+
+        return file;
+    }
+
+    public void save(String relativePath) {
+
+    }
+
+    public void create(String relativePath) {
+
+    }
+
+    public void loadFiles(String relativePath) {
+
+    }
+
+    public void reload(String relativePath) {
+        if (lockedFiles.contains(relativePath)) {
+            plugin.getLogger().info("File " + relativePath + " is locked and will not be reloaded.");
+            return;
+        }
+
+        File file = this.resolve(relativePath);
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
+        loadedConfigs.put(relativePath, config);
+    }
+
+    public void reloadFiles() {
+        for (String path : loadedConfigs.keySet()) {
+            if (!lockedFiles.contains(path)) {
+                this.reload(path);
+            } else {
+                plugin.getLogger().info("Skipped reload for locked file: " + path);
+            }
         }
     }
 
-    public File createFile(String name) {
-        return new File(path.toFile() + name);
-    }
-
-    public synchronized void saveItemStack(ItemStack itemStack, File file) {
-        YamlConfiguration config = new YamlConfiguration();
-        config.set("item", itemStack);
-
-        try {
-            config.save(file);
-        } catch (IOException e) {
-            e.printStackTrace();
+    public YamlConfiguration getConfig(String relativePath) {
+        if (loadedConfigs.containsKey(relativePath)) {
+            return loadedConfigs.get(relativePath);
         }
-    }
 
-    public synchronized ItemStack loadItemStack(File file) {
-        if (!file.exists()) return null;
+        File file = this.resolve(relativePath);
+
+        if (!file.exists()) {
+            plugin.getLogger().warning("Failed to get file: " + file.getName());
+            return null;
+        }
 
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
-        return config.getItemStack("item");
+        loadedConfigs.put(relativePath, config);
+        return config;
     }
 
-    public Path getPath() {
-        return this.path;
+    public void lock(String relativePath) {
+        lockedFiles.add(relativePath);
     }
+
+    public void unlock(String relativePath) {
+        lockedFiles.remove(relativePath);
+    }
+
+    public boolean isLocked(String relativePath) {
+        return lockedFiles.contains(relativePath);
+    }
+
 
 
 }
