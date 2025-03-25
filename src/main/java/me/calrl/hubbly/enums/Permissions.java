@@ -29,6 +29,7 @@ public enum Permissions {
     COMMAND_LOCK_CHAT("command.lockchat"),
     COMMAND_ADMIN("command.admin"),
     COMMAND_SELECTOR("command.selector"),
+    COMMAND_HELP("command.help"),
 
     BYPASS_FORCE_INVENTORY("bypass.forceinventory"),
     BYPASS_ANTI_SWEAR("bypass.antiswear"),
