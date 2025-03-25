@@ -56,7 +56,9 @@ public class ActionManager {
                 new MessageAction(),
                 new LaunchAction(),
                 new SlotAction(),
-                new ClearAction()
+                new ClearAction(),
+                new LinkAction(),
+                new MenuAction()
         );
     }
     public void executeAction(Player player, String actionData) {
