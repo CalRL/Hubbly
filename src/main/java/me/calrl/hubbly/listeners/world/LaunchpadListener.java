@@ -75,7 +75,8 @@ public class LaunchpadListener implements Listener {
 
         if (!player.hasPermission(Permissions.USE_LAUNCHPAD.getPermission())) {
             new MessageBuilder(plugin)
-                    .setKey(LocaleKey.NO_PERMISSION_USE)
+                    .setPlayer(player)
+                    .setKey("no_permission_use")
                     .send();
             return;
         }
