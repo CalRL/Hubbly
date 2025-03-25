@@ -14,12 +14,21 @@ public class LocaleManager {
     private final Map<String, FileConfiguration> locales = new HashMap<>();
     private FileManager fileManager;
     private FileConfiguration fallback;
+    private String defaultLanguage;
     private Hubbly plugin;
     public LocaleManager(Hubbly plugin) {
         this.plugin = plugin;
         this.fileManager = plugin.getFileManager();
         loadAllLocales();
-        this.fallback = locales.getOrDefault("en", fileManager.getConfig("languages/en.yml"));
+        loadFallback();
+    }
+
+    public void loadFallback() {
+        FileConfiguration config = plugin.getConfig();
+        String defaultLanguage = config.getString("default_language", "en");
+        String path = "languages/" + defaultLanguage + ".yml";
+        this.defaultLanguage = defaultLanguage;
+        this.fallback = locales.getOrDefault(defaultLanguage, fileManager.getConfig(path));
     }
 
     @Deprecated(forRemoval = true)
@@ -80,12 +89,17 @@ public class LocaleManager {
     public void reload() {
         this.clear();
         this.loadAllLocales();
-        this.fallback = locales.getOrDefault("en", fileManager.getConfig("languages/en.yml"));
+        this.loadFallback();
     }
 
     public FileConfiguration getFallback() {
         return this.fallback;
     }
+
+    public String getDefaultLanguage() {
+        return this.defaultLanguage;
+    }
+
 
     private void saveDefaultLanguages() {
         // List all the language files you want to include

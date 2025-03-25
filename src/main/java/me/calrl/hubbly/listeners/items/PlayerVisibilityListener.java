@@ -69,7 +69,7 @@ public class PlayerVisibilityListener implements Listener {
 
         Player player = event.getPlayer();
         if(!player.hasPermission(Permissions.USE_PLAYER_VISIBILITY.getPermission())) {
-            new MessageBuilder(plugin).setPlayer(player).setKey(LocaleKey.NO_PERMISSION_USE).send();
+            new MessageBuilder(plugin).setPlayer(player).setKey("no_permission_use").send();
             return;
         }
 
@@ -85,7 +85,7 @@ public class PlayerVisibilityListener implements Listener {
         String displayName;
         ItemMeta meta = itemInHand.getItemMeta();
         if(meta == null) {
-            new MessageBuilder().setPlayer(Bukkit.getConsoleSender()).setKey(LocaleKey.FAILURE).send();
+            new MessageBuilder().setPlayer(Bukkit.getConsoleSender()).setKey("failure").send();
             return;
         }
         PersistentDataContainer container = meta.getPersistentDataContainer();

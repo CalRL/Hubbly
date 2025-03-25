@@ -31,4 +31,9 @@ public abstract class PluginTestBase {
     public void cleanup() {
         MockBukkit.unmock();
     }
+
+    @AfterAll
+    public static void clean() {
+        MockBukkit.unmock();
+    }
 }

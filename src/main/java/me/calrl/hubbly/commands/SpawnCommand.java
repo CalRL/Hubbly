@@ -47,7 +47,7 @@ public class SpawnCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-
+        config = plugin.getConfig();
         if(!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.RED + config.getString("messages.no_console"));
             return true;
@@ -59,13 +59,12 @@ public class SpawnCommand implements CommandExecutor {
         if(!player.hasPermission("hubbly.command.spawn")) {
             new MessageBuilder(plugin)
                     .setPlayer(player)
-                    .setKey(LocaleKey.NO_PERMISSION_COMMAND)
+                    .setKey("no_permission_command")
                     .send();
             return true;
         }
 
         if(!event.isCancelled()) {
-            config = plugin.getConfig();
             Bukkit.getScheduler().runTaskLater(plugin, ()-> {
                 player.teleport(spawn);
             }, 1L);

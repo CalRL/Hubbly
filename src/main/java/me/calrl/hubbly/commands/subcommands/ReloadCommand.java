@@ -23,6 +23,7 @@ import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -58,7 +59,10 @@ public class ReloadCommand implements SubCommand {
     @Override
     public void execute(CommandSender sender, String[] args) {
         if(!sender.hasPermission(Permissions.COMMAND_RELOAD.getPermission())) {
-            ChatUtils.sendLocaleMessage(plugin, sender, LocaleKey.NO_PERMISSION_COMMAND);
+            new MessageBuilder(plugin)
+                    .setPlayer(sender)
+                    .setKey("no_permission_command")
+                    .send();
             return;
         }
         try {
@@ -67,9 +71,11 @@ public class ReloadCommand implements SubCommand {
                 bossBarManager.removeAllBossBars();
             }
             plugin.reloadPlugin();
-            sender.sendMessage(
-                    ChatUtils.prefixMessage(plugin, config.getString("messages.reload", "Config reloaded."))
-            );
+
+            new MessageBuilder(plugin)
+                    .setPlayer(sender)
+                    .setKey("reload")
+                    .send();
 
             bossBarManager = plugin.getBossBarManager();
             bossBarManager.reAddAllBossBars();

@@ -21,6 +21,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.actions.*;
 import me.calrl.hubbly.events.ActionEvent;
 import me.calrl.hubbly.managers.DisabledWorlds;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -92,6 +93,10 @@ public class ActionManager {
     }
 
     public void executeActions(Player player, String actionData) {
+        if(actionData == null) {
+            new MessageBuilder(plugin).setKey("action.errors.null").setPlayer(Bukkit.getConsoleSender()).send();
+            return;
+        }
         List<String> actionsData = Arrays.asList(actionData.split(","));
         this.executeActions(player, actionsData);
     }

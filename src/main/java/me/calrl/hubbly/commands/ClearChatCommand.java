@@ -45,7 +45,7 @@ public class ClearChatCommand implements CommandExecutor {
                 .setPlugin(plugin);
 
         if(!sender.hasPermission("hubbly.command.clearchat")) {
-            builder.setKey(LocaleKey.NO_PERMISSION_COMMAND).send();
+            builder.setKey("no_permission_command").send();
             return true;
         }
 

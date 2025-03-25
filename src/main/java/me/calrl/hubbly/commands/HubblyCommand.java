@@ -62,7 +62,7 @@ public class HubblyCommand implements TabExecutor {
         if (args.length == 0) {
             new MessageBuilder(plugin)
                     .setPlayer(sender)
-                    .setKey(LocaleKey.USAGE_HUBBLY)
+                    .setKey("usage.hubbly")
                     .send();
             return true;
         }
@@ -77,7 +77,7 @@ public class HubblyCommand implements TabExecutor {
         } else {
             new MessageBuilder(plugin)
                     .setPlayer(sender)
-                    .setKey(LocaleKey.UNKNOWN_COMMAND)
+                    .setKey("unknown_command")
                     .send();
         }
 

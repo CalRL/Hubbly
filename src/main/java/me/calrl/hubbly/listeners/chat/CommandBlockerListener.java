@@ -57,7 +57,7 @@ public class CommandBlockerListener implements Listener {
                 event.setCancelled(true);
                 String msg = new MessageBuilder(plugin)
                         .setPlayer(player)
-                        .setKey(LocaleKey.BLOCKED_COMMAND)
+                        .setKey("blocked_command")
                         .build();
 
                 player.sendMessage(

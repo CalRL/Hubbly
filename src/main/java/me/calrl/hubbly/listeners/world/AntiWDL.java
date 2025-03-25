@@ -54,13 +54,13 @@ public class AntiWDL implements PluginMessageListener {
                      */
 
                     p.sendMessage(
-                            builder.setKey(LocaleKey.ANTI_WDL).build().replace("%player%", player.getName())
+                            builder.setKey("anti_wdl_notify").build().replace("%player%", player.getName())
                     );
                 }
             }
             Bukkit.getLogger().info(player.getName() + " tried to download the world");
             Bukkit.getLogger().info(
-                    builder.setKey(LocaleKey.ANTI_WDL)
+                    builder.setKey("anti_wdl_notify")
                             .replace("%player%", player.getName())
                             .build()
             );

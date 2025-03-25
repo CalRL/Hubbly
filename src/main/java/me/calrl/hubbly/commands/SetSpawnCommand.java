@@ -56,7 +56,7 @@ public class SetSpawnCommand implements CommandExecutor {
         if (!sender.hasPermission("hubbly.command.setspawn")) {
             new MessageBuilder(plugin)
                     .setPlayer(player)
-                    .setKey(LocaleKey.NO_PERMISSION_COMMAND)
+                    .setKey("no_permission_command")
                     .send();
             return true;
         }
@@ -73,13 +73,11 @@ public class SetSpawnCommand implements CommandExecutor {
 
         World world = location.getWorld();
         if(world == null) {
-            player.sendMessage(
-                    ChatUtils.prefixMessage(
-                            plugin,
-                            player,
-                            config.getString("messages.console_error")
-                    )
-            );
+            new MessageBuilder(plugin)
+                    .setPlayer(player)
+                    .setKey("failure")
+                    .send();
+
             throw new NullPointerException("World is null?");
         }
 
@@ -92,7 +90,7 @@ public class SetSpawnCommand implements CommandExecutor {
 
         plugin.saveConfig();
 
-        new MessageBuilder(plugin).setPlayer(player).setKey(LocaleKey.SUCCESS).send();
+        new MessageBuilder(plugin).setPlayer(player).setKey("success").send();
 
         return true;
     }

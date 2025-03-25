@@ -18,7 +18,9 @@ public enum LocaleKey {
     UPDATE_NONE("update.no_update", "Hubbly %current% is up to date"),
     UPDATE_ERROR("update.error", "Could not check for a new version..."),
     UNKNOWN_COMMAND("unknown_command", "Unknown command. Use '/hubbly help' for a list of commands."),
-    ANTI_WDL("anti_wdl", "%player% tried to download the world"),
+    ANTI_WDL("anti_wdl_notify", "%player% tried to download the world"),
+    ACTION_ERROR_NULL("action.errors.null", "Action data is null..."),
+
     USAGE_HUBBLY("usage.hubbly", "Usage: /hubbly <command> <args>");
 
     private final String path;

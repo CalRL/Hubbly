@@ -30,11 +30,14 @@ public class MessageBuilder {
         this.localeManager = plugin.getLocaleManager();
     }
 
+    @Deprecated(forRemoval = true)
     public String getLocaleMessage(LocaleKey key) {
         return this.localeManager.get(player, key);
     }
 
-    @Deprecated
+    public String getLocaleMessage(String key) { return this.localeManager.get(player, key); }
+
+    @Deprecated(forRemoval = true)
     public MessageBuilder setKey(LocaleKey key) {
         String msg;
         if(player != null) {
@@ -51,7 +54,7 @@ public class MessageBuilder {
         if(player != null) {
             msg = this.localeManager.get(player, key);
         } else {
-            msg = this.localeManager.get("en", key);
+            msg = this.localeManager.get(localeManager.getDefaultLanguage(), key);
         }
         this.content = (msg != null) ? msg : "[Missing locale: " + key + "]";
         return this;
@@ -68,8 +71,8 @@ public class MessageBuilder {
     }
 
     public MessageBuilder setPlayer(CommandSender sender) {
-        if(sender instanceof Player player) {
-            this.setPlayer(player);
+        if(sender instanceof Player target) {
+            this.setPlayer(target);
         } else {
             setPlayer(null);
         }
@@ -97,6 +100,7 @@ public class MessageBuilder {
 
     public void send() {
         String toSend = ChatUtils.prefixMessage(plugin, player, content);
+
         if(player != null) {
             player.sendMessage(toSend);
         } else {
