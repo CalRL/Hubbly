@@ -54,6 +54,11 @@ public class SocialsListener implements Listener {
         this.logger = plugin.getLogger();
     }
 
+    /*
+    Todo: remove this
+    Todo: make a system to check if an item has an action key, if yes, it cant be placed unless shifting + perm
+     */
+    @Deprecated
     @EventHandler
     private void onPlayerInteract(PlayerInteractEvent event) {
         if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getLocation())) return;

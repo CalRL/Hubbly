@@ -6,7 +6,6 @@ import me.calrl.hubbly.managers.LocaleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class MessageBuilder {
 
@@ -35,7 +34,19 @@ public class MessageBuilder {
         return this.localeManager.get(player, key);
     }
 
+    @Deprecated
     public MessageBuilder setKey(LocaleKey key) {
+        String msg;
+        if(player != null) {
+            msg = this.localeManager.get(player, key);
+        } else {
+            msg = this.localeManager.get("en", key);
+        }
+        this.content = (msg != null) ? msg : "[Missing locale: " + key + "]";
+        return this;
+    }
+
+    public MessageBuilder setKey(String key) {
         String msg;
         if(player != null) {
             msg = this.localeManager.get(player, key);
@@ -68,6 +79,15 @@ public class MessageBuilder {
     public MessageBuilder setPlugin(Hubbly plugin) {
         this.plugin = plugin;
         if(this.localeManager == null) this.localeManager = plugin.getLocaleManager();
+        return this;
+    }
+
+    /*
+    Todo: create a replace method
+     */
+
+    public MessageBuilder replace(String oldChar, String newChar) {
+
         return this;
     }
 

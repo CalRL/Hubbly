@@ -17,10 +17,12 @@
 package me.calrl.hubbly.listeners.items;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -33,7 +35,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 
 import java.util.Objects;
 
@@ -67,13 +68,13 @@ public class PlayerVisibilityListener implements Listener {
         }
 
         Player player = event.getPlayer();
-        if(player.hasPermission(Permissions.USE_PLAYER_VISIBILITY.getPermission())) {
-            Bukkit.getScheduler().runTaskLater(plugin, () -> swapDye(player, itemInHand), 2L);
-            event.setCancelled(true);
-            
-        } else {
-            player.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_permission_use")));
+        if(!player.hasPermission(Permissions.USE_PLAYER_VISIBILITY.getPermission())) {
+            new MessageBuilder(plugin).setPlayer(player).setKey(LocaleKey.NO_PERMISSION_USE).send();
+            return;
         }
+
+        Bukkit.getScheduler().runTaskLater(plugin, () -> swapDye(player, itemInHand), 2L);
+        event.setCancelled(true);
         debugMode.info("Holding: " + player.getInventory().getItemInMainHand());
     }
 
@@ -82,7 +83,12 @@ public class PlayerVisibilityListener implements Listener {
     private void swapDye(Player player, ItemStack itemInHand) {
         Material newMaterial;
         String displayName;
-        PersistentDataContainer container = itemInHand.getItemMeta().getPersistentDataContainer();
+        ItemMeta meta = itemInHand.getItemMeta();
+        if(meta == null) {
+            new MessageBuilder().setPlayer(Bukkit.getConsoleSender()).setKey(LocaleKey.FAILURE).send();
+            return;
+        }
+        PersistentDataContainer container = meta.getPersistentDataContainer();
         String finalString;
         if (Objects.equals(container.get(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING), "visible")) {
             newMaterial = Material.valueOf(config.getString("playervisibility.hidden.item", "GRAY_DYE"));
@@ -106,7 +112,7 @@ public class PlayerVisibilityListener implements Listener {
         }
 
         ItemStack newItem = new ItemStack(newMaterial);
-        ItemMeta meta = newItem.getItemMeta();
+        meta = newItem.getItemMeta();
         if (meta != null) {
             meta.setDisplayName(displayName);
             meta.getPersistentDataContainer().set(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING, finalString);

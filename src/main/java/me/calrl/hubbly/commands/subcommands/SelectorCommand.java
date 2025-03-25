@@ -25,7 +25,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-
+/*
+Todo: Delete this for 3.0.0 release
+ */
+@Deprecated(forRemoval = true)
 public class SelectorCommand implements SubCommand {
     private final Hubbly plugin;
     public SelectorCommand(Hubbly plugin) {

@@ -20,7 +20,9 @@ package me.calrl.hubbly.listeners.world;
 import com.google.common.io.ByteArrayDataOutput;
 import com.google.common.io.ByteStreams;
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -42,15 +44,28 @@ public class AntiWDL implements PluginMessageListener {
             out.writeBoolean(false);
 
             player.sendPluginMessage(plugin, "wdl:control", out.toByteArray());
-
+            MessageBuilder builder = new MessageBuilder(plugin).setPlayer(Bukkit.getConsoleSender());
             for(Player p : Bukkit.getOnlinePlayers()) {
                 if(p.hasPermission(Permissions.NOTIFY_WDL.getPermission())) {
-                    player.sendMessage(player.getName() + " tried to download the world!");
+//                    p.sendMessage(player.getName() + " tried to download the world!");
+                    /*
+                    Todo: make this use admin's locale, it needs to use the target player and the admin player..?
+                    todo: write tests
+                     */
+
+                    p.sendMessage(
+                            builder.setKey(LocaleKey.ANTI_WDL).build().replace("%player%", player.getName())
+                    );
                 }
             }
             Bukkit.getLogger().info(player.getName() + " tried to download the world");
+            Bukkit.getLogger().info(
+                    builder.setKey(LocaleKey.ANTI_WDL)
+                            .replace("%player%", player.getName())
+                            .build()
+            );
         } else {
-            player.sendMessage(config.getString("messages.no_permission", "No permission."));
+            new MessageBuilder(plugin).setKey(LocaleKey.NO_PERMISSION_COMMAND).send();
         }
     }
 }

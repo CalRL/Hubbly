@@ -18,9 +18,10 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.functions.AngleRounder;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.Bukkit;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.Command;
@@ -28,7 +29,6 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 public class SetSpawnCommand implements CommandExecutor {
@@ -54,14 +54,10 @@ public class SetSpawnCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(!(sender instanceof Player player)) return true;
         if (!sender.hasPermission("hubbly.command.setspawn")) {
-            String noPermission = config.getString("messages.no_permission_command");
-            player.sendMessage(
-                    ChatUtils.prefixMessage(
-                            plugin,
-                            player,
-                            noPermission
-                    )
-            );
+            new MessageBuilder(plugin)
+                    .setPlayer(player)
+                    .setKey(LocaleKey.NO_PERMISSION_COMMAND)
+                    .send();
             return true;
         }
 
@@ -93,14 +89,10 @@ public class SetSpawnCommand implements CommandExecutor {
         config.set("spawn.z", spawnRound(z));
         config.set("spawn.yaw", roundedYaw);
         config.set("spawn.pitch", roundedPitch);
-        player.sendMessage(
-                ChatUtils.prefixMessage(
-                        plugin,
-                        player,
-                        config.getString("messages.success", "Success!")
-                )
-        );
+
         plugin.saveConfig();
+
+        new MessageBuilder(plugin).setPlayer(player).setKey(LocaleKey.SUCCESS).send();
 
         return true;
     }

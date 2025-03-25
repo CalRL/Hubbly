@@ -21,7 +21,6 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
-import me.calrl.hubbly.inventory.CompassInventory;
 import me.calrl.hubbly.inventory.InventoryBuilder;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.FileManager;
@@ -29,7 +28,6 @@ import me.calrl.hubbly.managers.holders.CompassHolder;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -47,6 +45,10 @@ import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
 
+/*
+Todo: Replace this with a menu listener
+ */
+@Deprecated
 public class CompassListener implements Listener {
 
     private FileConfiguration config;

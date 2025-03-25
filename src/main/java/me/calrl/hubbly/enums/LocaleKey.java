@@ -11,12 +11,14 @@ public enum LocaleKey {
     BLOCKED_COMMAND("blocked_command", "Unknown command. Type \"/help\" for help"),
     BLOCKED_MESSAGE("blocked_message", "Please do not use that word!"),
     SUCCESS("success", "Success!"),
+    FAILURE("failure", "Failure!"),
     CHAT_LOCKED("chat_locked", "Chat has been locked by %player%"),
     CHAT_UNLOCKED("chat_unlocked", "Chat has been unlocked by %player%"),
     UPDATE_NEW("update.new_update", "An update is available! Hubbly %new% can be downloaded on SpigotMC, you are on %current%"),
     UPDATE_NONE("update.no_update", "Hubbly %current% is up to date"),
     UPDATE_ERROR("update.error", "Could not check for a new version..."),
     UNKNOWN_COMMAND("unknown_command", "Unknown command. Use '/hubbly help' for a list of commands."),
+    ANTI_WDL("anti_wdl", "%player% tried to download the world"),
     USAGE_HUBBLY("usage.hubbly", "Usage: /hubbly <command> <args>");
 
     private final String path;

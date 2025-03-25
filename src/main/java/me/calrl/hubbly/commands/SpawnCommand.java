@@ -21,7 +21,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.events.HubblySpawnEvent;
 import me.calrl.hubbly.interfaces.CustomItem;
-import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -57,8 +57,10 @@ public class SpawnCommand implements CommandExecutor {
         Bukkit.getPluginManager().callEvent(event);
 
         if(!player.hasPermission("hubbly.command.spawn")) {
-            String noPermission = config.getString("messages.no_permission_command");
-            ChatUtils.sendLocaleMessage(plugin, player, LocaleKey.NO_PERMISSION_COMMAND);
+            new MessageBuilder(plugin)
+                    .setPlayer(player)
+                    .setKey(LocaleKey.NO_PERMISSION_COMMAND)
+                    .send();
             return true;
         }
 

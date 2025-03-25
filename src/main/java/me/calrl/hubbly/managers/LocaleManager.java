@@ -4,7 +4,6 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.LocaleKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.HashMap;
@@ -23,6 +22,7 @@ public class LocaleManager {
         this.fallback = locales.getOrDefault("en", fileManager.getConfig("languages/en.yml"));
     }
 
+    @Deprecated(forRemoval = true)
     public String get(Player player, LocaleKey key) {
         String locale = player.getLocale().split("_")[0].toLowerCase();
         FileConfiguration config = locales.getOrDefault(locale, fallback);
@@ -30,11 +30,25 @@ public class LocaleManager {
         return getOrDefault(config, key);
     }
 
+    @Deprecated(forRemoval = true)
     public String get(String language, LocaleKey key) {
         FileConfiguration config = locales.getOrDefault(language.toLowerCase(), fallback);
 
         return getOrDefault(config, key);
     }
+
+    public String get(Player player, String path) {
+        String locale = player.getLocale().split("_")[0].toLowerCase();
+        FileConfiguration config = locales.getOrDefault(locale, fallback);
+        return config.getString(path, "Missing message: " + path);
+    }
+
+    public String get(String language, String path) {
+        FileConfiguration config = locales.getOrDefault(language.toLowerCase(), fallback);
+        return config.getString(path, "Missing message: " + path);
+    }
+
+
 
     private String getOrDefault(FileConfiguration config, LocaleKey key) {
         String value = config.getString(key.getPath());
