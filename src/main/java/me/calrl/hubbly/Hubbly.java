@@ -20,6 +20,7 @@ package me.calrl.hubbly;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.commands.*;
 import me.calrl.hubbly.functions.BossBarManager;
+import me.calrl.hubbly.inventory.InventoryListener;
 import me.calrl.hubbly.listeners.CompassListener;
 import me.calrl.hubbly.listeners.SocialsListener;
 import me.calrl.hubbly.listeners.chat.ChatListener;
@@ -51,8 +52,9 @@ import org.jetbrains.annotations.NotNull;
 import java.io.File;
 import java.util.logging.Logger;
 
-public final class Hubbly extends JavaPlugin {
+public class Hubbly extends JavaPlugin {
 
+    private static boolean testMode = false;
     private final Logger logger = getLogger();
     private static Hubbly instance;
     private FileConfiguration config;
@@ -68,6 +70,8 @@ public final class Hubbly extends JavaPlugin {
     private PlayerManager playerManager;
     private BossBarManager bossBarManager;
     private ItemsManager itemsManager;
+    private FileManager fileManager;
+    private LocaleManager localeManager;
 
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
@@ -75,22 +79,23 @@ public final class Hubbly extends JavaPlugin {
     private UpdateUtil updateUtil = null;
 
     public void reloadPlugin() {
+        debugMode.info("Restarting...");
+
         this.reloadConfig();
         this.saveConfig();
-
         config = this.getConfig();
 
+        fileManager.reloadFiles();
+        itemsManager.reload();
+        localeManager.reload();
         try {
-            debugMode.info("Restarting...");
             cleanup();
             loadComponents();
             loadFiles();
-
-            debugMode.info("Restarted.");
-
         } catch(Exception e) {
             e.printStackTrace();
         }
+        debugMode.info("Restarted.");
     }
 
     public void loadComponents() {
@@ -106,7 +111,6 @@ public final class Hubbly extends JavaPlugin {
         getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
         getCommand("spawn").setExecutor(new SpawnCommand(this));
         getCommand("fly").setExecutor(new FlyCommand(this));
-        getCommand("give").setExecutor(new GiveCommand(this));
         getCommand("clearchat").setExecutor(new ClearChatCommand(this));
         getCommand("lockchat").setExecutor(new LockChatCommand(this));
     }
@@ -139,12 +143,16 @@ public final class Hubbly extends JavaPlugin {
         registerListener(new ForceinvListener(this), "player.forceinventory");
         registerListener(new ChatListener(this), "blocked_words.enabled");
         registerListener(new MovementItemListener(this));
+        registerListener(new InventoryListener(this));
         registerListener(new XPListener(this), "player.experience.enabled");
     }
+
+
+
     @Override
     public void onEnable() {
+        logger.info("Starting Hubbly...");
         this.saveDefaultConfig();
-
         try {
             loadFiles();
         } catch (Exception e) {
@@ -159,6 +167,7 @@ public final class Hubbly extends JavaPlugin {
         cooldownManager = new CooldownManager();
         actionManager = new ActionManager(this);
 
+        fileManager = new FileManager(this);
         debugMode = new DebugMode();
         itemsManager = new ItemsManager(this);
         announcementsManager = new AnnouncementsManager(this);
@@ -166,7 +175,9 @@ public final class Hubbly extends JavaPlugin {
         utils = new Utils(this);
         playerManager = new PlayerManager(this);
         bossBarManager = new BossBarManager(this);
+        localeManager = new LocaleManager(this);
 
+        logger.info("Instances created");
 
         prefix = this.getConfig().getString("prefix");
 
@@ -176,17 +187,23 @@ public final class Hubbly extends JavaPlugin {
                 this.getServer().getMessenger().registerIncomingPluginChannel(this, "wdl:init", new AntiWDL(this));
                 this.getServer().getMessenger().registerOutgoingPluginChannel(this, "wdl:control");
             }
-            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
-            debugMode.info("BungeeCord channel registered");
+
             loadComponents();
             bossBarManager.reAddAllBossBars();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        final int pluginId = 22219;
-        new Metrics(this, pluginId);
-        updateUtil.checkForUpdate(this);
+        logger.info("Components loaded");
+
+        if (!isTestMode()) {
+            final int pluginId = 22219;
+            new Metrics(this, pluginId);
+            updateUtil.checkForUpdate(this);
+
+            this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
+            debugMode.info("BungeeCord channel registered");
+        }
 
         logger.info("Hubbly has been enabled!");
     }
@@ -202,6 +219,7 @@ public final class Hubbly extends JavaPlugin {
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "wdl:init");
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "wdl:control");
 
+        Bukkit.getScheduler().cancelTasks(this);
     }
 
 
@@ -281,5 +299,17 @@ public final class Hubbly extends JavaPlugin {
         return prefix;
     }
     public ItemsManager getItemsManager() {return itemsManager;}
+    public FileManager getFileManager() { return fileManager; }
+    public LocaleManager getLocaleManager() {
+        return localeManager;
+    }
+
+    public static void enableTestMode() {
+        testMode = true;
+    }
+
+    public static boolean isTestMode() {
+        return testMode;
+    }
 
 }
