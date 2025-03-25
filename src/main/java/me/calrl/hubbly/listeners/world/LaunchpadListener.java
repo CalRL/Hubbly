@@ -19,11 +19,13 @@ package me.calrl.hubbly.listeners.world;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -65,22 +67,18 @@ public class LaunchpadListener implements Listener {
             return;
         }
 
-        if (!player.hasPermission(Permissions.USE_LAUNCHPAD.getPermission())) {
-            String noPermission = config.getString("messages.no_permission");
-            player.sendMessage(
-                    ChatUtils.prefixMessage(
-                            plugin,
-                            player,
-                            noPermission
-                    )
-            );
-        }
-
         long cooldown = config.getLong("launchpad.cooldown");
         CooldownManager cooldownManager = plugin.getCooldownManager();
         boolean cooldownResult = cooldownManager.tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, cooldown);
 
         if(!cooldownResult) return;
+
+        if (!player.hasPermission(Permissions.USE_LAUNCHPAD.getPermission())) {
+            new MessageBuilder(plugin)
+                    .setKey(LocaleKey.NO_PERMISSION_USE)
+                    .send();
+            return;
+        }
 
         ActionManager actionManager = plugin.getActionManager();
         actionManager.executeAction(player, "[LAUNCH]");
