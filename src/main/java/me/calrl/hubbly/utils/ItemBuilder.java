@@ -186,6 +186,18 @@ public class ItemBuilder {
         return this;
     }
 
+    /**
+     * TODO: flip these two methods this is ugly asl
+     * @param section
+     * @return
+     */
+    public ItemStack fromConfig(ConfigurationSection section) {
+        if(player == null) {
+            return null;
+        }
+        return fromConfig(this.player, section);
+    }
+
     public ItemStack fromConfig(Player player, ConfigurationSection section) {
 
         String materialValue = section.getString("material").toUpperCase();
@@ -201,21 +213,33 @@ public class ItemBuilder {
         if(section.contains("url")) {
             builder.setTextures(section.getString("url"));
         }
+        /*
+         * This is bad... urls should be put in the url section,
+         * not here, however i will keep this here for the first few versions
+         * TODO: remove this soon
+         */
         if(section.contains("texture")) {
-            String texture = section.getString("texture");
-            if(texture.equals("player")) {
+            String texture = section.getString("texture", "player");
+            if(texture.equalsIgnoreCase("player")) {
                 builder.setSkullOwner();
             } else {
                 builder.setTextures(texture);
             }
+        }
+        if(section.contains("base64")) {
+
+        }
+
+        if(section.contains("hdb")) {
+
         }
 
         if(section.contains("lore")) {
             builder.setLore(section.getStringList("lore"));
         }
 
-        if(section.contains("display_name")) {
-            builder.setName(section.getString("display_name"));
+        if(section.contains("name")) {
+            builder.setName(section.getString("name"));
         }
 
         if(section.contains("actions")) {
@@ -246,6 +270,9 @@ public class ItemBuilder {
     /**
      * Builds the item and returns the final ItemStack
      */
+    public void saveTo() {}
+
+
     public ItemStack build() {
         itemStack.setItemMeta(itemMeta);
         return itemStack;
