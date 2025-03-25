@@ -17,8 +17,11 @@
 
 package me.calrl.hubbly.commands;
 
+import com.mojang.brigadier.Message;
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -37,13 +40,12 @@ public class ClearChatCommand implements CommandExecutor {
     }
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
-        if(!(sender instanceof Player player)) return true;
-        if(!player.hasPermission("hubbly.command.clearchat")) {
-            FileConfiguration config = plugin.getConfig();
-            String noPermission = config.getString("messages.no_permission_command");
-            player.sendMessage(
-                    ChatUtils.prefixMessage(plugin, player, noPermission)
-            );
+        MessageBuilder builder = new MessageBuilder()
+                .setPlayer(sender)
+                .setPlugin(plugin);
+
+        if(!sender.hasPermission("hubbly.command.clearchat")) {
+            builder.setKey(LocaleKey.NO_PERMISSION_COMMAND).send();
             return true;
         }
 
@@ -53,7 +55,7 @@ public class ClearChatCommand implements CommandExecutor {
             }
         }
 
-        plugin.getDebugMode().info("Chat cleared by " + player.getName());
+        plugin.getDebugMode().info("Chat cleared by " + sender.getName());
 
 
         return true;

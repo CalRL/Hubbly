@@ -18,8 +18,10 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.command.Command;
@@ -43,22 +45,22 @@ public class FlyCommand implements CommandExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        MessageBuilder builder = new MessageBuilder().setPlugin(plugin).setPlayer(sender);
+
         if (!(sender instanceof Player player)) {
-            sender.sendMessage(ChatColor.RED + "This command can only be used by players.");
+            builder.setKey(LocaleKey.NO_CONSOLE).send();
             return true;
         }
         GameMode gameMode = player.getGameMode();
         if(gameMode == GameMode.SPECTATOR) return true;
 
         if (!config.getBoolean("player.fly.enabled")) {
-            player.sendMessage(config.getString("messages.no_fly_enabled", "Flight is disabled in config"));
+            builder.setKey(LocaleKey.NO_FLY_ENABLED).send();
             return true;
         }
 
         if (!player.hasPermission(Permissions.COMMAND_FLY.getPermission()) && !player.isOp()) {
-            player.sendMessage(
-                    ChatUtils.prefixMessage(plugin, player, config.getString("messages.no_permission_command"))
-            );
+            builder.setKey(LocaleKey.NO_PERMISSION_COMMAND).send();
             return true;
         }
 
@@ -72,10 +74,12 @@ public class FlyCommand implements CommandExecutor {
 
         if (canFly == 1) {
             player.setFlying(false);
-            player.sendMessage(ChatUtils.prefixMessage(plugin, player, config.getString("messages.fly.disable")));
+            builder.setKey(LocaleKey.FLY_DISABLE).send();
+            //player.sendMessage(ChatUtils.prefixMessage(plugin, player, config.getString("messages.fly.disable")));
             dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 0);
         } else {
-            player.sendMessage(ChatUtils.prefixMessage(plugin, player, config.getString("messages.fly.enable")));
+            builder.setKey(LocaleKey.FLY_ENABLE).send();
+            //player.sendMessage(ChatUtils.prefixMessage(plugin, player, config.getString("messages.fly.enable")));
             dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 1);
         }
 
