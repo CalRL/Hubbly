@@ -1,0 +1,21 @@
+selector:
+  enabled: true
+  material: COMPASS
+  name: '&6Server Selector'
+  gui:
+    size: 27 # Number of slots in the GUI
+    title: Server Selector # Title displayed in the GUI
+    items:
+      example_item: # Key for this item
+        material: DIAMOND #
+        name: '%player_name%''s Server' # Display name of the item with placeholder
+        slot: 5
+        lore: # Lore for the item
+          - "This is line 1"
+          - "This is line 2 with %player_name%"
+        actions:
+          - '[PLAYER] kit'
+  fill:
+    name: " "
+    type: "BLACK_STAINED_GLASS_PANE"
+

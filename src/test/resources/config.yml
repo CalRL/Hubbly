@@ -1,0 +1,246 @@
+debug: true
+prefix: '&e&lHubbly &7&l>&r'
+check_for_update: true
+# Send message if no update?
+notify_on_no_update: false
+
+#----------------#
+# Disabled Worlds #
+#----------------#
+
+disabled-worlds:
+  - 'world_nether'
+
+invert: false
+
+#----------#
+# Movement #
+#----------#
+
+launchpad:
+  enabled: true
+  type: "SLIME_BLOCK"
+  power: 2
+  power_y: 0.5
+  # INTEGERS ONLY
+  cooldown: 2
+
+double_jump:
+  enabled: true
+  power: 1.5
+  power_y: 0.5
+  # INTEGERS ONLY
+  cooldown: 2
+
+
+#-------#
+# ITEMS #
+#-------#
+playervisibility:
+  enabled: true
+  visible:
+    item: 'LIME_DYE'
+    text: '&rPlayers: &aVisible'
+  hidden:
+    item: 'GRAY_DYE'
+    text: '&rPlayers: &cHidden'
+
+socials:
+  enabled: true
+  size: 27
+  title: "Socials"
+  item:
+    type: "PLAYER_HEAD"
+    value: "http://textures.minecraft.net/texture/355e2dc46399b7b9275221fcdc87c66e58d0d3044dcf62af0465122c1cd7e0bc" # Leave empty if item isnt SKULL
+    name: "&6Socials"
+  items:
+    tiktok: # Key for this item
+      slot: 13 # Slot for this item (0-based index)
+      material: PLAYER_HEAD  # Material for the item
+      name: "&dTik&bTok"  # Display name of the item with placeholder
+      lore: # Lore for the item/
+      value: "http://textures.minecraft.net/texture/bcf2105bb737638833033dd8244071e75870e2e11c2617e542e8924fb2b90180"
+      message: "&3Click me for tiktok"
+      hover: '&7Our Tiktok!'
+      link: 'tiktok.com'
+    youtube: # Key for this item
+      slot: 15 # Slot for this item (0-based index)
+      material: PLAYER_HEAD  # Material for the item
+      name: "&cYoutube"  # Display name of the item with placeholder
+      lore: # Lore for the item
+      value: "http://textures.minecraft.net/texture/1c56ddbef1b81bd57c9b1c6d5d1b78b54737b719929b29c2a930a5f7c2ae4a86"
+      message: "&3Click me for youtube!"
+      hover: '&7Our YouTube!'
+      link: 'youtube.com'
+  fill:
+    name: " "
+    type: "BLACK_STAINED_GLASS_PANE"
+
+close_button:
+  slot: 23
+  material: "BARRIER"
+  name: "&aClose"
+
+movementitems:
+  enderbow:
+    enabled: true
+    name: "<#A020F0>Enderbow"
+    cooldown: 3
+  trident:
+    enabled: true
+    name: "<#40E0D0>Trident"
+    cooldown: 3
+  grappling_hook:
+    enabled: true
+    name: "<#FFFF00>Grappling Hook"
+    cooldown: 3
+  aote:
+    enabled: true
+    name: "<#2d0043>Aspect of the End"
+    cooldown: 1
+#---------------#
+# Teleportation #
+#---------------#
+
+antivoid:
+  enabled: true
+
+spawn:
+  world: "world"
+  x: 0
+  y: 200
+  z: 0
+  #YAW AND PITCH WILL ROUND TO {-135, -90, -45, 0, 45, 90, 135} WHEN YOU USE /SETSPAWN, YOU CAN MANUALLY OVERRIDE THIS HERE
+  yaw: 0
+  pitch: 0
+
+
+#-----------------#
+# PLAYER SETTINGS #
+#-----------------#
+
+player:
+  forceinventory: true
+  experience:
+    enabled: true
+    level: 2025
+    # Takes a float 0.0 - 1.0
+    # Set progress to "YEAR", If you want the progress to be based on time elapsed in the year.
+    progress: 1.0
+  fly:
+    enabled: true
+  join_message:
+    enabled: true
+    message: "%name% joined"
+  leave_message:
+    enabled: true
+    message: "%name% left"
+  bossbar:
+    enabled: true
+    color: "PURPLE"
+    # ANIMATIONS IN TICKS
+    animation:
+      change-interval: 40
+      texts:
+        - '&6&lWelcome'
+        - '<#69b320>&lHello!'
+
+actions_on_join:
+  - '[TITLE] <#FFDF00>Hubbly;configure me;20;70;20'
+  - '[SOUND] block.note_block.chime'
+  - '[FIREWORK] BALL;255;0;255;2'
+  - '[ITEM] socials;1'
+  - '[ITEM] compass;5'
+  - '[ITEM] shop;9'
+
+#---------------------#
+# WORLD EVENT MANAGER #
+#---------------------#
+
+cancel_events:
+  block_place: true
+  block_break: true
+  interact: true
+  damage: true
+  weather: true
+  item_drop: true
+  item_pickup: true
+  item_throw: true
+  hunger: true
+  mob_spawn: true
+  block_burn: true
+  death_messages: true
+  leaf_decay: true
+  projectiles: false
+
+anti_world_download:
+  enabled: true
+  notify_admin: true
+
+#------------#
+# CHAT MANAGEMENT #
+#------------#
+
+lock_chat: false
+
+blocked_words:
+  enabled: false
+  method: '' # Method can be STAR (for ****) or CANCEL, to cancel message
+  words:
+    - 'Fuck'
+
+# %command% = the command executed
+blocked_commands:
+  - 'pl'
+  - 'plugins'
+  - 'op'
+  - 'stop'
+  - 'reload'
+
+# You can use a tool like BirdFlop RGB to make cool gradients!
+# https://www.birdflop.com/resources/rgb/
+announcements:
+  enabled: true
+  interval: 30 # In Seconds
+  # Will send the message even if the player is in a disabled-world if true
+  global: true
+  messages:
+    message1:
+      - '<#FAEDCB>+<#F9E6C9>-<#F8DEC7>-<#F7D7C4>-<#F6CFC2>-<#F5C8C0>-<#F5C0BE>-<#F4B9BC>-<#F3B1B9>-<#F2AAB7>-<#F1A2B5>-<#F09BB3>-<#EF94B1>-<#EE8CAE>-<#ED85AC>-<#EC7DAA>-<#EB76A8>-<#EA6EA5>-<#EA67A3>-<#E95FA1>-<#E8589F>-<#E7509D>-<#E6499A>-<#E54198>-<#E43A96>-<#E54098>-<#E6479A>-<#E64D9C>-<#E7549E>-<#E85A9F>-<#E960A1>-<#EA67A3>-<#EA6DA5>-<#EB74A7>-<#EC7AA9>-<#ED80AB>-<#ED87AD>-<#EE8DAF>-<#EF94B1>-<#F09AB2>-<#F1A0B4>-<#F1A7B6>-<#F2ADB8>-<#F3B3BA>-<#F4BABC>-<#F5C0BE>-<#F5C7C0>-<#F6CDC2>-<#F7D3C3>-<#F8DAC5>-<#F8E0C7>-<#F9E7C9>-<#FAEDCB>+'
+      - '<#FF00FF><center> Test</center>'
+      - '<center><#084CFB>T<#1054FB>h<#175BFB>i<#1F63FB>s<#266AFB> <#2E72FB>i<#357AFC>s<#3D81FC> <#4489FC>a<#4C90FC>n<#5398FC> <#5BA0FC>a<#62A7FC>n<#6AAFFC>n<#71B6FC>o<#79BEFC>u<#80C5FC>n<#88CDFD>c<#8FD5FD>e<#97DCFD>m<#9EE4FD>e<#A6EBFD>n<#ADF3FD>t</center>'
+      - ''
+      - '<center><#00FFFF>Hello</center>'
+      - '<#FAEDCB>+<#F9E6C9>-<#F8DEC7>-<#F7D7C4>-<#F6CFC2>-<#F5C8C0>-<#F5C0BE>-<#F4B9BC>-<#F3B1B9>-<#F2AAB7>-<#F1A2B5>-<#F09BB3>-<#EF94B1>-<#EE8CAE>-<#ED85AC>-<#EC7DAA>-<#EB76A8>-<#EA6EA5>-<#EA67A3>-<#E95FA1>-<#E8589F>-<#E7509D>-<#E6499A>-<#E54198>-<#E43A96>-<#E54098>-<#E6479A>-<#E64D9C>-<#E7549E>-<#E85A9F>-<#E960A1>-<#EA67A3>-<#EA6DA5>-<#EB74A7>-<#EC7AA9>-<#ED80AB>-<#ED87AD>-<#EE8DAF>-<#EF94B1>-<#F09AB2>-<#F1A0B4>-<#F1A7B6>-<#F2ADB8>-<#F3B3BA>-<#F4BABC>-<#F5C0BE>-<#F5C7C0>-<#F6CDC2>-<#F7D3C3>-<#F8DAC5>-<#F8E0C7>-<#F9E7C9>-<#FAEDCB>+'
+    message2:
+      - 'Test2'
+      - 'This is a second announcement'
+      - 'Goodbye'
+
+#----------#
+# MESSAGES #
+#----------#
+
+messages:
+  no_console: "Only players can use this command!"
+  no_permission_command: "You do not have permission to use this command!"
+  no_permission_use: "You do not have permission to use this!"
+  reload: "Reloaded Hubbly plugin"
+  fly:
+    enable: "Flight mode enabled."
+    disable: "Flight mode disabled."
+  no_fly_enabled: "Flight is disabled in config"
+  blocked_command: 'Unknown command. Type "/help" for help'
+  blocked_message: 'Please do not use that word!'
+  success: "Success!"
+  console_error: "Error. Please check console"
+
+  # No PAPI support, only %player% placeholder to get the person who locked the chat.
+  chat_locked: "Chat has been locked by %player%"
+  chat_unlocked: "Chat has been unlocked by %player%"
+
+update:
+  new_update: "An update is available! Hubbly %new% can be downloaded on SpigotMC, you are on %current%"
+  no_update: "Hubbly %current% is up to date"
+  error: "Could not check for a new version..."
+

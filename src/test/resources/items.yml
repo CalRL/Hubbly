@@ -1,0 +1,21 @@
+# Custom Items that you make myself, please follow the format.
+# To get these items use /hubbly give <item>
+# For item1, I would use /hubbly give item1
+items:
+  item1:
+    name: ''
+    type: REDSTONE_BLOCK
+    lore:
+      - 'line 1'
+      - 'line 2'
+    actions:
+      - '[PLAYER] spawn'
+      - '[CONSOLE] broadcast item1'
+  shop:
+    name: '&aShop'
+    type: EMERALD
+    lore:
+      - '&7Opens the shop'
+    actions:
+      - '[PLAYER] buy'
+
