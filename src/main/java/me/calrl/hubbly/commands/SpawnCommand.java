@@ -18,6 +18,7 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.events.HubblySpawnEvent;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.utils.ChatUtils;
@@ -57,15 +58,16 @@ public class SpawnCommand implements CommandExecutor {
 
         if(!player.hasPermission("hubbly.command.spawn")) {
             String noPermission = config.getString("messages.no_permission_command");
-            player.sendMessage(
-                    ChatUtils.prefixMessage(plugin, player, noPermission)
-            );
+            ChatUtils.sendLocaleMessage(plugin, player, LocaleKey.NO_PERMISSION_COMMAND);
             return true;
         }
 
         if(!event.isCancelled()) {
             config = plugin.getConfig();
-            player.teleport(spawn);
+            Bukkit.getScheduler().runTaskLater(plugin, ()-> {
+                player.teleport(spawn);
+            }, 1L);
+
         }
 
         return true;
