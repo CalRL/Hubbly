@@ -18,6 +18,7 @@
 package me.calrl.hubbly.commands.subcommands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
@@ -56,24 +57,24 @@ public class ReloadCommand implements SubCommand {
 
     @Override
     public void execute(CommandSender sender, String[] args) {
-        if(sender.hasPermission(Permissions.COMMAND_RELOAD.getPermission())) {
-
-            try {
-                bossBarManager = plugin.getBossBarManager();
-                if (bossBarManager != null) {
-                    bossBarManager.removeAllBossBars();
-                }
-                plugin.reloadPlugin();
-                sender.sendMessage(
-                        ChatUtils.prefixMessage(plugin, config.getString("messages.reload", "Config reloaded."))
-                );
-
-                bossBarManager = plugin.getBossBarManager();
-                bossBarManager.reAddAllBossBars();
-            } catch (Exception e) {
-                plugin.getLogger().info(String.valueOf(e));
+        if(!sender.hasPermission(Permissions.COMMAND_RELOAD.getPermission())) {
+            ChatUtils.sendLocaleMessage(plugin, sender, LocaleKey.NO_PERMISSION_COMMAND);
+            return;
+        }
+        try {
+            bossBarManager = plugin.getBossBarManager();
+            if (bossBarManager != null) {
+                bossBarManager.removeAllBossBars();
             }
+            plugin.reloadPlugin();
+            sender.sendMessage(
+                    ChatUtils.prefixMessage(plugin, config.getString("messages.reload", "Config reloaded."))
+            );
 
+            bossBarManager = plugin.getBossBarManager();
+            bossBarManager.reAddAllBossBars();
+        } catch (Exception e) {
+            plugin.getLogger().info(String.valueOf(e));
         }
     }
 }
