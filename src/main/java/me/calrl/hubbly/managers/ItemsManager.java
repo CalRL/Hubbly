@@ -36,13 +36,10 @@ public class ItemsManager {
         this.registerItems();
     }
 
-
     private void registerItems() {
-        items.put("compass", new CompassItem(plugin));
         items.put("socials", new SocialsItem());
         items.put("playervisibility", new PlayerVisibilityItem());
         items.put("enderbow", new EnderbowItem(plugin));
-        items.put("trident", new TridentItem(plugin));
         items.put("grappling_hook", new RodItem(plugin));
         items.put("aote", new AoteItem(plugin));
 
@@ -58,6 +55,16 @@ public class ItemsManager {
             debugMode.warn(row);
         }
     }
+
+    public void reload() {
+        this.clear();
+        this.registerItems();
+    }
+
+    public void clear() {
+        items.clear();
+    }
+
     public Map<String, CustomItem> getItems() {
         return items;
     }
@@ -90,13 +97,10 @@ public class ItemsManager {
 
     public void executeActions(Player player, ItemStack item) {
         List<String> actions = getActions(item);
-        if(actions.isEmpty()) {
+        if(actions == null || actions.isEmpty()) {
             return;
         }
-        for (String actionData : actions) {
-            actionManager.executeActions(player, actions);
-            debugMode.info("Executing action: " + actionData);
-        }
+        actionManager.executeActions(player, actions);
 
     }
 
