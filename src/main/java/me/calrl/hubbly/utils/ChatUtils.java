@@ -18,6 +18,8 @@
 package me.calrl.hubbly.utils;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
+import me.calrl.hubbly.managers.LocaleManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
@@ -25,13 +27,16 @@ import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChatUtils {
+
     private ChatUtils() {
         throw new IllegalStateException(ChatUtils.class + " is a Utility class");
     }
@@ -165,4 +170,33 @@ public class ChatUtils {
         component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
         return component;
     }
+
+    public static TextComponent textLinkBuilder(String message, String link, String hoverText, Player player) {
+        message = ChatUtils.processMessage(player, message);
+        TextComponent component = new TextComponent(message);
+        String parsedHoverText = ChatUtils.processMessage(player, hoverText);
+        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(parsedHoverText)));
+        component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
+        return component;
+    }
+
+    public static void sendLocaleMessage(Hubbly plugin, Player player, LocaleKey key) {
+        LocaleManager manager = JavaPlugin.getPlugin(Hubbly.class).getLocaleManager();
+        if(player == null) {
+            Bukkit.getConsoleSender().sendMessage("[Hubbly] " + manager.get("en", key)); // fallback to English
+            return;
+        }
+
+        String message = manager.get(player, key);
+        message = prefixMessage(plugin, player, message);
+        player.sendMessage(message);
+    }
+
+    public static void sendLocaleMessage(Hubbly plugin, CommandSender sender, LocaleKey key) {
+        if(sender instanceof Player player) {
+            sendLocaleMessage(plugin, player, key);
+        }
+        sendLocaleMessage(plugin, null, key);
+    }
+
 }
