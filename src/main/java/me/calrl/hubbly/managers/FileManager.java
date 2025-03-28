@@ -44,7 +44,21 @@ public class FileManager {
     }
 
     public void save(String relativePath) {
+        YamlConfiguration config = loadedConfigs.get(relativePath);
+        if (config == null) {
+            plugin.getLogger().warning("Tried to save unloaded config: " + relativePath);
+            return;
+        }
 
+        File file = this.resolve(relativePath);
+
+        try {
+            config.save(file);
+            plugin.getLogger().info("Saved config: " + relativePath);
+        } catch (IOException e) {
+            plugin.getLogger().severe("Failed to save config: " + relativePath);
+            e.printStackTrace();
+        }
     }
 
     public void create(String relativePath) {
@@ -64,6 +78,7 @@ public class FileManager {
         File file = this.resolve(relativePath);
         YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
         loadedConfigs.put(relativePath, config);
+        plugin.getLogger().info("Reloaded: " + relativePath);
     }
 
     public void reloadFiles() {
