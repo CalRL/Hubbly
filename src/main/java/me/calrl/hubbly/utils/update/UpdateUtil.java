@@ -10,6 +10,9 @@ public class UpdateUtil {
 
     private String updateMessage = null;
     private boolean needsUpdate;
+    private String key;
+    private String currentVersion;
+    private String newVersion;
     public boolean checkForUpdate(Hubbly plugin) {
         Logger logger = plugin.getLogger();
 
@@ -18,7 +21,7 @@ public class UpdateUtil {
         UpdateChecker.init(plugin, 117243).requestUpdateCheck().whenComplete((result, exception) -> {
             UpdateChecker.UpdateReason reason = result.getReason();
             ConfigurationSection section = plugin.getConfig().getConfigurationSection("update");
-
+            this.currentVersion = plugin.getDescription().getVersion();
             if(section == null) {
                 logger.warning("Please report this to the developer...");
                 logger.warning("'update' is NULL in config... ");
@@ -29,12 +32,15 @@ public class UpdateUtil {
             switch(reason) {
                 case UpdateChecker.UpdateReason.UP_TO_DATE -> {
                     needsUpdate = false;
+                    key = "update.no_update";
                     updateMessage = parsePlaceholders(section.getString("no_update", "No update"), result);
                     logger.info(updateMessage);
                     }
                 case UpdateChecker.UpdateReason.NEW_UPDATE -> {
                     needsUpdate = true;
+                    key = "update.new_update";
                     updateMessage = parsePlaceholders(section.getString("new_update", "A new update for Hubbly is available"), result);
+                    this.setNew(result.getNewestVersion());
 
                     logger.info(updateMessage);
 
@@ -48,6 +54,7 @@ public class UpdateUtil {
                 }
                 default -> {
                     needsUpdate = false;
+                    key = "update.error";
                     updateMessage = parsePlaceholders(section.getString("error", "Could not check for a new version..."), result);
 
                     logger.info(updateMessage);
@@ -85,8 +92,24 @@ public class UpdateUtil {
         return needsUpdate;
     }
 
-
     public String getMessage() {
         return this.updateMessage;
+    }
+    public String getKey() { return this.key;}
+
+    public void setCurrent(String version) {
+        this.currentVersion = version;
+    }
+
+    public void setNew(String version) {
+        this.newVersion = version;
+    }
+
+    public String getCurrent() {
+        return this.currentVersion;
+    }
+
+    public String getNew() {
+        return this.newVersion;
     }
 }
