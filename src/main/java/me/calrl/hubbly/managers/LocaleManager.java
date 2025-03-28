@@ -100,7 +100,6 @@ public class LocaleManager {
         return this.defaultLanguage;
     }
 
-
     private void saveDefaultLanguages() {
         // List all the language files you want to include
         String[] languages = { "en.yml" };
