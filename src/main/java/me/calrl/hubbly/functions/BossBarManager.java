@@ -117,7 +117,7 @@ public class BossBarManager {
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
         boolean isEnabled = config.getBoolean("player.bossbar.enabled");
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if(disabledWorlds.inDisabledWorld(player.getWorld())) return;
+            if(disabledWorlds.inDisabledWorld(player.getWorld())) continue;
             if(!isEnabled) return;
             this.createBossBar(player);
         }

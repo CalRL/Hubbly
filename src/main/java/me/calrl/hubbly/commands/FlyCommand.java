@@ -75,11 +75,9 @@ public class FlyCommand implements CommandExecutor {
         if (canFly == 1) {
             player.setFlying(false);
             builder.setKey("fly.disable").send();
-            //player.sendMessage(ChatUtils.prefixMessage(plugin, player, config.getString("messages.fly.disable")));
             dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 0);
         } else {
             builder.setKey("fly.enable").send();
-            //player.sendMessage(ChatUtils.prefixMessage(plugin, player, config.getString("messages.fly.enable")));
             dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 1);
         }
 

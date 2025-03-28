@@ -18,12 +18,15 @@ package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
+import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.LockChat;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 public class LockChatCommand implements CommandExecutor {
@@ -37,23 +40,31 @@ public class LockChatCommand implements CommandExecutor {
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(!commandSender.hasPermission(Permissions.COMMAND_LOCK_CHAT.getPermission())) return true;
         lockChat = plugin.getLockChat();
+        String key;
         if(lockChat.getChatLock()) {
+            key = "messages.chat_unlocked";
             String message = plugin.getConfig().getString("messages.chat_unlocked", "Chat has been unlocked by:");
             if(message.contains("%player%")) {
                 message = message.replace("%player%", commandSender.getName());
             }
-            Bukkit.broadcastMessage(
-                    ChatUtils.translateHexColorCodes(message)
-            );
         } else {
+            key = "messages.chat_locked";
             String message = plugin.getConfig().getString("messages.chat_locked", "Chat has been locked by:");
             if(message.contains("%player%")) {
                 message = message.replace("%player%", commandSender.getName());
             }
-            Bukkit.broadcastMessage(
-                    ChatUtils.translateHexColorCodes(message)
-            );
         }
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        MessageBuilder builder = new MessageBuilder(plugin)
+                .setKey(key);
+
+        for(Player p : Bukkit.getOnlinePlayers()) {
+            if(disabledWorlds.inDisabledWorld(p.getWorld())) {
+                continue;
+            }
+            builder.setPlayer(p).send();
+        }
+
         lockChat.flipChatLock();
 
         return true;

@@ -85,7 +85,10 @@ public class PlayerVisibilityListener implements Listener {
         String displayName;
         ItemMeta meta = itemInHand.getItemMeta();
         if(meta == null) {
-            new MessageBuilder().setPlayer(Bukkit.getConsoleSender()).setKey("failure").send();
+            new MessageBuilder()
+                    .setPlayer(Bukkit.getConsoleSender())
+                    .setKey("failure")
+                    .send();
             return;
         }
         PersistentDataContainer container = meta.getPersistentDataContainer();

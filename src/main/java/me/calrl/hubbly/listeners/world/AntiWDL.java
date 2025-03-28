@@ -65,7 +65,7 @@ public class AntiWDL implements PluginMessageListener {
                             .build()
             );
         } else {
-            new MessageBuilder(plugin).setKey(LocaleKey.NO_PERMISSION_COMMAND).send();
+            new MessageBuilder(plugin).setKey("no_permission_command").send();
         }
     }
 }

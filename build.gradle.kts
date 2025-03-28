@@ -40,6 +40,7 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.20.6-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
     testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.93.2")

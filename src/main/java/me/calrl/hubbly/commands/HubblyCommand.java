@@ -22,6 +22,7 @@ import me.calrl.hubbly.commands.subcommands.*;
 import me.calrl.hubbly.commands.subcommands.GiveCommand;
 import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.interfaces.SubCommand;
+import me.calrl.hubbly.managers.SubCommandManager;
 import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.command.Command;
@@ -41,28 +42,22 @@ public class HubblyCommand implements TabExecutor {
     private final FileConfiguration config;
 
     private final Hubbly plugin;
-    private final Map<String, SubCommand> subCommands = new HashMap<>();
+    private final SubCommandManager subCommandManager;
+    private Map<String, SubCommand> subCommands;
     public HubblyCommand(Hubbly plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
-        registerSubCommands();
-    }
-
-    private void registerSubCommands() {
-        subCommands.put("reload", new ReloadCommand(plugin));
-        subCommands.put("selector", new SelectorCommand(plugin));
-        subCommands.put("version", new VersionCommand(plugin));
-        subCommands.put("nextannouncement", new NextAnnouncementCommand(plugin));
-        subCommands.put("give", new GiveCommand(plugin));
+        this.subCommandManager = plugin.getSubCommandManager();
+        this.subCommands = subCommandManager.getSubCommands();
     }
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         // If no arguments are provided, show usage message
+        MessageBuilder builder = new MessageBuilder(plugin)
+                .setPlayer(sender);
         if (args.length == 0) {
-            new MessageBuilder(plugin)
-                    .setPlayer(sender)
-                    .setKey("usage.hubbly")
+            builder.setKey("usage.hubbly")
                     .send();
             return true;
         }
@@ -75,16 +70,12 @@ public class HubblyCommand implements TabExecutor {
         if (subCommand != null) {
             subCommand.execute(sender, args);
         } else {
-            new MessageBuilder(plugin)
-                    .setPlayer(sender)
-                    .setKey("unknown_command")
+            builder.setKey("unknown_command")
                     .send();
         }
 
         return true;
     }
-
-
 
     @Nullable
     @Override

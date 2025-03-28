@@ -20,12 +20,15 @@ package me.calrl.hubbly.commands.subcommands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
+
+import java.util.Map;
 
 public class VersionCommand implements SubCommand {
     private final Hubbly plugin;
@@ -38,17 +41,17 @@ public class VersionCommand implements SubCommand {
 
     @Override
     public String getName() {
-        return "";
+        return "version";
     }
 
     @Override
     public String getDescription() {
-        return "";
+        return "Gets the version";
     }
 
     @Override
     public String getUsage() {
-        return "";
+        return "/hubbly version";
     }
 
     @Override
@@ -66,11 +69,10 @@ public class VersionCommand implements SubCommand {
             );
 
         } else {
-            String message = config.getString("messages.no_permission_command", "No permission");
-
-            sender.sendMessage(
-                    ChatUtils.prefixMessage(plugin, message)
-            );
+            new MessageBuilder(plugin)
+                    .setPlayer(sender)
+                    .setKey("no_permission_command")
+                    .send();
         }
     }
 }

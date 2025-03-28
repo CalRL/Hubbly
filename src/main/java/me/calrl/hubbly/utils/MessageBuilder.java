@@ -3,6 +3,7 @@ package me.calrl.hubbly.utils;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.managers.LocaleManager;
+import net.minecraft.world.entity.ai.behavior.warden.TryToSniff;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,6 +15,7 @@ public class MessageBuilder {
     private LocaleKey key;
     private String content;
     private LocaleManager localeManager = null;
+    private boolean usePrefix = true;
 
     public MessageBuilder() {
 
@@ -86,11 +88,28 @@ public class MessageBuilder {
     }
 
     /*
-    Todo: create a replace method
+    Todo: make a better system
      */
 
     public MessageBuilder replace(String oldChar, String newChar) {
+        if(oldChar == null) {
+            oldChar = "oldChar";
+        }
 
+        if(newChar == null) {
+            newChar = "newChar";
+
+        }
+
+        if(content.contains(oldChar)) {
+
+            this.content = content.replace(oldChar, newChar);
+        }
+        return this;
+    }
+
+    public MessageBuilder usePrefix(boolean bool) {
+        this.usePrefix = bool;
         return this;
     }
 
@@ -101,7 +120,9 @@ public class MessageBuilder {
     public void send() {
         String toSend = ChatUtils.prefixMessage(plugin, player, content);
 
+
         if(player != null) {
+            ChatUtils.processMessage(player, toSend);
             player.sendMessage(toSend);
         } else {
             Bukkit.getConsoleSender().sendMessage(toSend);

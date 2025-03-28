@@ -126,13 +126,7 @@ public class CompassInventory {
         String actionData = String.join(",", actions);
 
         return new ItemBuilder(material)
-                .setPlayer(player)
-                .setName(section.getString("name"))
-                .setCustomModelData(section.getInt("custom_model_data"))
-                .setLore(section.getStringList("lore"))
-                .addPersistentData(this.getActionsKey(), PersistentDataType.STRING, actionData)
-                .setTextures(section.getString("value"))
-                .build();
+                .fromConfig(player, section);
     }
 
     private List<String> getActions(ConfigurationSection section) {

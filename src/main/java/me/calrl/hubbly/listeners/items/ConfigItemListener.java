@@ -96,7 +96,7 @@ public class ConfigItemListener implements Listener {
         }
     }
 
-    @EventHandler
+    //@EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
         Player player = event.getPlayer();

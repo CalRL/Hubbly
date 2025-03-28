@@ -23,10 +23,7 @@ public class Utils {
     public Location getSpawn() {
         FileConfiguration config = plugin.getConfig();
 
-        String worldName = config.getString("spawn.world");
-        if(worldName == null) {
-            worldName = "world";
-        }
+        String worldName = config.getString("spawn.world", "world");
 
         World world = Bukkit.getWorld(worldName);
         double x = config.getDouble("spawn.x");
