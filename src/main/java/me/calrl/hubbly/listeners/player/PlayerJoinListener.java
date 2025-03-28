@@ -101,17 +101,15 @@ public class PlayerJoinListener implements Listener {
         }
 
         if(player.hasPermission(Permissions.NOTIFY_UPDATE.getPermission())) {
-            player.sendMessage(
-                    ChatUtils.parsePlaceholders(
-                            player,
-                            plugin.getPrefix() + updateUtil.getMessage()
-
-                    )
-            );
             /*
             TODO: make this use locales, update updateUtil
              */
-            new MessageBuilder(plugin).setPlayer(player).setMessage(updateUtil.getMessage()).send();
+            new MessageBuilder(plugin)
+                    .setPlayer(player)
+                    .setKey(updateUtil.getKey())
+                    .replace("%current%", updateUtil.getCurrent())
+                    .replace("%new", updateUtil.getNew())
+                    .send();
         }
     }
 
