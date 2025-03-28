@@ -20,3 +20,4 @@ update:
     you are on %current%
   no_update: Hubbly %current% is up to date
   error: Could not check for a new version...
+

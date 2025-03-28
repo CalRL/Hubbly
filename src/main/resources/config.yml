@@ -83,7 +83,7 @@ close_button:
 
 movementitems:
   enderbow:
-    enabled: true
+    enabled: false
     name: "<#A020F0>Enderbow"
     cooldown: 3
   trident:

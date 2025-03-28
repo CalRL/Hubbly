@@ -4,7 +4,6 @@ main: me.calrl.hubbly.Hubbly
 api-version: '1.20'
 
 prefix: Hubbly
-load: STARTUP
 authors: [cal]
 website: cal.ceo/hubbly
 commands:
@@ -22,16 +21,17 @@ commands:
     usage: /setspawn
     permission: hubbly.command.spawn
   fly:
-    description: fly
+    description: Toggles flight mode
     usage: /fly
     permission: hubbly.command.fly
   clearchat:
-    description: clear chat
+    description: Clears the chat
     usage: /clearchat
     permission: hubbly.command.clearchat
     aliases: [cc, clearc, cchat]
   lockchat:
-    usage: /give
+    usage: /lockchat
+    description: Locks the chat
     aliases: [lc]
 
 
@@ -135,3 +135,4 @@ hubbly.notify:
 
 softdepend:
   - PlaceholderAPI
+  - HeadDatabase
