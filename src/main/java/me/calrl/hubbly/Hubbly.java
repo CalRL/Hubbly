@@ -17,11 +17,14 @@
 
 package me.calrl.hubbly;
 
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.commands.*;
 import me.calrl.hubbly.functions.BossBarManager;
+import me.calrl.hubbly.hooks.HookManager;
 import me.calrl.hubbly.inventory.InventoryListener;
 import me.calrl.hubbly.listeners.CompassListener;
+import me.calrl.hubbly.listeners.ServerLoadListener;
 import me.calrl.hubbly.listeners.SocialsListener;
 import me.calrl.hubbly.listeners.chat.ChatListener;
 import me.calrl.hubbly.listeners.chat.CommandBlockerListener;
@@ -72,6 +75,8 @@ public class Hubbly extends JavaPlugin {
     private ItemsManager itemsManager;
     private FileManager fileManager;
     private LocaleManager localeManager;
+    private SubCommandManager subCommandManager;
+    private HookManager hookManager;
 
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
@@ -85,6 +90,7 @@ public class Hubbly extends JavaPlugin {
         this.saveConfig();
         config = this.getConfig();
 
+        subCommandManager.reload();
         fileManager.reloadFiles();
         itemsManager.reload();
         localeManager.reload();
@@ -132,6 +138,7 @@ public class Hubbly extends JavaPlugin {
         registerListener(listener, "null");
     }
     private void loadListeners() {
+        registerListener(new ServerLoadListener(this));
         registerListener(new CompassListener(this));
         registerListener(new SocialsListener(this), "socials.enabled");
         registerListener(new VoidDamageListener(this), "antivoid.enabled");
@@ -147,8 +154,6 @@ public class Hubbly extends JavaPlugin {
         registerListener(new XPListener(this), "player.experience.enabled");
     }
 
-
-
     @Override
     public void onEnable() {
         logger.info("Starting Hubbly...");
@@ -160,7 +165,6 @@ public class Hubbly extends JavaPlugin {
         }
 
         instance = this;
-
 
         updateUtil = new UpdateUtil();
         disabledWorlds = new DisabledWorlds(this);
@@ -175,7 +179,10 @@ public class Hubbly extends JavaPlugin {
         utils = new Utils(this);
         playerManager = new PlayerManager(this);
         bossBarManager = new BossBarManager(this);
+        subCommandManager = new SubCommandManager(this);
         localeManager = new LocaleManager(this);
+
+
 
         logger.info("Instances created");
 
@@ -242,7 +249,6 @@ public class Hubbly extends JavaPlugin {
         if(!serverSelectorFile.exists()) {
             saveResource("serverselector.yml", false);
         }
-        serverSelectorConfig = YamlConfiguration.loadConfiguration(serverSelectorFile);
     }
 
     private void cleanup() {
@@ -251,7 +257,7 @@ public class Hubbly extends JavaPlugin {
     }
 
     /**
-     *
+     * todo: put this in playermanager
      * @param player the target
      * @param state 0 (djump) or 1 (flight)
      */
@@ -303,6 +309,14 @@ public class Hubbly extends JavaPlugin {
     public LocaleManager getLocaleManager() {
         return localeManager;
     }
+    public SubCommandManager getSubCommandManager() {
+        return subCommandManager;
+    }
+    public HookManager getHookManager() {return this.hookManager;}
+    public void setHookManager(HookManager hookManager) {
+        this.hookManager = hookManager;
+    }
+
 
     public static void enableTestMode() {
         testMode = true;

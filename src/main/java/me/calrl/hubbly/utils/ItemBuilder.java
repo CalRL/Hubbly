@@ -1,13 +1,19 @@
 package me.calrl.hubbly.utils;
 
+import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.PluginKeys;
+import me.calrl.hubbly.hooks.HeadDatabaseHook;
+import me.calrl.hubbly.hooks.HeadHook;
+import me.calrl.hubbly.hooks.Hook;
+import me.calrl.hubbly.utils.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
@@ -16,6 +22,7 @@ import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
 
@@ -25,6 +32,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -201,10 +209,35 @@ public class ItemBuilder {
     public ItemStack fromConfig(Player player, ConfigurationSection section) {
 
         String materialValue = section.getString("material").toUpperCase();
-        Material material = Material.getMaterial(materialValue);
+
+        Material material = XMaterial.matchXMaterial(materialValue).get().parseMaterial();
+
 
         ItemBuilder builder = new ItemBuilder(material);
+        HeadHook headHook = (HeadHook) Hubbly.getInstance().getHookManager().getHook("HEAD_DATABASE");
+        if(headHook == null) {
+            Hubbly.getInstance().getLogger().info("HeadHook is null...");
+        }
+
+        boolean isEnabled = Hubbly.getInstance().getHookManager().isHookEnabled("HEAD_DATABASE");
+        Hubbly.getInstance().getLogger().info("HEAD DATABASE ISENABLED "+ isEnabled);
+
+        if(material == XMaterial.PLAYER_HEAD.parseMaterial()) {
+
+            if(section.contains("hdb")) {
+                ItemStack hdbHead = headHook.getApi().getItemHead(section.getString("hdb"));
+                builder.setItemStack(hdbHead);
+                builder.setItemMeta(hdbHead.getItemMeta());
+            } else if (section.contains("base64")) {
+                // todo: this
+                builder.itemStack =((HeadHook) Hubbly.getInstance()
+                        .getHookManager()
+                        .getHook("HEAD_DATABASE")).getHead(section.getString("base64"));
+            }
+        }
+
         builder.setPlayer(player);
+
 
         if(section.contains("amount")) {
             builder.setAmount(section.getInt("amount"));
@@ -226,13 +259,7 @@ public class ItemBuilder {
                 builder.setTextures(texture);
             }
         }
-        if(section.contains("base64")) {
 
-        }
-
-        if(section.contains("hdb")) {
-
-        }
 
         if(section.contains("lore")) {
             builder.setLore(section.getStringList("lore"));
@@ -256,8 +283,8 @@ public class ItemBuilder {
             builder.addGlow();
         }
 
-        if(section.contains("custom_model_data")) {
-            builder.setCustomModelData(section.getInt("custom_model_data"));
+        if(section.contains("model_data")) {
+            builder.setCustomModelData(section.getInt("model_data"));
         }
 
         if(section.contains("item_flags")) {
@@ -272,6 +299,15 @@ public class ItemBuilder {
      */
     public void saveTo() {}
 
+    public ItemBuilder setItemStack(ItemStack item) {
+        this.itemStack = item;
+        return this;
+    }
+
+    public ItemBuilder setItemMeta(ItemMeta meta) {
+        this.itemMeta = meta;
+        return this;
+    }
 
     public ItemStack build() {
         itemStack.setItemMeta(itemMeta);
