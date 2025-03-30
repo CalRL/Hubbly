@@ -1,0 +1,28 @@
+title: "&6Socials"
+size: 9
+items:
+  discord:
+    material: PLAYER_HEAD
+    name: "&3Discord Server"
+    url: http://textures.minecraft.net/texture/7873c12bffb5251a0b88d5ae75c7247cb39a75ff1a81cbe4c8a39b311ddeda
+    slot: 3
+    lore:
+      - "&aJoin the Discord Server!"
+    actions:
+      - "[LINK] Click me for the discord;Discord link;discord.com/invite"
+  tiktok:
+    material: PLAYER_HEAD
+    url: http://textures.minecraft.net/texture/2786dc9d65c3b7983e8bb6af588fac92f33720c723e0d29f8b74151344a648a1
+    name: "&cTiktok"
+    slot: 5
+    lore:
+      - "&aFollow me on TikTok!"
+    actions:
+      - "[LINK] Click me to open TikTok!;TikTok link;tiktok.com"
+
+  fill:
+    slot: -1
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+    actions:
+      - "[CLOSE]"

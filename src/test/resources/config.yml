@@ -45,42 +45,6 @@ playervisibility:
     item: 'GRAY_DYE'
     text: '&rPlayers: &cHidden'
 
-socials:
-  enabled: true
-  size: 27
-  title: "Socials"
-  item:
-    type: "PLAYER_HEAD"
-    value: "http://textures.minecraft.net/texture/355e2dc46399b7b9275221fcdc87c66e58d0d3044dcf62af0465122c1cd7e0bc" # Leave empty if item isnt SKULL
-    name: "&6Socials"
-  items:
-    tiktok: # Key for this item
-      slot: 13 # Slot for this item (0-based index)
-      material: PLAYER_HEAD  # Material for the item
-      name: "&dTik&bTok"  # Display name of the item with placeholder
-      lore: # Lore for the item/
-      value: "http://textures.minecraft.net/texture/bcf2105bb737638833033dd8244071e75870e2e11c2617e542e8924fb2b90180"
-      message: "&3Click me for tiktok"
-      hover: '&7Our Tiktok!'
-      link: 'tiktok.com'
-    youtube: # Key for this item
-      slot: 15 # Slot for this item (0-based index)
-      material: PLAYER_HEAD  # Material for the item
-      name: "&cYoutube"  # Display name of the item with placeholder
-      lore: # Lore for the item
-      value: "http://textures.minecraft.net/texture/1c56ddbef1b81bd57c9b1c6d5d1b78b54737b719929b29c2a930a5f7c2ae4a86"
-      message: "&3Click me for youtube!"
-      hover: '&7Our YouTube!'
-      link: 'youtube.com'
-  fill:
-    name: " "
-    type: "BLACK_STAINED_GLASS_PANE"
-
-close_button:
-  slot: 23
-  material: "BARRIER"
-  name: "&aClose"
-
 movementitems:
   enderbow:
     enabled: true
