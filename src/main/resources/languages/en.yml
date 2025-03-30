@@ -53,7 +53,7 @@ commands:
     usage: /clearchat
     description: Clears the chat for all players.
   lockchat:
-    usage: /lockcha
+    usage: /lockchat
     description: Locks or unlocks the chat for all players.
 
 subcommands:
