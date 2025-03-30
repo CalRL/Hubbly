@@ -4,6 +4,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.Action;
 import me.calrl.hubbly.inventory.InventoryBuilder;
 import me.calrl.hubbly.managers.FileManager;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -24,6 +25,17 @@ public class MenuAction implements Action {
 
         plugin.getDebugMode().info(path);
         FileConfiguration config = manager.getConfig(path);
+
+        String perm = config.getString("permission");
+
+        if(perm != null && !player.hasPermission(perm)) {
+            new MessageBuilder()
+                    .setPlugin(plugin)
+                    .setPlayer(player)
+                    .setKey("no_permission_use")
+                    .send();
+            return;
+        }
 
         Inventory inventory = new InventoryBuilder()
                 .setPlayer(player)
