@@ -78,8 +78,8 @@ public class ConfigItem implements CustomItem {
         }
 
         ItemStack item = new ItemBuilder()
-                .setPlayer(player)
-                .fromConfig(player, section);
+                .fromConfig(player, section)
+                .build();
 
         if (item == null || item.getType() == Material.AIR) {
             debugMode.warn("Item '" + itemKey + "' is invalid or returned AIR.");
@@ -87,6 +87,11 @@ public class ConfigItem implements CustomItem {
         }
 
         return item;
+    }
+
+    @Override
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
 
