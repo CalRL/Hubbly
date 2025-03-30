@@ -57,7 +57,7 @@ public class GiveCommand implements SubCommand {
 
         // Argument check
         if (arguments.size() < 2) {
-            builder.setMessage(this.getUsage()).send();
+            builder.setKey("subcommands.give.usage").send();
             return;
         }
 
@@ -73,6 +73,7 @@ public class GiveCommand implements SubCommand {
         String itemArg = arguments.get(1);
         String itemName = ChatColor.stripColor(itemArg.toLowerCase());
         CustomItem customItem = items.get(itemName);
+
         if (customItem == null) {
             builder
                     .setKey("unknown_item")
@@ -80,7 +81,7 @@ public class GiveCommand implements SubCommand {
                     .send();
             return;
         }
-
+        customItem.setPlayer(targetPlayer);
         ItemStack item = customItem.createItem();
         int amount = 1;
         if (arguments.size() >= 3) {

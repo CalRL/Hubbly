@@ -17,15 +17,12 @@
 
 package me.calrl.hubbly;
 
-import me.arcaniax.hdb.api.HeadDatabaseAPI;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.commands.*;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.hooks.HookManager;
 import me.calrl.hubbly.inventory.InventoryListener;
-import me.calrl.hubbly.listeners.CompassListener;
 import me.calrl.hubbly.listeners.ServerLoadListener;
-import me.calrl.hubbly.listeners.SocialsListener;
 import me.calrl.hubbly.listeners.chat.ChatListener;
 import me.calrl.hubbly.listeners.chat.CommandBlockerListener;
 import me.calrl.hubbly.listeners.items.ConfigItemListener;
@@ -139,8 +136,6 @@ public class Hubbly extends JavaPlugin {
     }
     private void loadListeners() {
         registerListener(new ServerLoadListener(this));
-        registerListener(new CompassListener(this));
-        registerListener(new SocialsListener(this), "socials.enabled");
         registerListener(new VoidDamageListener(this), "antivoid.enabled");
         registerListener(new DoubleJumpListener(this), "double_jump.enabled");
         registerListener(new PlayerVisibilityListener(), "playervisibility.enabled");
@@ -245,9 +240,19 @@ public class Hubbly extends JavaPlugin {
         }
         itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
 
-        File serverSelectorFile = new File(getDataFolder(), "serverselector.yml");
-        if(!serverSelectorFile.exists()) {
-            saveResource("serverselector.yml", false);
+        /*
+        todo: remove this asap
+         */
+        saveResourceIfNotExists("menus/selector.yml");
+        saveResourceIfNotExists("menus/socials.yml");
+        saveResourceIfNotExists("languages/en.yml");
+
+    }
+
+    public void saveResourceIfNotExists(String path) {
+        File file = new File(this.getDataFolder(), path);
+        if(!file.exists()) {
+            saveResource(path, false);
         }
     }
 

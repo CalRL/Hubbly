@@ -49,8 +49,6 @@ public class HelpCommand implements SubCommand {
 
         List<Command> mainCommands = new ArrayList<>();
         Command cmd = plugin.getCommand("fly");
-        plugin.getLogger().info(cmd.toString());
-        plugin.getLogger().info(cmd.getName());
         mainCommands.add(plugin.getCommand("hubbly"));
         mainCommands.add(plugin.getCommand("setspawn"));
         mainCommands.add(plugin.getCommand("spawn"));

@@ -36,6 +36,8 @@ public class SubCommandManager {
         this.register(new NextAnnouncementCommand(plugin));
         this.register(new GiveCommand(plugin));
         this.register(new HelpCommand(plugin));
+        this.register(new ConvertCommand(plugin));
+        this.register(new MenuCommand(plugin));
     }
 
     public void reload() {
