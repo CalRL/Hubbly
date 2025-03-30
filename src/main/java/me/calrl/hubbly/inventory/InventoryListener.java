@@ -16,6 +16,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+//todo: delete this
 public class InventoryListener implements Listener {
 
     private final Hubbly plugin;

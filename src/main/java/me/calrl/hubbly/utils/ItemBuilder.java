@@ -6,6 +6,7 @@ import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.hooks.HeadDatabaseHook;
 import me.calrl.hubbly.hooks.HeadHook;
 import me.calrl.hubbly.hooks.Hook;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.xseries.XMaterial;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
@@ -129,31 +130,31 @@ public class ItemBuilder {
     public ItemBuilder setTextures(String texture) {
         if(itemMeta != null && this.itemStack.getType() == Material.PLAYER_HEAD) {
             SkullMeta skullMeta = (SkullMeta) itemMeta;
-                PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID());
-                PlayerTextures textures = profile.getTextures();
+            PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID());
+            PlayerTextures textures = profile.getTextures();
 
-                if(texture.startsWith("http")) {
-                    try {
-                        URI uri = new URI(texture);
-                        URL url = uri.toURL();
-                        textures.setSkin(url);
+            if(texture.startsWith("http")) {
+                try {
+                    URI uri = new URI(texture);
+                    URL url = uri.toURL();
+                    textures.setSkin(url);
 
 
-                    } catch (MalformedURLException e) {
-                        e.printStackTrace();
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
 
-                    } catch (URISyntaxException e) {
-                        throw new RuntimeException(e);
+                } catch (URISyntaxException e) {
+                    throw new RuntimeException(e);
 
-                    }
-                } else {
-                    Hubbly.getInstance().getDebugMode().info("Texture value: " + texture + " is malformed. Please add 'https://' in front of the URL if not there already.");
-                    Hubbly.getInstance().getDebugMode().info("If that does not fix the issue, please get support in the discord");
                 }
+            } else {
+                Hubbly.getInstance().getDebugMode().info("Texture value: " + texture + " is malformed. Please add 'https://' in front of the URL if not there already.");
+                Hubbly.getInstance().getDebugMode().info("If that does not fix the issue, please get support in the discord");
+            }
 
-                profile.setTextures(textures);
+            profile.setTextures(textures);
 
-                skullMeta.setOwnerProfile(profile);
+            skullMeta.setOwnerProfile(profile);
         }
         return this;
     }
@@ -203,41 +204,44 @@ public class ItemBuilder {
         if(player == null) {
             return null;
         }
-        return fromConfig(this.player, section);
+        return fromConfig(this.player, section).build();
     }
 
-    public ItemStack fromConfig(Player player, ConfigurationSection section) {
-
+    /**
+     *
+     * NOTE: When chaining methods, make sure this is the first one used
+     * Any method used before this one on an ItemBuilder will be voided
+     * Maybe creating a setMaterial method could help?
+     *
+     * @param player
+     * @param section
+     * @return
+     */
+    public ItemBuilder fromConfig(Player player, ConfigurationSection section) {
         String materialValue = section.getString("material").toUpperCase();
 
-        Material material = XMaterial.matchXMaterial(materialValue).get().parseMaterial();
+        Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(materialValue);
+        if(!xMaterial.isPresent()) return null;
 
+        Material material = xMaterial.get().parseMaterial();
 
         ItemBuilder builder = new ItemBuilder(material);
-        HeadHook headHook = (HeadHook) Hubbly.getInstance().getHookManager().getHook("HEAD_DATABASE");
-        if(headHook == null) {
-            Hubbly.getInstance().getLogger().info("HeadHook is null...");
-        }
-
-        boolean isEnabled = Hubbly.getInstance().getHookManager().isHookEnabled("HEAD_DATABASE");
-        Hubbly.getInstance().getLogger().info("HEAD DATABASE ISENABLED "+ isEnabled);
 
         if(material == XMaterial.PLAYER_HEAD.parseMaterial()) {
+            HeadHook headHook = (HeadHook) Hubbly.getInstance().getHookManager().getHook("HEAD_DATABASE");
+            if(headHook == null) {
+                Hubbly.getInstance().getLogger().info("HeadHook is null...");
+            }
 
             if(section.contains("hdb")) {
                 ItemStack hdbHead = headHook.getApi().getItemHead(section.getString("hdb"));
                 builder.setItemStack(hdbHead);
                 builder.setItemMeta(hdbHead.getItemMeta());
-            } else if (section.contains("base64")) {
-                // todo: this
-                builder.itemStack =((HeadHook) Hubbly.getInstance()
-                        .getHookManager()
-                        .getHook("HEAD_DATABASE")).getHead(section.getString("base64"));
             }
         }
+        DebugMode debugMode = new DebugMode();
 
         builder.setPlayer(player);
-
 
         if(section.contains("amount")) {
             builder.setAmount(section.getInt("amount"));
@@ -266,6 +270,7 @@ public class ItemBuilder {
         }
 
         if(section.contains("name")) {
+            debugMode.info("Creating item with name");
             builder.setName(section.getString("name"));
         }
 
@@ -276,7 +281,13 @@ public class ItemBuilder {
         }
 
         if(section.contains("color")) {
-            builder.setColor(section.getColor("color"));
+            String colorStr = section.getString("color");
+            if(colorStr != null) {
+                String parse = "#" + colorStr;
+                int rgb = Integer.parseInt(parse.substring(1), 16);
+                Color color = Color.fromRGB(rgb);
+                builder.setColor(color);
+            }
         }
 
         if(section.contains("glow") && section.getBoolean("glow")) {
@@ -288,15 +299,19 @@ public class ItemBuilder {
         }
 
         if(section.contains("item_flags")) {
+            //todo: this
             List<String> flags = section.getStringList("item_flags");
+            builder.addFlags(flags);
         }
+        return builder;
+    }
 
+    public ItemStack fromConfigWithBuild(Player player, ConfigurationSection section) {
+        ItemBuilder builder = new ItemBuilder().fromConfig(player, section);
         return builder.build();
     }
 
-    /**
-     * Builds the item and returns the final ItemStack
-     */
+
     public void saveTo() {}
 
     public ItemBuilder setItemStack(ItemStack item) {
@@ -308,7 +323,9 @@ public class ItemBuilder {
         this.itemMeta = meta;
         return this;
     }
-
+    /**
+     * Builds the item and returns the final ItemStack
+     */
     public ItemStack build() {
         itemStack.setItemMeta(itemMeta);
         return itemStack;

@@ -37,11 +37,11 @@ public class ItemsManager {
     }
 
     private void registerItems() {
-        items.put("socials", new SocialsItem());
         items.put("playervisibility", new PlayerVisibilityItem());
         items.put("enderbow", new EnderbowItem(plugin));
         items.put("grappling_hook", new RodItem(plugin));
         items.put("aote", new AoteItem(plugin));
+        items.put("trident", new TridentItem(plugin));
 
         if (itemsConfig.getConfigurationSection("items") != null) {
             for (String itemKey : itemsConfig.getConfigurationSection("items").getKeys(false)) {

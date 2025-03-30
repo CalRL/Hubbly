@@ -20,6 +20,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.enums.TridentSounds;
+import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -56,6 +57,10 @@ public class MovementItemListener implements Listener {
     @EventHandler
     private void onBowShoot(EntityShootBowEvent event) {
         if(!config.getBoolean("movementitems.enderbow.enabled")) return;
+
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        if(disabledWorlds.inDisabledWorld(event.getEntity().getLocation())) return;
+
         if(!(event.getBow().getItemMeta().getPersistentDataContainer().has(PluginKeys.ENDER_BOW.getKey()))) return;
         if(event.getEntity() instanceof Player player) {
 
@@ -80,6 +85,10 @@ public class MovementItemListener implements Listener {
     @EventHandler
     private void onArrowLand(ProjectileHitEvent event) {
         if(!config.getBoolean("movementitems.enderbow.enabled")) return;
+
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        if(disabledWorlds.inDisabledWorld(event.getEntity().getWorld())) return;
+
         if(!(event.getEntity().getShooter() instanceof Player player)) return;
         if(event.getEntity() instanceof Arrow arrow) {
             PersistentDataContainer container = arrow.getPersistentDataContainer();
@@ -98,7 +107,11 @@ public class MovementItemListener implements Listener {
     private void onPlayerJoin(PlayerJoinEvent event) {
         if(!config.getBoolean("movementitems.enderbow.enabled")) return;
 
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+
         final Player player = event.getPlayer();
+        if(disabledWorlds.inDisabledWorld(player.getWorld())) return;
+
         if(!player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())) {
             return;
         }
@@ -108,7 +121,12 @@ public class MovementItemListener implements Listener {
 
     @EventHandler
     public void onTridentThrow(ProjectileLaunchEvent event) {
+
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        if(!config.getBoolean("movementitems.trident.enabled")) return;
         if (event.getEntity() instanceof Trident trident && trident.getShooter() instanceof Player player) {
+            if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
+            /// todo: check config here
             if(!player.hasPermission(Permissions.USE_TRIDENT.getPermission())) return;
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
             ItemMeta meta = itemInHand.getItemMeta();
@@ -136,6 +154,9 @@ public class MovementItemListener implements Listener {
             config = plugin.getConfig();
             if(!config.getBoolean("movementitems.trident.enabled")) return;
 
+            DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+            if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
+
 
             if (trident.getPersistentDataContainer().has(PluginKeys.TRIDENT.getKey())) {
                 trident.remove();
@@ -155,6 +176,9 @@ public class MovementItemListener implements Listener {
         if (!config.getBoolean("movementitems.grappling_hook.enabled")) return;
 
         Player player = event.getPlayer();
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
+
         if(!player.hasPermission(Permissions.USE_GRAPPLING_HOOK.getPermission())) return;
         ItemMeta meta = player.getInventory().getItemInMainHand().getItemMeta();
 
@@ -179,6 +203,10 @@ public class MovementItemListener implements Listener {
     @EventHandler
     private void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
+
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
+
         ItemStack item = player.getInventory().getItemInMainHand();
         ItemMeta meta = item.getItemMeta();
         if(meta != null && meta.getPersistentDataContainer().has(PluginKeys.AOTE.getKey())) {

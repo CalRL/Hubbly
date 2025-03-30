@@ -41,7 +41,9 @@ public class CustomGUI {
             if (itemSection == null) continue;
 
             int slot = itemSection.getInt("slot", -1);
-            ItemStack item = new ItemBuilder().fromConfig(player, itemSection);
+            ItemStack item = new ItemBuilder()
+                    .fromConfig(player, itemSection)
+                    .build();
 
             if (slot == -1) {
                 fillItem = item;

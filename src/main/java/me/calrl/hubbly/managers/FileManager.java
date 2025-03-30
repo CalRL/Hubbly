@@ -28,11 +28,12 @@ public class FileManager {
     }
 
     public File resolve(String relativePath) {
-        if (!relativePath.endsWith(".yml")) {
+        File file = new File(baseFolder, relativePath);
+        if (!file.isDirectory() && !relativePath.endsWith(".yml")) {
             relativePath += ".yml";
+            file = new File(baseFolder, relativePath);
         }
 
-        File file = new File(baseFolder, relativePath);
         File parent = file.getParentFile();
 
         if (!parent.exists()) {
@@ -120,6 +121,25 @@ public class FileManager {
         return lockedFiles.contains(relativePath);
     }
 
+    public List<String> listFilesInFolder(String folderPath) {
+        File folder = resolve(folderPath);
+        if (!folder.exists() || !folder.isDirectory()) {
+            plugin.getLogger().warning("Folder not found or not a directory: " + folder.getPath());
+            return Collections.emptyList();
+        }
+
+        List<String> fileNames = new ArrayList<>();
+        File[] files = folder.listFiles((dir, name) -> name.endsWith(".yml"));
+
+        if (files != null) {
+            for (File file : files) {
+                String name = file.getName().replace(".yml", "");
+                fileNames.add(name);
+            }
+        }
+
+        return fileNames;
+    }
 
 
 }
