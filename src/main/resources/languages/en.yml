@@ -75,6 +75,11 @@ subcommands:
     messages:
       give_item: "Given %amount% %item% to %player%"
       give_item_with_slot: "Given %amount% %item% to %player% in slot %slot%"
-
+  convert:
+    usage: /hubbly convert <selector/socials>
+    description: Converts files
+  menu:
+    usage: /hubbly menu <menu>
+    description: Opens a provided menu
 
 
