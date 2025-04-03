@@ -88,7 +88,7 @@ public class ActionManager {
                 return;
             }
 
-            plugin.getDebugMode().info("Executing action: " + identifier);
+            plugin.getDebugMode().info("Executing action: " + identifier + " " + data);
             action.execute(plugin, player, data);
         }
     }
