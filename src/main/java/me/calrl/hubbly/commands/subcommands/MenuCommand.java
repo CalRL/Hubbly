@@ -70,6 +70,7 @@ public class MenuCommand implements SubCommand {
                 .fromFile(menuConfig);
 
         player.openInventory(inventoryBuilder.getInventory());
+        //todo: make this a translateable message
         player.sendMessage("§aOpened menu: " + menuName);
     }
 

@@ -36,7 +36,12 @@ public class ItemsManager {
         this.registerItems();
     }
 
+    private void setConfig(FileConfiguration config) {
+        this.itemsConfig = config;
+    }
+
     private void registerItems() {
+        this.setConfig(plugin.getFileManager().getConfig("items.yml"));
         items.put("playervisibility", new PlayerVisibilityItem());
         items.put("enderbow", new EnderbowItem(plugin));
         items.put("grappling_hook", new RodItem(plugin));

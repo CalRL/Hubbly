@@ -2,6 +2,7 @@ package me.calrl.hubbly.utils.update;
 
 import me.calrl.hubbly.Hubbly;
 import org.bukkit.configuration.ConfigurationSection;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
@@ -20,26 +21,20 @@ public class UpdateUtil {
 
         UpdateChecker.init(plugin, 117243).requestUpdateCheck().whenComplete((result, exception) -> {
             UpdateChecker.UpdateReason reason = result.getReason();
-            ConfigurationSection section = plugin.getConfig().getConfigurationSection("update");
             this.currentVersion = plugin.getDescription().getVersion();
-            if(section == null) {
-                logger.warning("Please report this to the developer...");
-                logger.warning("'update' is NULL in config... ");
-                updateFuture.complete(false);
-                return;
-            }
 
+            //todo: remove the updateMessage down the line as it uses old logic (removed in 3.0.0)
             switch(reason) {
                 case UpdateChecker.UpdateReason.UP_TO_DATE -> {
                     needsUpdate = false;
                     key = "update.no_update";
-                    updateMessage = parsePlaceholders(section.getString("no_update", "No update"), result);
+                    updateMessage = "No update";
                     logger.info(updateMessage);
                     }
                 case UpdateChecker.UpdateReason.NEW_UPDATE -> {
                     needsUpdate = true;
                     key = "update.new_update";
-                    updateMessage = parsePlaceholders(section.getString("new_update", "A new update for Hubbly is available"), result);
+                    updateMessage = parsePlaceholders("A new update for Hubbly is available: %new%", result);
                     this.setNew(result.getNewestVersion());
 
                     logger.info(updateMessage);
@@ -47,15 +42,17 @@ public class UpdateUtil {
                 }
                 case UpdateChecker.UpdateReason.UNRELEASED_VERSION -> {
                     needsUpdate = false;
-                    updateMessage = String.format("You're running a development build (%s)...", plugin.getDescription().getVersion());
 
+                    key = "update.no_update";
+
+                    updateMessage = String.format("You're running a development build (%s)...", plugin.getDescription().getVersion());
                     logger.info(updateMessage);
                     logger.info("Proceed with caution.");
                 }
                 default -> {
                     needsUpdate = false;
                     key = "update.error";
-                    updateMessage = parsePlaceholders(section.getString("error", "Could not check for a new version..."), result);
+                    updateMessage = "Could not check for a new version...";
 
                     logger.info(updateMessage);
                     logger.info("Reason: " + reason);

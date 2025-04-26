@@ -47,8 +47,13 @@ public class LocaleManager {
     }
 
     public String get(Player player, String path) {
+        if(path == null || path.isEmpty()) {
+            throw new NullPointerException("Path returned null");
+        }
+
         String locale = player.getLocale().split("_")[0].toLowerCase();
         FileConfiguration config = locales.getOrDefault(locale, fallback);
+
         return config.getString(path, "Missing message: " + path);
     }
 

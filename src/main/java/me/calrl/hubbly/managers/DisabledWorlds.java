@@ -39,11 +39,16 @@ public class DisabledWorlds {
     }
 
     public boolean inDisabledWorld(Location location) {
-        return !disabledWorlds.isEmpty() && disabledWorlds.contains(location.getWorld());
+        World world = location.getWorld();
+        return this.inDisabledWorld(world);
     }
     // TODO: make this actually check theres a world...
     public void setDisabledWorlds() {
         List<String> disabledWorldsList = this.getConfigWorldList();
+        DebugMode debugMode = new DebugMode();
+        if(disabledWorldsList.isEmpty()) {
+            debugMode.info("No worlds to register");
+        }
 
         for(String worldName : disabledWorldsList) {
             boolean worldExists = this.isWorldValid(worldName);
@@ -53,6 +58,7 @@ public class DisabledWorlds {
             } else {
                 World world = Bukkit.getWorld(worldName);
                 disabledWorlds.add(world);
+                debugMode.info("Registered Disabled World: " + worldName);
             }
         }
 
@@ -65,6 +71,10 @@ public class DisabledWorlds {
 
     private List<String> getConfigWorldList() {
         FileConfiguration config = plugin.getConfig();
+        if(!config.isSet("disabled-worlds")) {
+            return new ArrayList<>();
+        }
+
         List<String> disabledWorldsList = config.getStringList("disabled-worlds");
 
         boolean isInverted = config.getBoolean("invert", false);

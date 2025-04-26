@@ -227,19 +227,24 @@ public class ItemBuilder {
 
         ItemBuilder builder = new ItemBuilder(material);
 
-        if(material == XMaterial.PLAYER_HEAD.parseMaterial()) {
+        DebugMode debugMode = new DebugMode();
+
+        if(material == XMaterial.PLAYER_HEAD.parseMaterial() && section.contains("hdb")) {
+            debugMode.info("Trying HDB...");
+
             HeadHook headHook = (HeadHook) Hubbly.getInstance().getHookManager().getHook("HEAD_DATABASE");
             if(headHook == null) {
-                Hubbly.getInstance().getLogger().info("HeadHook is null...");
+                debugMode.info("HeadHook is null...");
             }
 
-            if(section.contains("hdb")) {
-                ItemStack hdbHead = headHook.getApi().getItemHead(section.getString("hdb"));
-                builder.setItemStack(hdbHead);
-                builder.setItemMeta(hdbHead.getItemMeta());
-            }
+            ItemStack hdbHead = headHook.getApi().getItemHead(section.getString("hdb"));
+            builder.setItemStack(hdbHead);
+            builder.setItemMeta(hdbHead.getItemMeta());
+
+            debugMode.info("Success!");
+
         }
-        DebugMode debugMode = new DebugMode();
+
 
         builder.setPlayer(player);
 
@@ -270,7 +275,6 @@ public class ItemBuilder {
         }
 
         if(section.contains("name")) {
-            debugMode.info("Creating item with name");
             builder.setName(section.getString("name"));
         }
 
