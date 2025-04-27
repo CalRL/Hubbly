@@ -109,4 +109,9 @@ public class DisabledWorlds {
         }
         disabledWorlds.add(world);
     }
+
+    public void reload() {
+        disabledWorlds.clear();
+        this.setDisabledWorlds();
+    }
 }

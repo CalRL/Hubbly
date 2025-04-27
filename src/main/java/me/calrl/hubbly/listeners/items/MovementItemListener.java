@@ -20,12 +20,11 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.enums.TridentSounds;
+import me.calrl.hubbly.items.PlayerTridentData;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
-import org.bukkit.Sound;
+import net.minecraft.world.item.ProjectileItem;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
@@ -36,19 +35,23 @@ import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.player.PlayerFishEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.projectiles.ProjectileSource;
 import org.bukkit.util.Vector;
 
+import java.util.HashMap;
 import java.util.Random;
 
 
 public class MovementItemListener implements Listener {
-
     private final Hubbly plugin;
     private FileConfiguration config;
+    private HashMap<Player, PlayerTridentData> playerTridents = new HashMap<>();
     public MovementItemListener(Hubbly plugin) {
         this.plugin = plugin;
         config = plugin.getConfig();
@@ -60,7 +63,6 @@ public class MovementItemListener implements Listener {
 
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
         if(disabledWorlds.inDisabledWorld(event.getEntity().getLocation())) return;
-
         if(!(event.getBow().getItemMeta().getPersistentDataContainer().has(PluginKeys.ENDER_BOW.getKey()))) return;
         if(event.getEntity() instanceof Player player) {
 
@@ -128,10 +130,13 @@ public class MovementItemListener implements Listener {
             if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
             /// todo: check config here
             if(!player.hasPermission(Permissions.USE_TRIDENT.getPermission())) return;
-            ItemStack itemInHand = player.getInventory().getItemInMainHand();
+            PlayerInventory playerInventory = player.getInventory();
+            ItemStack itemInHand = playerInventory.getItemInMainHand();
             ItemMeta meta = itemInHand.getItemMeta();
+            int slot = playerInventory.getHeldItemSlot();
 
-            if(meta != null && itemInHand.getType() == Material.TRIDENT && itemInHand.getItemMeta().getPersistentDataContainer().has(PluginKeys.TRIDENT.getKey())) {
+            if(meta != null && itemInHand.getType() == Material.TRIDENT && meta.getPersistentDataContainer().has(PluginKeys.TRIDENT.getKey())) {
+
                 if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.TRIDENT, config.getLong("movementitems.trident.cooldown"))) {
                     event.setCancelled(true);
                     return;
@@ -139,12 +144,17 @@ public class MovementItemListener implements Listener {
 
                 event.getEntity().getPersistentDataContainer().set(PluginKeys.TRIDENT.getKey(), PersistentDataType.STRING, "trident");
             }
+             ItemStack newTrident = itemInHand.clone();
+//            if(player.getGameMode() == GameMode.ADVENTURE || player.getGameMode() == GameMode.SURVIVAL) {
+//                ItemStack newTrident = itemInHand.clone();
+//                Runnable runnable = () -> {
+//                    playerInventory.setItem(slot, newTrident);
+//                };
+//                long delay = config.getLong("movementitems.trident.give_delay", 5);
+//                Bukkit.getScheduler().runTaskLater(plugin, runnable, delay);
+//            }
 
-            if(player.getGameMode() == GameMode.ADVENTURE || player.getGameMode() == GameMode.SURVIVAL) {
-                ItemStack newTrident = itemInHand.clone();
-                player.getInventory().addItem(newTrident);
-            }
-
+            playerTridents.put(player, new PlayerTridentData(newTrident, slot));
         }
     }
 
@@ -163,6 +173,12 @@ public class MovementItemListener implements Listener {
 
                 player.teleport(trident.getLocation().setDirection(player.getLocation().getDirection()));
                 player.playSound(player.getLocation(), randomSound().getSound(), 1.0F, 1.0F);
+                PlayerTridentData data = playerTridents.get(player);
+                ItemStack newTrident = data.getTrident();
+                int slot = data.getSlot();
+
+                player.getInventory().setItem(slot, newTrident);
+
             }
         }
     }
