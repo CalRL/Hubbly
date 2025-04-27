@@ -74,6 +74,7 @@ public class Hubbly extends JavaPlugin {
     private LocaleManager localeManager;
     private SubCommandManager subCommandManager;
     private HookManager hookManager;
+    private ManagerFactory managerFactory;
 
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
@@ -87,10 +88,12 @@ public class Hubbly extends JavaPlugin {
         this.saveConfig();
         config = this.getConfig();
 
+        disabledWorlds.reload();
         subCommandManager.reload();
         fileManager.reloadFiles();
         itemsManager.reload();
         localeManager.reload();
+
         try {
             cleanup();
             loadComponents();
@@ -176,6 +179,7 @@ public class Hubbly extends JavaPlugin {
         bossBarManager = new BossBarManager(this);
         subCommandManager = new SubCommandManager(this);
         localeManager = new LocaleManager(this);
+        managerFactory = new ManagerFactory(this);
 
 
 
@@ -321,6 +325,7 @@ public class Hubbly extends JavaPlugin {
     public void setHookManager(HookManager hookManager) {
         this.hookManager = hookManager;
     }
+    public ManagerFactory getManagerFactory() { return this.managerFactory; }
 
 
     public static void enableTestMode() {
