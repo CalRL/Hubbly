@@ -4,16 +4,24 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.items.*;
+import me.calrl.hubbly.listeners.items.movement.AoteListener;
+import me.calrl.hubbly.listeners.items.movement.EnderbowListener;
+import me.calrl.hubbly.listeners.items.movement.RodListener;
+import me.calrl.hubbly.listeners.items.movement.TridentListener;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.io.File;
+import java.lang.reflect.Constructor;
 import java.util.*;
 
 public class ItemsManager {
@@ -43,13 +51,19 @@ public class ItemsManager {
     private void registerItems() {
         this.setConfig(plugin.getFileManager().getConfig("items.yml"));
         items.put("playervisibility", new PlayerVisibilityItem());
-        items.put("enderbow", new EnderbowItem(plugin));
-        items.put("grappling_hook", new RodItem(plugin));
-        items.put("aote", new AoteItem(plugin));
-        items.put("trident", new TridentItem(plugin));
+
+        this.register("trident", new TridentItem(plugin), new TridentListener(plugin));
+        this.register("enderbow", new EnderbowItem(plugin) , new EnderbowListener(plugin));
+        this.register("aote", new AoteItem(plugin), new AoteListener(plugin));
+        this.register("grappling_hook", new RodItem(plugin), new RodListener(plugin));
 
         if (itemsConfig.getConfigurationSection("items") != null) {
-            for (String itemKey : itemsConfig.getConfigurationSection("items").getKeys(false)) {
+            ConfigurationSection section = itemsConfig.getConfigurationSection("items");
+            if(section == null) {
+                throw new NullPointerException("items key not found in the items config");
+            }
+
+            for (String itemKey : section.getKeys(false)) {
                 items.put(ChatColor.stripColor(itemKey.toLowerCase()), new ConfigItem(itemKey, plugin));
                 debugMode.info("Registered item: " + itemKey);
             }
@@ -59,6 +73,22 @@ public class ItemsManager {
         for(String row : itemsConfig.getStringList("")) {
             debugMode.warn(row);
         }
+
+
+    }
+
+    private void register(String itemName, CustomItem item, Listener listener) {
+        this.config = plugin.getConfig();
+        String enabledPath = "movementitems." + itemName + ".enabled";
+        boolean isEnabled = config.getBoolean(enabledPath);
+        if(!isEnabled) {
+            debugMode.info("Item: " + itemName + " not registered.");
+            return;
+        }
+
+        Bukkit.getPluginManager().registerEvents(listener, plugin);
+        items.put(itemName, item);
+        debugMode.info("Registered item: " + itemName);
     }
 
     public void reload() {

@@ -173,30 +173,11 @@ public class ChatUtils {
 
     public static TextComponent textLinkBuilder(String message, String link, String hoverText, Player player) {
         message = ChatUtils.processMessage(player, message);
-        TextComponent component = new TextComponent(message);
+        TextComponent component = new TextComponent(message); 
         String parsedHoverText = ChatUtils.processMessage(player, hoverText);
         component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(parsedHoverText)));
         component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
         return component;
-    }
-
-    public static void sendLocaleMessage(Hubbly plugin, Player player, LocaleKey key) {
-        LocaleManager manager = JavaPlugin.getPlugin(Hubbly.class).getLocaleManager();
-        if(player == null) {
-            Bukkit.getConsoleSender().sendMessage("[Hubbly] " + manager.get("en", key)); // fallback to English
-            return;
-        }
-
-        String message = manager.get(player, key);
-        message = prefixMessage(plugin, player, message);
-        player.sendMessage(message);
-    }
-
-    public static void sendLocaleMessage(Hubbly plugin, CommandSender sender, LocaleKey key) {
-        if(sender instanceof Player player) {
-            sendLocaleMessage(plugin, player, key);
-        }
-        sendLocaleMessage(plugin, null, key);
     }
 
 }

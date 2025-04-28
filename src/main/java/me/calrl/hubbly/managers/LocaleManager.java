@@ -31,21 +31,6 @@ public class LocaleManager {
         this.fallback = locales.getOrDefault(defaultLanguage, fileManager.getConfig(path));
     }
 
-    @Deprecated(forRemoval = true)
-    public String get(Player player, LocaleKey key) {
-        String locale = player.getLocale().split("_")[0].toLowerCase();
-        FileConfiguration config = locales.getOrDefault(locale, fallback);
-
-        return getOrDefault(config, key);
-    }
-
-    @Deprecated(forRemoval = true)
-    public String get(String language, LocaleKey key) {
-        FileConfiguration config = locales.getOrDefault(language.toLowerCase(), fallback);
-
-        return getOrDefault(config, key);
-    }
-
     public String get(Player player, String path) {
         if(path == null || path.isEmpty()) {
             throw new NullPointerException("Path returned null");
@@ -115,6 +100,10 @@ public class LocaleManager {
                 this.plugin.saveResource("languages/" + lang, false);
             }
         }
+    }
+
+    public String getLocaleMessage(Player player, String key) {
+        return this.get(player, key);
     }
 
 

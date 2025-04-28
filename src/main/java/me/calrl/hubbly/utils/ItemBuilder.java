@@ -127,6 +127,13 @@ public class ItemBuilder {
         return this;
     }
 
+    public ItemBuilder setUnbreakable() {
+        if(itemMeta != null) {
+            itemMeta.setUnbreakable(true);
+        }
+        return this;
+    }
+
     public ItemBuilder setTextures(String texture) {
         if(itemMeta != null && this.itemStack.getType() == Material.PLAYER_HEAD) {
             SkullMeta skullMeta = (SkullMeta) itemMeta;

@@ -32,25 +32,6 @@ public class MessageBuilder {
         this.localeManager = plugin.getLocaleManager();
     }
 
-    @Deprecated(forRemoval = true)
-    public String getLocaleMessage(LocaleKey key) {
-        return this.localeManager.get(player, key);
-    }
-
-    public String getLocaleMessage(String key) { return this.localeManager.get(player, key); }
-
-    @Deprecated(forRemoval = true)
-    public MessageBuilder setKey(LocaleKey key) {
-        String msg;
-        if(player != null) {
-            msg = this.localeManager.get(player, key);
-        } else {
-            msg = this.localeManager.get("en", key);
-        }
-        this.content = (msg != null) ? msg : "[Missing locale: " + key + "]";
-        return this;
-    }
-
     public MessageBuilder setKey(String key) {
         String msg;
         if(player != null) {

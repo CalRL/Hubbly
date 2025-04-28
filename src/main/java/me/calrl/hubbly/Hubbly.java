@@ -26,7 +26,6 @@ import me.calrl.hubbly.listeners.ServerLoadListener;
 import me.calrl.hubbly.listeners.chat.ChatListener;
 import me.calrl.hubbly.listeners.chat.CommandBlockerListener;
 import me.calrl.hubbly.listeners.items.ConfigItemListener;
-import me.calrl.hubbly.listeners.items.MovementItemListener;
 import me.calrl.hubbly.listeners.items.PlayerVisibilityListener;
 import me.calrl.hubbly.listeners.player.*;
 import me.calrl.hubbly.listeners.world.AntiWDL;
@@ -147,7 +146,6 @@ public class Hubbly extends JavaPlugin {
         registerListener(new CommandBlockerListener(this));
         registerListener(new ForceinvListener(this), "player.forceinventory");
         registerListener(new ChatListener(this), "blocked_words.enabled");
-        registerListener(new MovementItemListener(this));
         registerListener(new InventoryListener(this));
         registerListener(new XPListener(this), "player.experience.enabled");
     }

@@ -52,6 +52,7 @@ public class EnderbowItem implements CustomItem {
         ItemStack item = builder
                 .fromConfig(this.player, section)
                 .addPersistentData(PluginKeys.ENDER_BOW.getKey(), PersistentDataType.STRING, "enderbow")
+                .setUnbreakable()
                 .build();
 
         return item;
