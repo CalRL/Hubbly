@@ -42,7 +42,7 @@ public class DisabledWorlds {
         World world = location.getWorld();
         return this.inDisabledWorld(world);
     }
-    // TODO: make this actually check theres a world...
+
     public void setDisabledWorlds() {
         List<String> disabledWorldsList = this.getConfigWorldList();
         DebugMode debugMode = new DebugMode();

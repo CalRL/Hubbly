@@ -48,10 +48,7 @@ public class WorldEventListeners implements Listener {
 
     private FileConfiguration config;
     private final Hubbly plugin;
-
-    // FIXME Fix the bossbar manager to look like the rest of the code, major refactor needed:
-    // - Seriously, this looks bad
-    // REVIEW: (8/1/2025) almost done, just needs to be testeds.
+    
     private final BossBarManager bossBarManager;
 
     public WorldEventListeners(Hubbly plugin) {

@@ -70,6 +70,12 @@ public class FileManager {
 
     }
 
+    public void saveDefaultFiles() {
+        plugin.saveResourceIfNotExists("menus/selector.yml");
+        plugin.saveResourceIfNotExists("menus/socials.yml");
+        plugin.saveResourceIfNotExists("languages/en.yml");
+    }
+
     public void reload(String relativePath) {
         if (lockedFiles.contains(relativePath)) {
             plugin.getLogger().info("File " + relativePath + " is locked and will not be reloaded.");
