@@ -14,6 +14,7 @@ unknown_command: Unknown command. Use '/hubbly help' for a list of commands.
 unknown_item: Item %value% not found
 invalid_amount: Invalid amount %value%
 invalid_argument: Invalid argument %value%
+invalid_world: World %world% does not exist
 unknown_player: Player %player% not found
 arg_must_be_number: Argument %value% must be a number
 
@@ -81,5 +82,21 @@ subcommands:
   menu:
     usage: /hubbly menu <menu>
     description: Opens a provided menu
+  worlds:
+    usage: /hubbly worlds <add | remove | check>
+    description:
+    add:
+      usage: /hubbly worlds add <world>
+      description:
+      message: Added %world% to the disabled world list
+    remove:
+      usage: /hubbly worlds remove <world>
+      description:
+      message: Removed %world% from the disabled world list
+    check:
+      usage: /hubbly worlds check <world>
+      description:
+      enabled: "Hubbly is enabled in world: %world%"
+      disabled: "Hubbly is disabled in world: %world%"
 
 

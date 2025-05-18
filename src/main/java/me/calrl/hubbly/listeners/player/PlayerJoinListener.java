@@ -114,6 +114,7 @@ public class PlayerJoinListener implements Listener {
     }
 
     private void handleActionsOnJoin(Player player) {
+        FileConfiguration config = plugin.getConfig();
         List<String> actions = config.getStringList("actions_on_join");
         if(actions.isEmpty()) {
             return;

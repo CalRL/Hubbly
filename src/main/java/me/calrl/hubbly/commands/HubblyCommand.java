@@ -24,6 +24,7 @@ import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.managers.SubCommandManager;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.CommandNode;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -44,11 +45,14 @@ public class HubblyCommand implements TabExecutor {
     private final Hubbly plugin;
     private final SubCommandManager subCommandManager;
     private Map<String, SubCommand> subCommands;
+    private Map<String, CommandNode> commandNodes;
     public HubblyCommand(Hubbly plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
         this.subCommandManager = plugin.getSubCommandManager();
+
         this.subCommands = subCommandManager.getSubCommands();
+        this.commandNodes = subCommandManager.getNodes();
     }
 
     @Override
@@ -62,11 +66,18 @@ public class HubblyCommand implements TabExecutor {
             return true;
         }
 
-        // Get the subcommand
+        String root = args[0].toLowerCase();
+
+        CommandNode node = commandNodes.get(root);
+        if (node != null) {
+            node.execute(sender, args, 1);
+            return true;
+        }
+
+
         String subCommandName = args[0].toLowerCase();
         SubCommand subCommand = subCommands.get(subCommandName);
 
-        // If subcommand exists, execute it
         if (subCommand != null) {
             subCommand.execute(sender, args);
         } else {
@@ -80,18 +91,27 @@ public class HubblyCommand implements TabExecutor {
     @Nullable
     @Override
     public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
-        if(!(sender instanceof Player player)) return null;
+        if (!(sender instanceof Player player)) return null;
 
         final List<String> completions = new ArrayList<>();
 
         if (args.length == 1) {
+
             StringUtil.copyPartialMatches(args[0], subCommands.keySet(), completions);
-        } else if (args.length > 1) {
-            SubCommand subCommand = subCommands.get(args[0].toLowerCase());
-            if (subCommand != null) {
-                return subCommand.tabComplete(player, Arrays.copyOfRange(args, 1, args.length));
-            }
+            StringUtil.copyPartialMatches(args[0], commandNodes.keySet(), completions);
+            return completions;
         }
+
+        String root = args[0].toLowerCase();
+
+        if (commandNodes.containsKey(root)) {
+            return commandNodes.get(root).tabComplete(player, args, 1);
+        }
+
+        if (subCommands.containsKey(root)) {
+            return subCommands.get(root).tabComplete(player, Arrays.copyOfRange(args, 1, args.length));
+        }
+
         return completions;
     }
 }

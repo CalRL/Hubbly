@@ -33,6 +33,11 @@ public enum Permissions {
     COMMAND_CONVERT("command.convert"),
     COMMAND_MENU("command.menu"),
 
+    COMMAND_WORLDS("commands.worlds"),
+    COMMAND_WORLDS_ADD("commands.worlds.add"),
+    COMMAND_WORLDS_REMOVE("commands.worlds.remove"),
+    COMMAND_WORLDS_CHECK("commands.worlds.check"),
+
     BYPASS_FORCE_INVENTORY("bypass.forceinventory"),
     BYPASS_ANTI_SWEAR("bypass.antiswear"),
     BYPASS_BLOCKED_COMMANDS("bypass.blockedcommands"),

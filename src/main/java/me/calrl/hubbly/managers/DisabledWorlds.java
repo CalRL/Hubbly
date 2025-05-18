@@ -97,17 +97,51 @@ public class DisabledWorlds {
         return invertedWorlds;
     }
 
+    public void addWorld(World world) {
+        boolean isValid = this.checkValidity(world);
+
+        if(!isValid) return;
+        DebugMode debugMode = new DebugMode();
+        if(disabledWorlds.contains(world)) {
+            debugMode.info("World is already in DisabledWorlds list: ");
+        }
+
+        disabledWorlds.add(world);
+    }
+
+    public boolean checkWorld(World world) {
+        if(world == null) return false;
+        return disabledWorlds.contains(world);
+    }
+
+    public boolean checkValidity(World world) {
+        if(world == null) {
+            plugin.getLogger().warning("Provided world is null");
+            return false;
+        }
+
+        if(!Bukkit.getWorlds().contains(world)) {
+            plugin.getLogger().warning("World doesn't exist? " + world.getName());
+            return false;
+        }
+        return true;
+    }
+
+    public void removeWorld(World world) {
+        boolean isValid = this.checkValidity(world);
+
+        if(!isValid) return;
+
+        DebugMode debugMode = new DebugMode();
+        if(!disabledWorlds.contains(world)) {
+            debugMode.info("World is not in DisabledWorlds list: ");
+        }
+
+        disabledWorlds.remove(world);
+    }
 
     public List<World> getDisabledWorlds() {
         return this.disabledWorlds;
-    }
-
-    public void addDisabledWorld(World world) {
-        if(disabledWorlds.contains(world)) {
-            String message = String.format("World %s is already in the disabled worlds list!", world.getName());
-            throw new IllegalArgumentException(message);
-        }
-        disabledWorlds.add(world);
     }
 
     public void reload() {
