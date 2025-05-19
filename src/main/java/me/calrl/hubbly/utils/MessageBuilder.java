@@ -100,7 +100,9 @@ public class MessageBuilder {
 
     public void send() {
         String toSend = ChatUtils.prefixMessage(plugin, player, content);
-
+        if(toSend.contains("nomessage")) {
+            return;
+        }
 
         if(player != null) {
             ChatUtils.processMessage(player, toSend);

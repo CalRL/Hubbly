@@ -16,7 +16,8 @@ public class TridentDataManager {
 
     public void add(Player player, ItemStack trident, int slot) {
         if(playerTridents.containsKey(player)) {
-            throw new IllegalArgumentException("Player already has a tracked trident...");
+            new DebugMode().info("Player already has a tracked trident");
+            return;
         }
         this.playerTridents.put(player, new PlayerTridentData(trident, slot));
     }

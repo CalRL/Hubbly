@@ -1,7 +1,9 @@
 package me.calrl.hubbly.utils.update;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.checkerframework.checker.units.qual.C;
 
 import java.util.concurrent.CompletableFuture;
@@ -87,6 +89,16 @@ public class UpdateUtil {
     }
     public boolean getNeedsUpdate() {
         return needsUpdate;
+    }
+
+    public void sendMessage(Hubbly plugin, Player player) {
+        String key = this.getKey();
+        String message = new MessageBuilder().setPlugin(plugin).setPlayer(player).setKey(key).build();
+        if(message.equals(" ") || message.equals("nomessage")) {
+            return;
+        }
+
+        player.sendMessage(message);
     }
 
     public String getMessage() {
