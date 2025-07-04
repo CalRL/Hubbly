@@ -37,7 +37,7 @@ jobs:
         run: ./gradlew build
 
       - name: Upload JAR
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          name: hubbly-${{ env.VERSION }}.jar
+          name: Hubbly-${{ env.VERSION }}.jar
           path: build/libs/*.jar
