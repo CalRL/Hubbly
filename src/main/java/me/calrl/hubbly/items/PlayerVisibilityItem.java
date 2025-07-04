@@ -23,6 +23,7 @@ import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -30,6 +31,7 @@ import org.bukkit.persistence.PersistentDataType;
 
 
 public class PlayerVisibilityItem implements CustomItem {
+    private Player player;
     public final ItemStack createItem() {
         FileConfiguration config = Hubbly.getInstance().getConfig();
         ItemStack item = new ItemStack(Material.valueOf(config.getString("playervisibility.visible.item", "GREEN_DYE")));
@@ -43,6 +45,11 @@ public class PlayerVisibilityItem implements CustomItem {
             item.setItemMeta(meta);
         }
         return item;
+    }
+
+    @Override
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 
 }

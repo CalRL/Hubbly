@@ -19,8 +19,6 @@ package me.calrl.hubbly.enums;
 import me.calrl.hubbly.Hubbly;
 import org.bukkit.NamespacedKey;
 
-import javax.naming.Name;
-
 public enum PluginKeys {
 
     PLAYER_VISIBILITY(new NamespacedKey(Hubbly.getInstance(), "player_visibility")),
@@ -29,8 +27,9 @@ public enum PluginKeys {
     TRIDENT(new NamespacedKey(Hubbly.getInstance(), "trident")),
     GRAPPLING_HOOK(new NamespacedKey(Hubbly.getInstance(), "grappling_hook")),
     AOTE(new NamespacedKey(Hubbly.getInstance(), "aote")),
-    ENDER_BOW(new NamespacedKey(Hubbly.getInstance(),"ender_bow"));
-
+    ENDER_BOW(new NamespacedKey(Hubbly.getInstance(),"ender_bow")),
+    ACTIONS_KEY(new NamespacedKey(Hubbly.getInstance(), "customActions")),
+    LAUNCHPAD_KEY(new NamespacedKey(Hubbly.getInstance(), "launchpad"));
 
 
     private final NamespacedKey key;

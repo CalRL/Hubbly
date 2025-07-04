@@ -1,7 +1,10 @@
 package me.calrl.hubbly.utils.update;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
@@ -10,6 +13,9 @@ public class UpdateUtil {
 
     private String updateMessage = null;
     private boolean needsUpdate;
+    private String key;
+    private String currentVersion;
+    private String newVersion;
     public boolean checkForUpdate(Hubbly plugin) {
         Logger logger = plugin.getLogger();
 
@@ -17,38 +23,38 @@ public class UpdateUtil {
 
         UpdateChecker.init(plugin, 117243).requestUpdateCheck().whenComplete((result, exception) -> {
             UpdateChecker.UpdateReason reason = result.getReason();
-            ConfigurationSection section = plugin.getConfig().getConfigurationSection("update");
+            this.currentVersion = plugin.getDescription().getVersion();
 
-            if(section == null) {
-                logger.warning("Please report this to the developer...");
-                logger.warning("'update' is NULL in config... ");
-                updateFuture.complete(false);
-                return;
-            }
-
+            //todo: remove the updateMessage down the line as it uses old logic (removed in 3.0.0)
             switch(reason) {
                 case UpdateChecker.UpdateReason.UP_TO_DATE -> {
                     needsUpdate = false;
-                    updateMessage = parsePlaceholders(section.getString("no_update", "No update"), result);
+                    key = "update.no_update";
+                    updateMessage = "No update";
                     logger.info(updateMessage);
                     }
                 case UpdateChecker.UpdateReason.NEW_UPDATE -> {
                     needsUpdate = true;
-                    updateMessage = parsePlaceholders(section.getString("new_update", "A new update for Hubbly is available"), result);
+                    key = "update.new_update";
+                    updateMessage = parsePlaceholders("A new update for Hubbly is available: %new%", result);
+                    this.setNew(result.getNewestVersion());
 
                     logger.info(updateMessage);
 
                 }
                 case UpdateChecker.UpdateReason.UNRELEASED_VERSION -> {
                     needsUpdate = false;
-                    updateMessage = String.format("You're running a development build (%s)...", plugin.getDescription().getVersion());
 
+                    key = "update.no_update";
+
+                    updateMessage = String.format("You're running a development build (%s)...", plugin.getDescription().getVersion());
                     logger.info(updateMessage);
                     logger.info("Proceed with caution.");
                 }
                 default -> {
                     needsUpdate = false;
-                    updateMessage = parsePlaceholders(section.getString("error", "Could not check for a new version..."), result);
+                    key = "update.error";
+                    updateMessage = "Could not check for a new version...";
 
                     logger.info(updateMessage);
                     logger.info("Reason: " + reason);
@@ -85,8 +91,34 @@ public class UpdateUtil {
         return needsUpdate;
     }
 
+    public void sendMessage(Hubbly plugin, Player player) {
+        String key = this.getKey();
+        String message = new MessageBuilder().setPlugin(plugin).setPlayer(player).setKey(key).build();
+        if(message.equals(" ") || message.equals("nomessage")) {
+            return;
+        }
+
+        player.sendMessage(message);
+    }
 
     public String getMessage() {
         return this.updateMessage;
+    }
+    public String getKey() { return this.key;}
+
+    public void setCurrent(String version) {
+        this.currentVersion = version;
+    }
+
+    public void setNew(String version) {
+        this.newVersion = version;
+    }
+
+    public String getCurrent() {
+        return this.currentVersion;
+    }
+
+    public String getNew() {
+        return this.newVersion;
     }
 }

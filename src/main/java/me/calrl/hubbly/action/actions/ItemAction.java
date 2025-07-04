@@ -32,9 +32,9 @@ public class ItemAction implements Action {
         String[] args = data.split(";");
         String item = args[0];
         if(args.length > 1 && args[1] != null) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubbly:give " + player.getName() + " " + item + " 1 " +  Integer.parseInt(args[1]));
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubbly give " + player.getName() + " " + item + " 1 " +  Integer.parseInt(args[1]));
         } else {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubbly:give " + player.getName() + " " + item);
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubbly give " + player.getName() + " " + item);
         }
 
     }

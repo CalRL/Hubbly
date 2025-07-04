@@ -1,0 +1,102 @@
+no_console: "Only players can use this command!"
+no_permission_command: You do not have permission to use this command!
+no_permission_use: You do not have permission to use this!
+reload: Reloaded Hubbly plugin
+fly:
+  enable: Flight mode enabled.
+  disable: Flight mode disabled.
+no_fly_enabled: Flight is disabled in config
+blocked_command: Unknown command. Type "/help" for help
+blocked_message: Please do not use that word!
+success: Success!
+failure: Failure!
+unknown_command: Unknown command. Use '/hubbly help' for a list of commands.
+unknown_item: Item %value% not found
+invalid_amount: Invalid amount %value%
+invalid_argument: Invalid argument %value%
+invalid_world: World %world% does not exist
+unknown_player: Player %player% not found
+arg_must_be_number: Argument %value% must be a number
+
+# No PAPI support, only %player% placeholder to get the person who locked the chat.
+chat_locked: Chat has been locked by %player%
+chat_unlocked: Chat has been unlocked by %player%
+
+update:
+  new_update:
+    An update is available! Hubbly %new% can be downloaded on SpigotMC,
+    you are on %current%
+  no_update: Hubbly %current% is up to date
+  error: Could not check for a new version...
+
+action:
+  errors:
+    null: Action data is null..."
+
+anti_wdl_notify: Player %player% tried to download the world
+usage:
+  hubbly: "Usage: /hubbly <command> <args>"
+
+commands:
+  hubbly:
+    usage: /hubbly
+    description: Main command for the plugin
+  setspawn:
+    usage: /setspawn
+    description: Sets the spawn location to your current position.
+  spawn:
+    usage: /spawn
+    description: Teleports you to the spawn location.
+  fly:
+    usage: /fly
+    description: Toggles flight mode for the player.
+  clearchat:
+    usage: /clearchat
+    description: Clears the chat for all players.
+  lockchat:
+    usage: /lockchat
+    description: Locks or unlocks the chat for all players.
+
+subcommands:
+  version:
+    usage: /hubbly version
+    description: Displays the current plugin version.
+  help:
+    usage: /hubbly help
+    description: Shows a list of available commands.
+  reload:
+    usage: /hubbly reload
+    description: Reloads the plugin configuration.
+  nextannouncement:
+    usage: /hubbly nextannouncement
+    description: Sends the next scheduled announcement.
+  give:
+    usage: /hubbly give <player> <item> [amount] [slot]
+    description: Gives an item to a player with optional amount and slot.
+    messages:
+      give_item: "Given %amount% %item% to %player%"
+      give_item_with_slot: "Given %amount% %item% to %player% in slot %slot%"
+  convert:
+    usage: /hubbly convert <selector/socials>
+    description: Converts files
+  menu:
+    usage: /hubbly menu <menu>
+    description: Opens a provided menu
+  worlds:
+    usage: /hubbly worlds <add | remove | check>
+    description:
+    add:
+      usage: /hubbly worlds add <world>
+      description:
+      message: Added %world% to the disabled world list
+    remove:
+      usage: /hubbly worlds remove <world>
+      description:
+      message: Removed %world% from the disabled world list
+    check:
+      usage: /hubbly worlds check <world>
+      description:
+      enabled: "Hubbly is enabled in world: %world%"
+      disabled: "Hubbly is disabled in world: %world%"
+
+

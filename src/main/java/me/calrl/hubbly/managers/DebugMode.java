@@ -23,8 +23,14 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class DebugMode {
-    private final FileConfiguration config = Hubbly.getInstance().getConfig();
-    private final Logger logger = Hubbly.getInstance().getLogger();
+    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private Logger logger = Hubbly.getInstance().getLogger();
+
+    public DebugMode() {}
+    public DebugMode(Hubbly plugin) {
+        this.config = plugin.getConfig();
+        this.logger = plugin.getLogger();
+    }
 
     public void info(String message) {
         if(config.getBoolean("debug")){

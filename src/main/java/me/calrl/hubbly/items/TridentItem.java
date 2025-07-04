@@ -19,32 +19,45 @@ package me.calrl.hubbly.items;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.interfaces.CustomItem;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.ItemBuilder;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 public class TridentItem implements CustomItem {
-    private FileConfiguration config;
-    private Hubbly plugin;
+    private final Hubbly plugin;
+    private Player player;
     public TridentItem(Hubbly plugin) {
         this.plugin = plugin;
     }
+
     @Override
     public ItemStack createItem() {
-        config = plugin.getConfig();
-        ItemStack item = new ItemStack(Material.TRIDENT);
-        ItemMeta meta = item.getItemMeta();
-        if(meta != null) {
-            PersistentDataContainer container = meta.getPersistentDataContainer();
-            container.set(PluginKeys.TRIDENT.getKey(), PersistentDataType.STRING, "trident");
-            String itemName = ChatUtils.translateHexColorCodes(config.getString("movementitems.trident.name", "<#89CFF0>Trident"));
-            meta.setDisplayName(itemName);
-            item.setItemMeta(meta);
+        FileConfiguration config = plugin.getConfig();
+
+        ConfigurationSection section = config.getConfigurationSection("movementitems.trident");
+        if(section == null) {
+            plugin.getLogger().warning("movementitems.trident is null.");
+            return null;
         }
+        new DebugMode().info(section.getKeys(false).toString());
+        ItemBuilder builder = new ItemBuilder();
+        ItemStack item = builder
+                .fromConfig(this.player, section)
+                .addPersistentData(PluginKeys.TRIDENT.getKey(), PersistentDataType.STRING, "trident")
+                .build();
         return item;
+    }
+
+    @Override
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

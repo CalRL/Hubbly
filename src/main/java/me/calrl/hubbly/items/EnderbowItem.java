@@ -19,9 +19,13 @@ package me.calrl.hubbly.items;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.interfaces.CustomItem;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.ItemBuilder;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -29,24 +33,33 @@ import org.bukkit.persistence.PersistentDataType;
 
 public class EnderbowItem implements CustomItem {
     private Hubbly plugin;
-
+    private Player player;
     public EnderbowItem(Hubbly plugin) {
         this.plugin = plugin;
     }
+
     @Override
     public ItemStack createItem() {
         FileConfiguration config = plugin.getConfig();
-        ItemStack item = new ItemStack(Material.BOW);
-        ItemMeta meta = item.getItemMeta();
 
-        if(meta != null) {
-            PersistentDataContainer container = meta.getPersistentDataContainer();
-            container.set(PluginKeys.ENDER_BOW.getKey(), PersistentDataType.STRING, "enderbow");
-            String itemName = ChatUtils.translateHexColorCodes(config.getString("movementitems.enderbow.name", "<#A020F0>Enderbow"));
-            meta.setDisplayName(itemName);
-            meta.setUnbreakable(true);
-            item.setItemMeta(meta);
+        ConfigurationSection section = config.getConfigurationSection("movementitems.enderbow");
+        if(section == null) {
+            plugin.getLogger().warning("movementitems.enderbow is null.");
+            return null;
         }
+        new DebugMode().info(section.getKeys(false).toString());
+        ItemBuilder builder = new ItemBuilder();
+        ItemStack item = builder
+                .fromConfig(this.player, section)
+                .addPersistentData(PluginKeys.ENDER_BOW.getKey(), PersistentDataType.STRING, "enderbow")
+                .setUnbreakable()
+                .build();
+
         return item;
+    }
+
+    @Override
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

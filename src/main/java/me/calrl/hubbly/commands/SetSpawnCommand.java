@@ -18,31 +18,27 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.functions.AngleRounder;
-import me.calrl.hubbly.interfaces.CustomItem;
-import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.ChatColor;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class SetSpawnCommand implements CommandExecutor {
 
-    private final JavaPlugin plugin;
-    private FileConfiguration config = Hubbly.getInstance().getConfig();
-    private final Map<String, CustomItem> items = new HashMap<>();
+    private final Hubbly plugin;
+    private FileConfiguration config;
 
-    public SetSpawnCommand(JavaPlugin plugin) {
+    public SetSpawnCommand(Hubbly plugin) {
         this.plugin = plugin;
+        this.config = plugin.getConfig();
     }
 
     public double spawnRound(double value) {
@@ -51,35 +47,51 @@ public class SetSpawnCommand implements CommandExecutor {
         } else {
             return Math.round(value * 2) / 2.0;
         }
-
     }
 
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(!(sender instanceof Player player)) return true;
-        if (sender.hasPermission("hubbly.command.setspawn") || sender.isOp()) {
-            Location location = player.getServer().getPlayer(player.getName()).getLocation();
-            double x = location.getX();
-            double y = location.getY();
-            double z = location.getZ();
-            float yaw = location.getYaw();
-            float pitch = location.getPitch();
-            float roundedYaw = AngleRounder.roundToNearestRightAngle(yaw);
-            float roundedPitch = AngleRounder.roundToNearestRightAngle(pitch);
-
-            config.set("spawn.world", location.getWorld().getName());
-            config.set("spawn.x", spawnRound(x));
-            config.set("spawn.y", spawnRound(y));
-            config.set("spawn.z", spawnRound(z));
-            config.set("spawn.yaw", roundedYaw);
-            config.set("spawn.pitch", roundedPitch);
-            player.sendMessage(ChatUtils.prefixMessage(player, config.getString("messages.success", "Success!")));
-            plugin.saveConfig();
-
-        } else {
-            player.sendMessage(config.getString("messages.no_permission_command", "No permission"));
+        if (!sender.hasPermission("hubbly.command.setspawn")) {
+            new MessageBuilder(plugin)
+                    .setPlayer(player)
+                    .setKey("no_permission_command")
+                    .send();
+            return true;
         }
+
+        Location location = player.getLocation();
+
+        double x = location.getX();
+        double y = location.getY();
+        double z = location.getZ();
+        float yaw = location.getYaw();
+        float pitch = location.getPitch();
+        float roundedYaw = new AngleRounder(yaw).getRoundedAngle();
+        float roundedPitch = new AngleRounder(pitch).getRoundedAngle();
+
+        World world = location.getWorld();
+        if(world == null) {
+            new MessageBuilder(plugin)
+                    .setPlayer(player)
+                    .setKey("failure")
+                    .send();
+
+            throw new NullPointerException("World is null?");
+        }
+
+        config.set("spawn.world", world.getName());
+        config.set("spawn.x", spawnRound(x));
+        config.set("spawn.y", spawnRound(y));
+        config.set("spawn.z", spawnRound(z));
+        config.set("spawn.yaw", roundedYaw);
+        config.set("spawn.pitch", roundedPitch);
+
+        plugin.saveConfig();
+
+        new MessageBuilder(plugin).setPlayer(player).setKey("success").send();
+
         return true;
     }
 }

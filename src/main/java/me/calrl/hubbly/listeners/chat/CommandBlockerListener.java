@@ -18,8 +18,11 @@
 package me.calrl.hubbly.listeners.chat;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
+import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -50,10 +53,17 @@ public class CommandBlockerListener implements Listener {
         blockedCommands = config.getStringList("blocked_commands");
         Player player = event.getPlayer();
         for (String command : blockedCommands) {
-            if(message.startsWith("/" + command.toLowerCase()) && (!player.hasPermission("hubbly.bypass.blockedcommands") && !player.isOp())) {
+            if(message.startsWith("/" + command.toLowerCase()) && !player.hasPermission(Permissions.BYPASS_BLOCKED_COMMANDS.getPermission())) {
                 event.setCancelled(true);
-                message = config.getString("messages.blocked_command", "Unknown command %command%").replace("%command%", command);
-                player.sendMessage(ChatUtils.translateHexColorCodes(message));
+                String msg = new MessageBuilder(plugin)
+                        .setPlayer(player)
+                        .setKey("blocked_command")
+                        .build();
+
+                player.sendMessage(
+                        ChatUtils.processMessage(player, msg.replace("%command%", command))
+                );
+
                 debugMode.info(player.getName() + " tried to use /" + command);
                 return;
             }

@@ -20,6 +20,8 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.managers.AnnouncementsManager;
 import me.calrl.hubbly.managers.DisabledWorlds;
+import me.calrl.hubbly.utils.ChatUtils;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class NextAnnouncementCommand implements SubCommand {
@@ -33,17 +35,32 @@ public class NextAnnouncementCommand implements SubCommand {
     }
 
     @Override
-    public String getIdentifier() {
-        return "NEXTANNOUNCEMENT";
+    public String getName() {
+        return "nextannouncement";
     }
 
     @Override
-    public void execute(Player player, String[] args) {
-        if(!player.hasPermission("hubbly.command.nextannouncement") && !player.isOp()) {
-            player.sendMessage(plugin.getConfig().getString("messages.no_permission_command"));
+    public String getDescription() {
+        return "Sends the next announcement in the queue";
+    }
+
+    @Override
+    public String getUsage() {
+        return "/hubbly nextannouncement";
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        if(!sender.hasPermission("hubbly.command.nextannouncement") && !sender.isOp()) {
+            sender.sendMessage(
+                    ChatUtils.prefixMessage(plugin, plugin.getConfig().getString("messages.no_permission_command"))
+            );
             return;
         };
-        if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
+        if(sender instanceof Player player) {
+            boolean inDisabledWorld = disabledWorlds.inDisabledWorld(player.getLocation());
+            if(inDisabledWorld) return;
+        }
         announcementsManager.skipToNextAnnouncement();
     }
 }

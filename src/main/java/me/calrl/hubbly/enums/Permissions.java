@@ -29,6 +29,14 @@ public enum Permissions {
     COMMAND_LOCK_CHAT("command.lockchat"),
     COMMAND_ADMIN("command.admin"),
     COMMAND_SELECTOR("command.selector"),
+    COMMAND_HELP("command.help"),
+    COMMAND_CONVERT("command.convert"),
+    COMMAND_MENU("command.menu"),
+
+    COMMAND_WORLDS("commands.worlds"),
+    COMMAND_WORLDS_ADD("commands.worlds.add"),
+    COMMAND_WORLDS_REMOVE("commands.worlds.remove"),
+    COMMAND_WORLDS_CHECK("commands.worlds.check"),
 
     BYPASS_FORCE_INVENTORY("bypass.forceinventory"),
     BYPASS_ANTI_SWEAR("bypass.antiswear"),
@@ -50,9 +58,7 @@ public enum Permissions {
     BYPASS_PROJECTILES("bypass.projectiles"),
     BYPASS_OFF_HAND("bypass.offhand"),
 
-    USE_SELECTOR("use.compass"),
     USE_PLAYER_VISIBILITY("use.playervisibility"),
-    USE_SOCIALS("use.socials"),
     USE_LAUNCHPAD("use.launchpad"),
     USE_GRAPPLING_HOOK("use.grapplinghook"),
     USE_TRIDENT("use.trident"),

@@ -20,9 +20,15 @@ package me.calrl.hubbly.commands.subcommands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.PluginDescriptionFile;
+
+import java.util.Map;
 
 public class VersionCommand implements SubCommand {
     private final Hubbly plugin;
@@ -33,28 +39,40 @@ public class VersionCommand implements SubCommand {
         this.config = plugin.getConfig();
     }
 
-
     @Override
-    public String getIdentifier() {
-        return "VERSION";
+    public String getName() {
+        return "version";
     }
 
     @Override
-    public void execute(Player player, String[] args) {
-        if(player.hasPermission("hubbly.command.version") || player.isOp()) {
+    public String getDescription() {
+        return "Gets the version";
+    }
 
-            player.sendMessage(
-                    ChatUtils.prefixMessage(player, "<#FF00FF>Version: " + plugin.getDescription().getVersion())
+    @Override
+    public String getUsage() {
+        return "/hubbly version";
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        if(sender.hasPermission("hubbly.command.version")) {
+            PluginDescriptionFile file = plugin.getDescription();
+            sender.sendMessage(
+                    ChatUtils.prefixMessage(plugin, "Version: " + file.getVersion())
             );
-            player.sendMessage(
-                    ChatUtils.prefixMessage(player, "api-VERSION: " + plugin.getDescription().getAPIVersion())
+            sender.sendMessage(
+                    ChatUtils.prefixMessage(plugin, "api-VERSION: " + file.getAPIVersion())
             );
-            player.sendMessage(
-                    ChatUtils.prefixMessage(player, "Website: " + plugin.getDescription().getWebsite())
+            sender.sendMessage(
+                    ChatUtils.prefixMessage(plugin, "Website: " + file.getWebsite())
             );
+
         } else {
-            player.sendMessage(config.getString("messages.no_permission_command", "No permission"));
+            new MessageBuilder(plugin)
+                    .setPlayer(sender)
+                    .setKey("no_permission_command")
+                    .send();
         }
-
     }
 }

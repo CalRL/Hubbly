@@ -28,41 +28,124 @@ import java.util.List;
 
 public class DisabledWorlds {
 
-    private List<String> disabledWorlds;
+    private final List<World> disabledWorlds = new ArrayList<>();
     private final Hubbly plugin;
-    private boolean isInverted;
     public DisabledWorlds(Hubbly plugin) {
         this.plugin = plugin;
-        isInverted = plugin.getConfig().getBoolean("invert", false);
-        setDisabledWorlds();
+        this.setDisabledWorlds();
     }
     public boolean inDisabledWorld(World world) {
-        return disabledWorlds != null && disabledWorlds.contains(world.getName());
+        return !disabledWorlds.isEmpty() && disabledWorlds.contains(world);
     }
 
     public boolean inDisabledWorld(Location location) {
-        return disabledWorlds != null && disabledWorlds.contains(location.getWorld().getName());
+        World world = location.getWorld();
+        return this.inDisabledWorld(world);
     }
-    // TODO: make this actually check theres a world...
+
     public void setDisabledWorlds() {
-        FileConfiguration config = plugin.getConfig();
-        disabledWorlds = config.getStringList("disabled-worlds");
+        List<String> disabledWorldsList = this.getConfigWorldList();
+        DebugMode debugMode = new DebugMode();
+        if(disabledWorldsList.isEmpty()) {
+            debugMode.info("No worlds to register");
+        }
 
-        if (isInverted) {
-            List<World> allWorlds = Bukkit.getWorlds();
-            List<String> invertedWorlds = new ArrayList<>();
-
-            for (World world : allWorlds) {
-                if (!disabledWorlds.contains(world.getName())) {
-                    invertedWorlds.add(world.getName());
-                }
+        for(String worldName : disabledWorldsList) {
+            boolean worldExists = this.isWorldValid(worldName);
+            if(!worldExists) {
+                String errorMessage = String.format("World not found: %s", worldName);
+                plugin.getLogger().warning(errorMessage);
+            } else {
+                World world = Bukkit.getWorld(worldName);
+                disabledWorlds.add(world);
+                debugMode.info("Registered Disabled World: " + worldName);
             }
-            disabledWorlds = invertedWorlds;
         }
 
     }
 
-    public String getDisabledWorlds() {
-        return String.join(", ", disabledWorlds);
+    private boolean isWorldValid(String worldName) {
+        World world = Bukkit.getWorld(worldName);
+        return world != null;
+    }
+
+    private List<String> getConfigWorldList() {
+        FileConfiguration config = plugin.getConfig();
+        if(!config.isSet("disabled-worlds")) {
+            return new ArrayList<>();
+        }
+
+        List<String> disabledWorldsList = config.getStringList("disabled-worlds");
+
+        boolean isInverted = config.getBoolean("invert", false);
+        if (isInverted) {
+            disabledWorldsList = this.getInvertedWorlds();
+        }
+
+        return disabledWorldsList;
+    }
+
+    private List<String> getInvertedWorlds() {
+        List<World> allWorlds = Bukkit.getWorlds();
+        List<String> invertedWorlds = new ArrayList<>();
+
+        for (World world : allWorlds) {
+            if (!disabledWorlds.contains(world)) {
+                invertedWorlds.add(world.getName());
+            }
+        }
+        return invertedWorlds;
+    }
+
+    public void addWorld(World world) {
+        boolean isValid = this.checkValidity(world);
+
+        if(!isValid) return;
+        DebugMode debugMode = new DebugMode();
+        if(disabledWorlds.contains(world)) {
+            debugMode.info("World is already in DisabledWorlds list: ");
+        }
+
+        disabledWorlds.add(world);
+    }
+
+    public boolean checkWorld(World world) {
+        if(world == null) return false;
+        return disabledWorlds.contains(world);
+    }
+
+    public boolean checkValidity(World world) {
+        if(world == null) {
+            plugin.getLogger().warning("Provided world is null");
+            return false;
+        }
+
+        if(!Bukkit.getWorlds().contains(world)) {
+            plugin.getLogger().warning("World doesn't exist? " + world.getName());
+            return false;
+        }
+        return true;
+    }
+
+    public void removeWorld(World world) {
+        boolean isValid = this.checkValidity(world);
+
+        if(!isValid) return;
+
+        DebugMode debugMode = new DebugMode();
+        if(!disabledWorlds.contains(world)) {
+            debugMode.info("World is not in DisabledWorlds list: ");
+        }
+
+        disabledWorlds.remove(world);
+    }
+
+    public List<World> getDisabledWorlds() {
+        return this.disabledWorlds;
+    }
+
+    public void reload() {
+        disabledWorlds.clear();
+        this.setDisabledWorlds();
     }
 }

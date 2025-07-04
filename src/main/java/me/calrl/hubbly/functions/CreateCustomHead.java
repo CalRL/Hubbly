@@ -16,14 +16,12 @@
  */
 
 package me.calrl.hubbly.functions;
-import com.google.gson.JsonObject;
+
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
 import org.bukkit.profile.PlayerTextures;
@@ -32,10 +30,13 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Base64;
 import java.util.UUID;
 
 public class CreateCustomHead {
+
+    private CreateCustomHead() {
+
+    }
 
     public static ItemStack createCustomHead(String textureValue, String itemName) {
 
@@ -116,6 +117,7 @@ public class CreateCustomHead {
         meta.setOwnerProfile(profile);
 
         return meta;
-
     }
+
+
 }

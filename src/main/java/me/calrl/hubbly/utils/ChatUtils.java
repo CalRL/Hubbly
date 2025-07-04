@@ -18,20 +18,25 @@
 package me.calrl.hubbly.utils;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
+import me.calrl.hubbly.managers.LocaleManager;
 import me.clip.placeholderapi.PlaceholderAPI;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.chat.ClickEvent;
-import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
+import net.md_5.bungee.api.chat.hover.content.Text;
 import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ChatUtils {
+
     private ChatUtils() {
         throw new IllegalStateException(ChatUtils.class + " is a Utility class");
     }
@@ -58,20 +63,35 @@ public class ChatUtils {
     }
 
     public static String processMessage(Player player, String message) {
-        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+        if(player != null && Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             message = PlaceholderAPI.setPlaceholders(player, message);
         }
         message = translateHexColorCodes(message);
         return message;
     }
 
-    public static String prefixMessage(Player player, String message) {
+    public static String prefixMessage(Hubbly plugin, Player player, String message) {
 
-        FileConfiguration config = Hubbly.getInstance().getConfig();
+        FileConfiguration config = plugin.getConfig();
         String prefix = config.getString("prefix");
         message = prefix + " " + message;
 
         message = processMessage(player, message);
+        return message;
+    }
+
+    /**
+     * This method is for console use, otherwise use the other one.
+     * @param plugin
+     * @param message
+     * @return
+     */
+    public static String prefixMessage(Hubbly plugin, String message) {
+        FileConfiguration config = plugin.getConfig();
+        String prefix = config.getString("prefix");
+        message = prefix + " " + message;
+
+        message = translateHexColorCodes(message);
         return message;
     }
 
@@ -145,8 +165,19 @@ public class ChatUtils {
 
     public static TextComponent textLinkBuilder(String message, String link, String hoverText) {
         TextComponent component = new TextComponent(message);
-        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new ComponentBuilder(ChatUtils.translateHexColorCodes(hoverText)).create()));
+        String parsedHoverText = ChatUtils.translateHexColorCodes(hoverText);
+        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(parsedHoverText)));
         component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
         return component;
     }
+
+    public static TextComponent textLinkBuilder(String message, String link, String hoverText, Player player) {
+        message = ChatUtils.processMessage(player, message);
+        TextComponent component = new TextComponent(message); 
+        String parsedHoverText = ChatUtils.processMessage(player, hoverText);
+        component.setHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, new Text(parsedHoverText)));
+        component.setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, link));
+        return component;
+    }
+
 }
