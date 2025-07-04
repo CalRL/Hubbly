@@ -17,8 +17,10 @@
 
 package me.calrl.hubbly.interfaces;
 
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 public interface CustomItem {
     ItemStack createItem();
+    void setPlayer(Player player);
 }

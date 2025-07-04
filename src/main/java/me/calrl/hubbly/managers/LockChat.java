@@ -34,9 +34,8 @@ public class LockChat {
     public boolean getChatLock() {
         return isChatLocked;
     }
-    /*
-    TODO: make this logic actually save to config ig
-     */
+
+
     private void saveState() {
         FileConfiguration config = plugin.getConfig();
         config.set("lock_chat", getChatLock());

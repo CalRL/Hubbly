@@ -18,6 +18,7 @@ package me.calrl.hubbly.functions;
 
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -36,7 +37,6 @@ import java.util.concurrent.ConcurrentHashMap;
 
 public class BossBarManager {
 
-    private static BossBarManager instance;
     private FileConfiguration config;
     private final Map<Player, BossBar> playerBossBars = new ConcurrentHashMap<>();
     private final Map<Player, BukkitRunnable> playerAnimations = new HashMap<>();
@@ -47,24 +47,14 @@ public class BossBarManager {
         this.config = plugin.getConfig();
     }
 
-    /**
-     * @deprecated 8/1/2025 bad old code, refactor to the same system every other class uses
-     */
-    @Deprecated(since = "2.5.4", forRemoval = true)
-    public static BossBarManager getInstance() {
-        return instance;
-    }
-
-    /**
-     * @deprecated 8/1/2025 bad old code, refactor to the same system every other class uses
-     */
-    @Deprecated(since = "2.5.4", forRemoval = true)
-    public static void initialize(FileConfiguration config) {
-    }
-
     public void createBossBar(Player player) {
+        boolean isEnabled = this.isEnabled();
+        if(!isEnabled) {
+            return;
+        }
+
         if (playerBossBars.containsKey(player)) {
-            return;  // Boss bar already exists for this player
+            return;
         }
 
         BarColor color = BarColor.valueOf(config.getString("player.bossbar.color"));
@@ -72,13 +62,12 @@ public class BossBarManager {
         bar.addPlayer(player);
         bar.setVisible(true);
         playerBossBars.put(player, bar);
-        startBossBarAnimation(player, bar);
+        this.startBossBarAnimation(player, bar);
     }
 
     private void startBossBarAnimation(Player player, BossBar bar) {
         List<String> texts = config.getStringList("player.bossbar.animation.texts");
         if (texts.isEmpty()) {
-            // Handle empty texts list
             bar.setTitle(ChatColor.RED + "No animation texts set");
             return;
         }
@@ -100,8 +89,7 @@ public class BossBarManager {
             }
         };
 
-        // Run task every 'changeInterval' ticks
-        task.runTaskTimer(Hubbly.getInstance(), 0, changeInterval);
+        task.runTaskTimer(plugin, 0, changeInterval);
         playerAnimations.put(player, task);
     }
 
@@ -126,10 +114,12 @@ public class BossBarManager {
     }
 
     public void reAddAllBossBars() {
+        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        boolean isEnabled = config.getBoolean("player.bossbar.enabled");
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if(Hubbly.getInstance().getDisabledWorldsManager().inDisabledWorld(player.getWorld())) return;
-
-            createBossBar(player);
+            if(disabledWorlds.inDisabledWorld(player.getWorld())) continue;
+            if(!isEnabled) return;
+            this.createBossBar(player);
         }
     }
 
@@ -138,7 +128,12 @@ public class BossBarManager {
     }
 
 
-    private void reload() {
-        // TODO: make this reload in here somehow (it's 8/1/2025):
+    public boolean isEnabled() {
+        this.setConfig();
+        return config.getBoolean("player.bossbar.enabled");
+    }
+
+    public void setConfig() {
+        this.config = plugin.getConfig();
     }
 }

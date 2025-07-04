@@ -19,29 +19,44 @@ package me.calrl.hubbly.items;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.interfaces.CustomItem;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.ItemBuilder;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 public class RodItem implements CustomItem {
     private Hubbly plugin;
+    private Player player;
     public RodItem(Hubbly plugin) {
         this.plugin = plugin;
     }
 
     @Override
     public ItemStack createItem() {
-        ItemStack item = new ItemStack(Material.FISHING_ROD);
-        ItemMeta meta = item.getItemMeta();
-        if(meta != null) {
-            meta.getPersistentDataContainer().set(PluginKeys.GRAPPLING_HOOK.getKey(), PersistentDataType.STRING, "rod");
-            meta.setDisplayName(ChatUtils.translateHexColorCodes(plugin.getConfig().getString("movementitems.grappling_hook.name")));
-            meta.setUnbreakable(true);
-        }
+        FileConfiguration config = plugin.getConfig();
 
-        item.setItemMeta(meta);
+        ConfigurationSection section = config.getConfigurationSection("movementitems.grappling_hook");
+        if(section == null) {
+            plugin.getLogger().warning("movementitems.grappling_hook is null.");
+            return null;
+        }
+        new DebugMode().info(section.getKeys(false).toString());
+        ItemBuilder builder = new ItemBuilder();
+        ItemStack item = builder
+                .fromConfig(this.player, section)
+                .addPersistentData(PluginKeys.GRAPPLING_HOOK.getKey(), PersistentDataType.STRING, "rod")
+                .build();
         return item;
+    }
+
+    @Override
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

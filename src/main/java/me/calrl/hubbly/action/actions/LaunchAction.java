@@ -22,6 +22,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class LaunchAction implements Action {
     @Override
     public String getIdentifier() {
@@ -30,10 +34,27 @@ public class LaunchAction implements Action {
 
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
+
+        double powerY;
+        double power;
+
+        if(data == null || data.isEmpty()) {
+            powerY = plugin.getConfig().getDouble("launchpad.power_y");
+            power = plugin.getConfig().getDouble("launchpad.power");
+        } else {
+            List<String> powerData = new ArrayList<>(
+                    Arrays.asList(
+                            data.split(";")
+                    )
+            );
+
+            power = Double.parseDouble(powerData.getFirst());
+            powerY = Double.parseDouble(powerData.getLast());
+        }
+
         new BukkitRunnable() {
 
-            private final double powerY = plugin.getConfig().getDouble("launchpad.power_y");
-            private final double power = plugin.getConfig().getDouble("launchpad.power");
+
             @Override
             public void run() {
                 Vector direction = player.getLocation().getDirection();

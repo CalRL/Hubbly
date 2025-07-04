@@ -19,8 +19,14 @@ package me.calrl.hubbly.items;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.interfaces.CustomItem;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.ItemBuilder;
+import me.calrl.hubbly.utils.xseries.XMaterial;
 import org.bukkit.Material;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataType;
@@ -28,20 +34,31 @@ import org.bukkit.persistence.PersistentDataType;
 public class AoteItem implements CustomItem {
 
     private final Hubbly plugin;
+    private Player player;
     public AoteItem(Hubbly plugin) {
         this.plugin = plugin;
     }
+
     @Override
     public ItemStack createItem() {
-        ItemStack item = new ItemStack(Material.DIAMOND_SWORD);
-        ItemMeta meta = item.getItemMeta();
-        if(meta != null) {
-            meta.setDisplayName(
-                    ChatUtils.translateHexColorCodes(
-                    plugin.getConfig().getString("movementitems.aote.name", "AOTE")));
-            meta.getPersistentDataContainer().set(PluginKeys.AOTE.getKey(), PersistentDataType.STRING, "aote");
+        FileConfiguration config = plugin.getConfig();
+
+        ConfigurationSection section = config.getConfigurationSection("movementitems.aote");
+        if(section == null) {
+            plugin.getLogger().warning("movementitems.aote is null.");
+            return null;
         }
-        item.setItemMeta(meta);
+        new DebugMode().info(section.getKeys(false).toString());
+        ItemBuilder builder = new ItemBuilder();
+        ItemStack item = builder
+                .fromConfig(this.player, section)
+                .addPersistentData(PluginKeys.AOTE.getKey(), PersistentDataType.STRING, "aote")
+                .build();
         return item;
+    }
+
+    @Override
+    public void setPlayer(Player player) {
+        this.player = player;
     }
 }

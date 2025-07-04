@@ -1,21 +1,26 @@
 # Custom Items that you make myself, please follow the format.
 # To get these items use /hubbly give <item>
-# For item1, I would use /hubbly give item1
+# For compass, I would use /hubbly give compass
 items:
-  item1:
-    name: ''
-    type: REDSTONE_BLOCK
+  compass:
+    name: "&cCompass"
+    material: COMPASS
+    glow: true
     lore:
-      - 'line 1'
-      - 'line 2'
+      - "&7Right click me to open"
+      - "&7the server selector!"
     actions:
-      - '[PLAYER] spawn'
-      - '[CONSOLE] broadcast item1'
+      - "[MENU] selector"
+  socials:
+    name: "Socials"
+    material: PLAYER_HEAD
+    url: http://textures.minecraft.net/texture/355e2dc46399b7b9275221fcdc87c66e58d0d3044dcf62af0465122c1cd7e0bc
+    actions:
+      - "[MENU] socials"
   shop:
-    name: '&aShop'
-    type: EMERALD
+    name: "&aShop"
+    material: EMERALD_BLOCK
     lore:
-      - '&7Opens the shop'
+      - "&7Opens the shop"
     actions:
-      - '[PLAYER] buy'
-
+      - "[PLAYER] buy"

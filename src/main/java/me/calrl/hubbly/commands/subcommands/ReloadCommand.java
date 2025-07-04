@@ -18,12 +18,17 @@
 package me.calrl.hubbly.commands.subcommands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+
+import java.util.List;
 
 public class ReloadCommand implements SubCommand {
 
@@ -36,29 +41,46 @@ public class ReloadCommand implements SubCommand {
         this.plugin = plugin;
     }
 
-    public String getIdentifier() {
-        return "RELOAD";
-    }
     @Override
-    public void execute(Player player, String[] args) {
-        if(player.hasPermission(Permissions.COMMAND_RELOAD.getPermission())) {
+    public String getName() {
+        return "reload";
+    }
 
-            try {
-                bossBarManager = plugin.getBossBarManager();
-                if (bossBarManager != null) {
-                    bossBarManager.removeAllBossBars();
-                }
-                plugin.reloadPlugin();
-                player.sendMessage(
-                        ChatUtils.prefixMessage(player, config.getString("messages.reload", "Config reloaded."))
-                );
+    @Override
+    public String getDescription() {
+        return "Reloads the plugin's configuration";
+    }
 
-                bossBarManager = plugin.getBossBarManager();
-                bossBarManager.reAddAllBossBars();
-            } catch (Exception e) {
-                plugin.getLogger().info(String.valueOf(e));
+    @Override
+    public String getUsage() {
+        return "/hubbly reload";
+    }
+
+    @Override
+    public void execute(CommandSender sender, String[] args) {
+        if(!sender.hasPermission(Permissions.COMMAND_RELOAD.getPermission())) {
+            new MessageBuilder(plugin)
+                    .setPlayer(sender)
+                    .setKey("no_permission_command")
+                    .send();
+            return;
+        }
+        try {
+            bossBarManager = plugin.getBossBarManager();
+            if (bossBarManager != null) {
+                bossBarManager.removeAllBossBars();
             }
+            plugin.reloadPlugin();
 
+            new MessageBuilder(plugin)
+                    .setPlayer(sender)
+                    .setKey("reload")
+                    .send();
+
+            bossBarManager = plugin.getBossBarManager();
+            bossBarManager.reAddAllBossBars();
+        } catch (Exception e) {
+            plugin.getLogger().info(String.valueOf(e));
         }
     }
 }

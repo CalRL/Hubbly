@@ -18,12 +18,14 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.commands.subcommands.NextAnnouncementCommand;
-import me.calrl.hubbly.commands.subcommands.ReloadCommand;
-import me.calrl.hubbly.commands.subcommands.SelectorCommand;
-import me.calrl.hubbly.commands.subcommands.VersionCommand;
+import me.calrl.hubbly.commands.subcommands.*;
+import me.calrl.hubbly.commands.subcommands.GiveCommand;
+import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.interfaces.SubCommand;
+import me.calrl.hubbly.managers.SubCommandManager;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.CommandNode;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
@@ -33,64 +35,84 @@ import org.bukkit.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 public class HubblyCommand implements TabExecutor {
 
-    private Logger logger;
-    private FileConfiguration config = Hubbly.getInstance().getConfig();
+    private final FileConfiguration config;
 
     private final Hubbly plugin;
-    private final Map<String, SubCommand> subCommands = new HashMap<>();
-    private final String[] commands = {"reload", "version", "selector", "nextannouncement"};
-    public HubblyCommand(Logger logger, Hubbly plugin) {
-        this.logger = logger;
+    private final SubCommandManager subCommandManager;
+    private Map<String, SubCommand> subCommands;
+    private Map<String, CommandNode> commandNodes;
+    public HubblyCommand(Hubbly plugin) {
         this.plugin = plugin;
-        registerSubCommands();
+        this.config = plugin.getConfig();
+        this.subCommandManager = plugin.getSubCommandManager();
 
-    }
-
-    private void registerSubCommands() {
-        subCommands.put("reload", new ReloadCommand(plugin));
-        subCommands.put("selector", new SelectorCommand(plugin));
-        subCommands.put("version", new VersionCommand(plugin));
-        subCommands.put("nextannouncement", new NextAnnouncementCommand(plugin));
+        this.subCommands = subCommandManager.getSubCommands();
+        this.commandNodes = subCommandManager.getNodes();
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String String, @NotNull String[] args) {
-        if (!(sender instanceof Player player)) {
-            sender.sendMessage(ChatUtils.translateHexColorCodes(config.getString("messages.no_console")));
-            return true;
-        }
-
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        // If no arguments are provided, show usage message
+        MessageBuilder builder = new MessageBuilder(plugin)
+                .setPlayer(sender);
         if (args.length == 0) {
-            player.sendMessage(ChatUtils.prefixMessage(player,  "Usage: /hubbly <command> <args>"));
+            builder.setKey("usage.hubbly")
+                    .send();
             return true;
         }
-        SubCommand subCommand = subCommands.get(args[0].toLowerCase());
-        if (subCommand != null) {
-            subCommand.execute(player, args);
-        } else {
-            sender.sendMessage(ChatUtils.prefixMessage(player,  "Unknown command."));
+
+        String root = args[0].toLowerCase();
+
+        CommandNode node = commandNodes.get(root);
+        if (node != null) {
+            node.execute(sender, args, 1);
+            return true;
         }
 
+
+        String subCommandName = args[0].toLowerCase();
+        SubCommand subCommand = subCommands.get(subCommandName);
+
+        if (subCommand != null) {
+            subCommand.execute(sender, args);
+        } else {
+            builder.setKey("unknown_command")
+                    .send();
+        }
 
         return true;
     }
 
-
-
     @Nullable
     @Override
-    public List<String> onTabComplete(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
+    public List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String alias, @NotNull String[] args) {
+        if (!(sender instanceof Player player)) return null;
+
         final List<String> completions = new ArrayList<>();
-        StringUtil.copyPartialMatches(args[0], List.of(commands), completions);
+
+        if (args.length == 1) {
+
+            StringUtil.copyPartialMatches(args[0], subCommands.keySet(), completions);
+            StringUtil.copyPartialMatches(args[0], commandNodes.keySet(), completions);
+            return completions;
+        }
+
+        String root = args[0].toLowerCase();
+
+        if (commandNodes.containsKey(root)) {
+            return commandNodes.get(root).tabComplete(player, args, 1);
+        }
+
+        if (subCommands.containsKey(root)) {
+            return subCommands.get(root).tabComplete(player, Arrays.copyOfRange(args, 1, args.length));
+        }
+
         return completions;
     }
-
 }
+

@@ -57,26 +57,26 @@ public class VoidDamageListener implements Listener {
         if(gameMode == GameMode.SPECTATOR) return;
 
         this.config = plugin.getConfig();
+
         boolean isEnabled = config.getBoolean("antivoid.enabled");
-        if(isEnabled) {
-            DamageCause damageCause = event.getCause();
-            if(damageCause == DamageCause.VOID) {
-                plugin.getDebugMode().info(player.getName() + " was hit by the void.. teleporting..");
-                event.setCancelled(true);
+        if(!isEnabled) {
+            return;
+        }
 
-                Utils utils = plugin.getUtils();
-                Location spawn = utils.getSpawn();
-                /*
-                * Try this if player.teleport doesnt work.
-                Bukkit.getScheduler().runTaskLater(plugin, () -> player.teleport(spawn), 1L);
-                 */
+        DamageCause damageCause = event.getCause();
+        if(damageCause == DamageCause.VOID) {
+            plugin.getDebugMode().info(player.getName() + " was hit by the void.. teleporting..");
+            Utils utils = plugin.getUtils();
+            Location spawn = utils.getSpawn();
 
-                player.setVelocity(player.getVelocity().setY(0));
-                player.setFallDistance(0f);
+            player.setVelocity(player.getVelocity().setY(0));
+            player.setFallDistance(0f);
 
+            Bukkit.getScheduler().runTaskLater(plugin, () -> {
                 player.teleport(spawn, TeleportCause.PLUGIN);
+            }, 1L);
 
-            }
+            event.setCancelled(true);
         }
     }
 }

@@ -24,6 +24,7 @@ import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import me.calrl.hubbly.utils.update.UpdateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -100,17 +101,20 @@ public class PlayerJoinListener implements Listener {
         }
 
         if(player.hasPermission(Permissions.NOTIFY_UPDATE.getPermission())) {
-            player.sendMessage(
-                    ChatUtils.parsePlaceholders(
-                            player,
-                            plugin.getPrefix() + updateUtil.getMessage()
-
-                    )
-            );
+            /*
+            TODO: make this use locales, update updateUtil
+             */
+            new MessageBuilder(plugin)
+                    .setPlayer(player)
+                    .setKey(updateUtil.getKey())
+                    .replace("%current%", updateUtil.getCurrent())
+                    .replace("%new", updateUtil.getNew())
+                    .send();
         }
     }
 
     private void handleActionsOnJoin(Player player) {
+        FileConfiguration config = plugin.getConfig();
         List<String> actions = config.getStringList("actions_on_join");
         if(actions.isEmpty()) {
             return;
@@ -118,7 +122,7 @@ public class PlayerJoinListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             for(String action : actions) {
-                actionManager.executeAction(Hubbly.getInstance(), player, action);
+                actionManager.executeAction(player, action);
                 debugMode.info("Executed " + action);
             }
 

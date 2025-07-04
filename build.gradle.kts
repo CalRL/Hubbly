@@ -9,6 +9,8 @@ plugins {
 
 repositories {
     mavenLocal()
+    mavenCentral()
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven {
         url = uri("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
     }
@@ -24,6 +26,13 @@ repositories {
     maven {
         url = uri("https://repo.maven.apache.org/maven2/")
     }
+    maven {
+        url = uri("https://repo.codemc.io/repository/maven-public/")
+    }
+
+
+
+
 }
 
 dependencies {
@@ -31,10 +40,15 @@ dependencies {
     compileOnly("org.spigotmc:spigot-api:1.20.6-R0.1-SNAPSHOT")
     compileOnly("org.spigotmc:spigot:1.20.6-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
+
+    testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
+    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.93.2")
+    testImplementation("org.slf4j:slf4j-simple:2.0.9")
 }
 
 group = "me.calrl"
-version = "2.5.8"
+version = "3.1.1"
 description = "Hubbly"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -50,6 +64,19 @@ tasks.withType<JavaCompile>() {
 
 tasks.withType<Javadoc>() {
     options.encoding = "UTF-8"
+}
+
+tasks.test {
+    useJUnitPlatform()
+
+    testLogging {
+        events("passed", "failed", "skipped", "standard_out", "standard_error")
+        showStandardStreams = true
+    }
+
+    // Disable parallel forks for MockBukkit stability
+    maxParallelForks = 1
+
 }
 
 tasks.processResources {

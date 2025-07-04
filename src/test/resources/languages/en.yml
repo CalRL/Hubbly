@@ -1,0 +1,23 @@
+no_console: "Only players can use this command!"
+no_permission_command: You do not have permission to use this command!
+no_permission_use: You do not have permission to use this!
+reload: Reloaded Hubbly plugin
+fly:
+  enable: Flight mode enabled.
+  disable: Flight mode disabled.
+no_fly_enabled: Flight is disabled in config
+blocked_command: Unknown command. Type "/help" for help
+blocked_message: Please do not use that word!
+success: Success!
+
+# No PAPI support, only %player% placeholder to get the person who locked the chat.
+chat_locked: Chat has been locked by %player%
+chat_unlocked: Chat has been unlocked by %player%
+
+update:
+  new_update:
+    An update is available! Hubbly %new% can be downloaded on SpigotMC,
+    you are on %current%
+  no_update: Hubbly %current% is up to date
+  error: Could not check for a new version...
+
