@@ -1,35 +1,25 @@
-package me.calrl.hubbly.commands.subcommands.worlds;
+package me.calrl.hubbly.commands.debug;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
-import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.CommandNode;
 import me.calrl.hubbly.utils.MessageBuilder;
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import java.util.*;
+import java.util.List;
 
-public class WorldsCommand extends CommandNode {
-
+public class DebugCommand extends CommandNode {
     private Hubbly plugin;
-    public WorldsCommand(Hubbly plugin) {
-        super("worlds");
+    public DebugCommand(Hubbly plugin) {
+        super("debug");
         this.plugin = plugin;
 
         this.loadNodes();
     }
 
-    private void loadNodes() {
-        addChild("add", new AddCommand(plugin));
-        addChild("remove", new RemoveCommand(plugin));
-        addChild("check", new CheckCommand(plugin));
-    }
-
     @Override
     public void execute(CommandSender sender, String[] args, int depth) {
-        if(!sender.hasPermission(Permissions.COMMAND_WORLDS.getPermission())) {
+        if(!sender.hasPermission(Permissions.COMMAND_DEBUG.getPermission())) {
             new MessageBuilder(plugin).setKey("no_permission_command").setPlayer(sender).send();
             return;
         }
@@ -48,9 +38,12 @@ public class WorldsCommand extends CommandNode {
                 .send();
     }
 
+    private void loadNodes() {
+        addChild("disabledworlds", new DisabledWorldsCommand(plugin));
+    }
+
     @Override
     public List<String> tabComplete(CommandSender sender, String[] args, int depth) {
         return super.tabComplete(sender, args, depth);
     }
-
 }
