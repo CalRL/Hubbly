@@ -113,7 +113,6 @@ public class ItemBuilder {
         return this;
     }
 
-        return this;
     public ItemBuilder addEnchant(Enchantment enchantment, int level) {
         if(itemMeta != null && enchantment != null && level > 0) {
             itemMeta.addEnchant(enchantment, level, true);
