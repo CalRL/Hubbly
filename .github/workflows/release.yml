@@ -1,5 +1,8 @@
 name: Manual Build - Release
 
+permissions:
+  contents: write
+
 on:
   workflow_dispatch:
 
