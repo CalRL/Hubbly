@@ -145,7 +145,7 @@ public class Hubbly extends JavaPlugin {
         registerListener(new PlayerJoinListener(this));
         registerListener(new CommandBlockerListener(this));
         registerListener(new ForceinvListener(this), "player.forceinventory");
-        registerListener(new ChatListener(this), "blocked_words.enabled");
+        registerListener(new ChatListener(this));
         registerListener(new InventoryListener(this));
         registerListener(new XPListener(this), "player.experience.enabled");
     }

@@ -115,11 +115,12 @@ public class BossBarManager {
 
     public void reAddAllBossBars() {
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
-        boolean isEnabled = config.getBoolean("player.bossbar.enabled");
+        FileConfiguration config = plugin.getConfig();
+        boolean isEnaled = config.getBoolean("player.bossbar.enabled");
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if(disabledWorlds.inDisabledWorld(player.getWorld())) continue;
-            if(!isEnabled) return;
-            this.createBossBar(player);
+            if(disabledWorlds.inDisabledWorld(player.getWorld())) return;
+            if(!isEnaled) return;
+            createBossBar(player);
         }
     }
 

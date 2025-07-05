@@ -42,21 +42,23 @@ public class LockChatCommand implements CommandExecutor {
         lockChat = plugin.getLockChat();
         String key;
         if(lockChat.getChatLock()) {
-            key = "messages.chat_unlocked";
-            String message = plugin.getConfig().getString("messages.chat_unlocked", "Chat has been unlocked by:");
+            key = "chat_unlocked";
+            String message = plugin.getConfig().getString(key, "Chat has been unlocked by:");
             if(message.contains("%player%")) {
                 message = message.replace("%player%", commandSender.getName());
             }
         } else {
-            key = "messages.chat_locked";
-            String message = plugin.getConfig().getString("messages.chat_locked", "Chat has been locked by:");
+            key = "chat_locked";
+            String message = plugin.getConfig().getString(key, "Chat has been locked by:");
             if(message.contains("%player%")) {
                 message = message.replace("%player%", commandSender.getName());
             }
         }
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
         MessageBuilder builder = new MessageBuilder(plugin)
-                .setKey(key);
+                .setKey(key)
+                .replace("%player_name%", commandSender.getName());
+
 
         for(Player p : Bukkit.getOnlinePlayers()) {
             if(disabledWorlds.inDisabledWorld(p.getWorld())) {

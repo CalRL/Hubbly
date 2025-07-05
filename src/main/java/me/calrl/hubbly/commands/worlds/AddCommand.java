@@ -1,4 +1,4 @@
-package me.calrl.hubbly.commands.subcommands.worlds;
+package me.calrl.hubbly.commands.worlds;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
@@ -14,22 +14,22 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 
-public class RemoveCommand extends CommandNode {
+public class AddCommand extends CommandNode {
     private Hubbly plugin;
-    public RemoveCommand(Hubbly plugin) {
+    public AddCommand(Hubbly plugin) {
         super("add");
         this.plugin = plugin;
     }
 
     @Override
     public void execute(CommandSender sender, String[] args, int depth) {
-        if(!sender.hasPermission(Permissions.COMMAND_WORLDS_REMOVE.getPermission())) {
+        if(!sender.hasPermission(Permissions.COMMAND_WORLDS_ADD.getPermission())) {
             new MessageBuilder(plugin).setKey("no_permission_command").setPlayer(sender).send();
             return;
         }
 
         if(args.length <= depth) {
-            new MessageBuilder(plugin).setKey("subcommands.worlds.remove.usage").setPlayer(sender).send();
+            new MessageBuilder(plugin).setKey("subcommands.worlds.add.usage").setPlayer(sender).send();
             return;
         }
 
@@ -44,10 +44,10 @@ public class RemoveCommand extends CommandNode {
             return;
         }
 
-        plugin.getDisabledWorldsManager().removeWorld(world);
+        plugin.getDisabledWorldsManager().addWorld(world);
 
         new MessageBuilder(plugin)
-                .setKey("subcommands.worlds.remove.message")
+                .setKey("subcommands.worlds.add.message")
                 .setPlayer(sender)
                 .replace("%world%", world.getName())
                 .send();

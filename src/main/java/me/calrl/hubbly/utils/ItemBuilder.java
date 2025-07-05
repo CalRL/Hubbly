@@ -18,6 +18,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -112,6 +113,7 @@ public class ItemBuilder {
         return this;
     }
 
+        return this;
     public ItemBuilder addEnchant(Enchantment enchantment, int level) {
         if(itemMeta != null && enchantment != null && level > 0) {
             itemMeta.addEnchant(enchantment, level, true);

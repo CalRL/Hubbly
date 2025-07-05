@@ -1,4 +1,4 @@
-package me.calrl.hubbly.commands.subcommands.worlds;
+package me.calrl.hubbly.commands.worlds;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
@@ -14,22 +14,22 @@ import org.bukkit.entity.Player;
 import java.util.Collections;
 import java.util.List;
 
-public class AddCommand extends CommandNode {
-    private Hubbly plugin;
-    public AddCommand(Hubbly plugin) {
+public class CheckCommand extends CommandNode {
+    private final Hubbly plugin;
+    public CheckCommand(Hubbly plugin) {
         super("add");
         this.plugin = plugin;
     }
 
     @Override
     public void execute(CommandSender sender, String[] args, int depth) {
-        if(!sender.hasPermission(Permissions.COMMAND_WORLDS_ADD.getPermission())) {
+        if(!sender.hasPermission(Permissions.COMMAND_WORLDS_CHECK.getPermission())) {
             new MessageBuilder(plugin).setKey("no_permission_command").setPlayer(sender).send();
             return;
         }
 
         if(args.length <= depth) {
-            new MessageBuilder(plugin).setKey("subcommands.worlds.add.usage").setPlayer(sender).send();
+            new MessageBuilder(plugin).setKey("subcommands.worlds.check.usage").setPlayer(sender).send();
             return;
         }
 
@@ -44,13 +44,20 @@ public class AddCommand extends CommandNode {
             return;
         }
 
-        plugin.getDisabledWorldsManager().addWorld(world);
+        MessageBuilder builder = new MessageBuilder(plugin);
 
-        new MessageBuilder(plugin)
-                .setKey("subcommands.worlds.add.message")
+        boolean inDisabledWorld = plugin.getDisabledWorldsManager().inDisabledWorld(world);
+        if(inDisabledWorld) {
+             builder.setKey("subcommands.worlds.check.disabled")
+                     .setPlayer(sender)
+                     .replace("%world%", world.getName()).send();
+            return;
+        }
+
+        builder.setKey("subcommands.worlds.check.enabled")
                 .setPlayer(sender)
-                .replace("%world%", world.getName())
-                .send();
+                .replace("%world%", world.getName()).send();
+
     }
 
     @Override

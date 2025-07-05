@@ -18,9 +18,9 @@ invalid_world: World %world% does not exist
 unknown_player: Player %player% not found
 arg_must_be_number: Argument %value% must be a number
 
-# No PAPI support, only %player% placeholder to get the person who locked the chat.
-chat_locked: Chat has been locked by %player%
-chat_unlocked: Chat has been unlocked by %player%
+# No PAPI support, only %player_name% placeholder to get the person who locked the chat.
+chat_locked: Chat has been locked by %player_name%
+chat_unlocked: Chat has been unlocked by %player_name%
 
 update:
   new_update:

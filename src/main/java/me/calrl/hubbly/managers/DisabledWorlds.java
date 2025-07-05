@@ -44,8 +44,9 @@ public class DisabledWorlds {
     }
 
     public void setDisabledWorlds() {
-        List<String> disabledWorldsList = this.getConfigWorldList();
         DebugMode debugMode = new DebugMode();
+        List<String> disabledWorldsList = this.getConfigWorldList();
+        debugMode.info("Worlds to disable: " + disabledWorldsList);
         if(disabledWorldsList.isEmpty()) {
             debugMode.info("No worlds to register");
         }
@@ -76,21 +77,22 @@ public class DisabledWorlds {
         }
 
         List<String> disabledWorldsList = config.getStringList("disabled-worlds");
+        new DebugMode().info("DWList: " + disabledWorldsList);
 
         boolean isInverted = config.getBoolean("invert", false);
         if (isInverted) {
-            disabledWorldsList = this.getInvertedWorlds();
+            disabledWorldsList = this.getInvertedWorlds(disabledWorldsList);
         }
 
         return disabledWorldsList;
     }
 
-    private List<String> getInvertedWorlds() {
+    private List<String> getInvertedWorlds(List<String> current) {
         List<World> allWorlds = Bukkit.getWorlds();
         List<String> invertedWorlds = new ArrayList<>();
 
         for (World world : allWorlds) {
-            if (!disabledWorlds.contains(world)) {
+            if (!current.contains(world.getName())) {
                 invertedWorlds.add(world.getName());
             }
         }

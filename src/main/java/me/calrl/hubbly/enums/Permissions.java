@@ -32,6 +32,7 @@ public enum Permissions {
     COMMAND_HELP("command.help"),
     COMMAND_CONVERT("command.convert"),
     COMMAND_MENU("command.menu"),
+    COMMAND_DEBUG("command.debug"),
 
     COMMAND_WORLDS("commands.worlds"),
     COMMAND_WORLDS_ADD("commands.worlds.add"),

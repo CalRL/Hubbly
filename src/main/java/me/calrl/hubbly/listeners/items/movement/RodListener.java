@@ -32,7 +32,6 @@ public class RodListener implements Listener {
         if(!player.hasPermission(Permissions.USE_GRAPPLING_HOOK.getPermission())) return;
         ItemMeta meta = player.getInventory().getItemInMainHand().getItemMeta();
 
-
         if (event.getState() != PlayerFishEvent.State.FAILED_ATTEMPT
                 && event.getState() != PlayerFishEvent.State.IN_GROUND
                 && event.getState() != PlayerFishEvent.State.REEL_IN) return;

@@ -28,14 +28,18 @@ import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-public class SpawnCommand implements CommandExecutor {
+public class SpawnCommand implements TabExecutor {
 
     private final Hubbly plugin;
     private FileConfiguration config;
@@ -46,12 +50,15 @@ public class SpawnCommand implements CommandExecutor {
     }
 
     @Override
-    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
         config = plugin.getConfig();
+
+
         if(!(sender instanceof Player player)) {
             sender.sendMessage(ChatColor.RED + config.getString("messages.no_console"));
             return true;
         }
+
         Location spawn = plugin.getUtils().getSpawn();
         HubblySpawnEvent event = new HubblySpawnEvent(player, spawn);
         Bukkit.getPluginManager().callEvent(event);
@@ -72,5 +79,14 @@ public class SpawnCommand implements CommandExecutor {
         }
 
         return true;
+    }
+
+    @Override
+    public @Nullable List<String> onTabComplete(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
+        if (!(sender instanceof Player player)) return null;
+
+        final List<String> completions = new ArrayList<>();
+
+        return completions;
     }
 }
