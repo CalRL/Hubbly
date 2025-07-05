@@ -17,6 +17,11 @@ jobs:
           distribution: temurin
           java-version: 21
 
+      - name: Compile Spigot 1.20.6 with BuildTools
+        uses: SpraxDev/Action-SpigotMC@v5
+        with:
+          versions: 1.20.6
+
       - name: Extract version from build.gradle.kts
         id: get_version
         run: |
