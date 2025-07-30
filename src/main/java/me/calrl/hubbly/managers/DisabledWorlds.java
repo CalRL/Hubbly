@@ -99,6 +99,10 @@ public class DisabledWorlds {
         return invertedWorlds;
     }
 
+    public void clear() {
+        this.disabledWorlds.clear();
+    }
+
     public void addWorld(World world) {
         boolean isValid = this.checkValidity(world);
 
@@ -144,6 +148,14 @@ public class DisabledWorlds {
 
     public List<World> getDisabledWorlds() {
         return this.disabledWorlds;
+    }
+
+    public List<String> getDisabledWorldNames() {
+        List<String> list = new ArrayList<>();
+        for (World disabledWorld : this.disabledWorlds) {
+            list.add(disabledWorld.getName());
+        }
+        return list;
     }
 
     public void reload() {
