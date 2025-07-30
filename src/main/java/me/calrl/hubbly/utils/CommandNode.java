@@ -1,5 +1,6 @@
 package me.calrl.hubbly.utils;
 
+import me.calrl.hubbly.enums.Result;
 import org.bukkit.command.CommandSender;
 
 import java.util.*;
@@ -19,7 +20,16 @@ public abstract class CommandNode {
     public boolean matches(String input) {
         return this.identifier.equalsIgnoreCase(input);
     }
-    public abstract void execute(CommandSender sender, String[] args, int depth);
+    public abstract Result execute(CommandSender sender, String[] args, int depth);
+    public Result executeIfChildPresent(CommandSender sender, String[] args, int depth) {
+        if(args.length > depth) {
+            CommandNode node = this.children.get(args[depth].toLowerCase());
+            if(node != null) {
+                return node.execute(sender, args, depth + 1);
+            }
+        }
+        return Result.FAILURE;
+    }
 
     public List<String> tabComplete(CommandSender sender, String[] args, int depth) {
         if (args.length == depth + 1) {

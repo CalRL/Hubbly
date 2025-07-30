@@ -1,8 +1,8 @@
 package me.calrl.hubbly.commands.debug;
 
-import com.mojang.brigadier.Message;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
+import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.CommandNode;
 import me.calrl.hubbly.utils.MessageBuilder;
@@ -21,17 +21,18 @@ public class DisabledWorldsCommand extends CommandNode {
         this.plugin = plugin;
     }
     @Override
-    public void execute(CommandSender sender, String[] args, int depth) {
+    public Result execute(CommandSender sender, String[] args, int depth) {
         MessageBuilder builder = new MessageBuilder().setPlayer(sender);
+        // TODO: why is this here?
         if(!(sender instanceof Player player)) {
             builder
                 .setKey("no_console")
                 .send();
-            return;
+            return Result.PLAYER_ONLY;
         }
         if(!player.hasPermission(Permissions.COMMAND_DEBUG.get())) {
             builder.setKey("no_permission_command").send();
-            return;
+            return Result.NO_PERMISSION;
         }
 
         List<World> worlds = plugin.getDisabledWorldsManager().getDisabledWorlds();
@@ -41,5 +42,6 @@ public class DisabledWorldsCommand extends CommandNode {
 
         player.sendMessage("Worlds: " + worldNames);
         new DebugMode().info("Worlds: " + worldNames);
+        return Result.SUCCESS;
     }
 }

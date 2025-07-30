@@ -1,7 +1,9 @@
 package me.calrl.hubbly.commands;
 
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
+import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.PluginTestBase;
+import me.calrl.hubbly.managers.LocaleManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.persistence.PersistentDataType;
@@ -61,5 +63,16 @@ public class FlyCommandTest extends PluginTestBase {
         flyCommand.onCommand(player, mockCommand(), "fly", new String[0]);
         byte newState = player.getPersistentDataContainer().get(plugin.FLY_KEY, PersistentDataType.BYTE);
         assertEquals((byte) 0, newState);
+    }
+
+    @Test
+    public void testHubbly() {
+        Hubbly plugin = Hubbly.getInstance();
+
+        LocaleManager manager = plugin.getLocaleManager();
+
+        String lang = manager.getDefaultLanguage();
+
+        assertEquals("en", lang);
     }
 }

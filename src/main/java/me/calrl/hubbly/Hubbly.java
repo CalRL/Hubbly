@@ -74,6 +74,7 @@ public class Hubbly extends JavaPlugin {
     private SubCommandManager subCommandManager;
     private HookManager hookManager;
     private ManagerFactory managerFactory;
+    private boolean isLoaded;
 
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
@@ -210,6 +211,7 @@ public class Hubbly extends JavaPlugin {
         }
 
         logger.info("Hubbly has been enabled!");
+        this.isLoaded = true;
     }
 
     @Override
@@ -324,7 +326,9 @@ public class Hubbly extends JavaPlugin {
         this.hookManager = hookManager;
     }
     public ManagerFactory getManagerFactory() { return this.managerFactory; }
-
+    public static void setInstance(Hubbly hubbly) {
+        instance = hubbly;
+    }
 
     public static void enableTestMode() {
         testMode = true;
@@ -332,6 +336,14 @@ public class Hubbly extends JavaPlugin {
 
     public static boolean isTestMode() {
         return testMode;
+    }
+
+    public boolean isLoaded() {
+        return isLoaded;
+    }
+
+    public void setLoaded(boolean loaded) {
+        isLoaded = loaded;
     }
 
 }

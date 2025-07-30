@@ -11,7 +11,26 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class PluginTestBase {
     protected static ServerMock server;
-    protected static Hubbly plugin;
+    public static Hubbly plugin;
+
+    @BeforeAll
+    public static void startup() throws Exception {
+        Hubbly hubbly = (Hubbly) MockBukkit.load(Hubbly.class);
+        hubbly.onEnable();
+
+        long start = System.currentTimeMillis();
+        while (!hubbly.isLoaded()) {
+            try {
+                if (System.currentTimeMillis() - start > 5000) {
+                    throw new RuntimeException("Hubbly did not finish loading in time");
+                }
+                Thread.sleep(10);
+            } catch (Exception e) {
+                throw new Exception(e.getMessage());
+            }
+
+        }
+    }
 
     @BeforeEach
     public void init() {
@@ -23,6 +42,7 @@ public abstract class PluginTestBase {
 
         Hubbly.enableTestMode();
         plugin = MockBukkit.load(Hubbly.class);
+
         assertNotNull(plugin, "Plugin failed to load");
         System.out.println("Ending init");
     }

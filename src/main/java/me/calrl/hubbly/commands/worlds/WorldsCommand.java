@@ -2,6 +2,7 @@ package me.calrl.hubbly.commands.worlds;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
+import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.utils.CommandNode;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.command.CommandSender;
@@ -25,24 +26,20 @@ public class WorldsCommand extends CommandNode {
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args, int depth) {
+    public Result execute(CommandSender sender, String[] args, int depth) {
         if(!sender.hasPermission(Permissions.COMMAND_WORLDS.getPermission())) {
             new MessageBuilder(plugin).setKey("no_permission_command").setPlayer(sender).send();
-            return;
+            return Result.NO_PERMISSION;
         }
 
-        if (args.length > depth) {
-            CommandNode child = children.get(args[depth].toLowerCase());
-            if (child != null) {
-                child.execute(sender, args, depth + 1);
-                return;
-            }
-        }
+        this.executeIfChildPresent(sender, args, depth);
 
         new MessageBuilder(plugin)
                 .setKey("subcommands.worlds.usage")
                 .setPlayer(sender)
                 .send();
+
+        return Result.USAGE_PRINTED;
     }
 
     @Override
