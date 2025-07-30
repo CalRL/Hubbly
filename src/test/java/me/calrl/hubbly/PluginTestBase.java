@@ -7,6 +7,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public abstract class PluginTestBase {
@@ -15,11 +21,18 @@ public abstract class PluginTestBase {
 
     @BeforeAll
     public static void startup() throws Exception {
-        Hubbly hubbly = (Hubbly) MockBukkit.load(Hubbly.class);
-        hubbly.onEnable();
+
+        if (!MockBukkit.isMocked()) {
+            server = MockBukkit.mock();
+        } else {
+            server = MockBukkit.getMock();
+        }
+
+        plugin = (Hubbly) MockBukkit.load(Hubbly.class);
+        plugin.onEnable();
 
         long start = System.currentTimeMillis();
-        while (!hubbly.isLoaded()) {
+        while (!plugin.isLoaded()) {
             try {
                 if (System.currentTimeMillis() - start > 5000) {
                     throw new RuntimeException("Hubbly did not finish loading in time");
@@ -28,32 +41,42 @@ public abstract class PluginTestBase {
             } catch (Exception e) {
                 throw new Exception(e.getMessage());
             }
-
         }
+
+        loadFile("config.yml");
+        loadFile("items.yml");
+        loadFile("menus/selector.yml");
+        loadFile("menus/socials.yml");
     }
 
     @BeforeEach
     public void init() {
         System.out.println("Starting init");
-        server = MockBukkit.mock();
-
-        server.addSimpleWorld("world_nether");
-        server.addSimpleWorld("world");
 
         Hubbly.enableTestMode();
-        plugin = MockBukkit.load(Hubbly.class);
 
         assertNotNull(plugin, "Plugin failed to load");
         System.out.println("Ending init");
     }
 
-    @AfterEach
-    public void cleanup() {
-        MockBukkit.unmock();
-    }
-
+//    @AfterEach
+//    public void cleanup() {
+//        MockBukkit.unmock();
+//    }
+//
     @AfterAll
     public static void clean() {
         MockBukkit.unmock();
+        System.out.println("cleanup!");
+    }
+
+    private static void loadFile(String resourcePath) throws IOException {
+        Path target = plugin.getDataFolder().toPath().resolve(resourcePath);
+        Files.createDirectories(target.getParent());
+
+        try (InputStream in = PluginTestBase.class.getClassLoader().getResourceAsStream(resourcePath)) {
+            assertNotNull(in, "Missing test resource: " + resourcePath);
+            Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
+        }
     }
 }
