@@ -1,8 +1,9 @@
-debug: true
+debug: false
 prefix: '&e&lHubbly &7&l>&r'
 check_for_update: true
 # Send message if no update?
 notify_on_no_update: false
+default_language: en
 
 #----------------#
 # Disabled Worlds #
@@ -47,18 +48,22 @@ playervisibility:
 
 movementitems:
   enderbow:
-    enabled: true
+    material: BOW # <- do not change this
+    enabled: false
     name: "<#A020F0>Enderbow"
     cooldown: 3
   trident:
+    material: TRIDENT # <- do not change this
     enabled: true
     name: "<#40E0D0>Trident"
     cooldown: 3
   grappling_hook:
+    material: FISHING_ROD # <- do not change this
     enabled: true
     name: "<#FFFF00>Grappling Hook"
     cooldown: 3
   aote:
+    material: DIAMOND_SWORD # <- you can change this
     enabled: true
     name: "<#2d0043>Aspect of the End"
     cooldown: 1
@@ -141,9 +146,9 @@ anti_world_download:
   enabled: true
   notify_admin: true
 
-#------------#
+#-----------------#
 # CHAT MANAGEMENT #
-#------------#
+#-----------------#
 
 lock_chat: false
 
@@ -180,31 +185,4 @@ announcements:
       - 'Test2'
       - 'This is a second announcement'
       - 'Goodbye'
-
-#----------#
-# MESSAGES #
-#----------#
-
-messages:
-  no_console: "Only players can use this command!"
-  no_permission_command: "You do not have permission to use this command!"
-  no_permission_use: "You do not have permission to use this!"
-  reload: "Reloaded Hubbly plugin"
-  fly:
-    enable: "Flight mode enabled."
-    disable: "Flight mode disabled."
-  no_fly_enabled: "Flight is disabled in config"
-  blocked_command: 'Unknown command. Type "/help" for help'
-  blocked_message: 'Please do not use that word!'
-  success: "Success!"
-  console_error: "Error. Please check console"
-
-  # No PAPI support, only %player% placeholder to get the person who locked the chat.
-  chat_locked: "Chat has been locked by %player%"
-  chat_unlocked: "Chat has been unlocked by %player%"
-
-update:
-  new_update: "An update is available! Hubbly %new% can be downloaded on SpigotMC, you are on %current%"
-  no_update: "Hubbly %current% is up to date"
-  error: "Could not check for a new version..."
 

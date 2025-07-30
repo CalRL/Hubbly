@@ -1,0 +1,64 @@
+# PLAYER HEADS
+#   You can have player heads, using player names, URLs or HeadDatabase IDs.
+#   Examples
+#     Player
+#       material: PLAYER_HEAD
+#       texture: player
+#
+#     URL
+#       material: PLAYER_HEAD
+#       texture: <url>
+#
+#     HeadDatabase
+#       material: PLAYER_HEAD
+#       hdb: <hdb id>
+
+# AMOUNT
+#    You can change the amount using:
+#      amount: 3
+
+# LEATHER ARMOR
+#  You can have different color LeatherArmor.
+#  Example
+#    #8ad592 color
+#      material: LEATHER_CHESTPLATE
+#      color: 8ad592 <- without the hashtag (#)
+
+title: "&cServer Selector"
+size: 36
+items:
+  survival:
+    material: APPLE
+    name: "<#CCFFDD>Survival Server"
+    amount: 3
+    url: http://textures.minecraft.net/texture/355e2dc46399b7b9275221fcdc87c66e58d0d3044dcf62af0465122c1cd7e0bc
+    model_data: 10001 # <- Model Data ID
+    slot: 12 # <- 0-based index
+    lore:
+      - "&aJoin the Survival Server!"
+    actions:
+      - "[BUNGEE] survival"
+  creative:
+    material: PLAYER_HEAD
+    texture: http://textures.minecraft.net/texture/bcf2105bb737638833033dd8244071e75870e2e11c2617e542e8924fb2b90180
+    name: "&cCreative Server"
+    slot: 14
+    lore:
+      - "&aJoin the Survival Server!"
+    actions:
+      - "[BUNGEE] creative"
+  factions:
+    material: LEATHER_CHESTPLATE
+    color: 8ad592
+    name: "&cFactions Server"
+    slot: 22
+    lore:
+      - "&aJoin the Survival Server!"
+    actions:
+      - "[BUNGEE] factions"
+  fill:
+    slot: -1 # <- use -1 to use as fill item
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+    actions:
+      - "[CLOSE]"
