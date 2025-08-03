@@ -34,7 +34,7 @@ public class DebugCommand extends CommandNode {
         }
 
         new MessageBuilder(plugin)
-                .setKey("subcommands.worlds.usage")
+                .setKey("subcommands.debug.usage")
                 .setPlayer(sender)
                 .send();
         return Result.USAGE_PRINTED;

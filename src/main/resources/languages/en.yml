@@ -84,8 +84,10 @@ subcommands:
   menu:
     usage: /hubbly menu <menu>
     description: Opens a provided menu
+  debug:
+    usage: /hubbly debug <args>
   worlds:
-    usage: /hubbly worlds <add | remove | check>
+    usage: /hubbly debug disabledworlds <add | remove | check>
     description:
     add:
       usage: /hubbly worlds add <world>

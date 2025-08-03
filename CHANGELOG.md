@@ -7,3 +7,6 @@
 - UpdateUtil will no longer send a message on join if the message is "nomessage" or " ".
 - SpawnCommand is now a TabExecutor (todo: make /spawn %player%).
 - Added `hubbly.command.debug` permission
+- /spawn can now be configured to teleport after a few seconds
+- Added "spawn.timer" in config
+- Added "teleporting" and "teleport_cancelled" keys in en.yml

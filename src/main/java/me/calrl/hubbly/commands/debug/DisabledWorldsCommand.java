@@ -40,7 +40,7 @@ public class DisabledWorldsCommand extends CommandNode {
                 .map(World::getName)
                 .collect(Collectors.joining(", "));
 
-        player.sendMessage("Worlds: " + worldNames);
+        new MessageBuilder(plugin).setPlayer(player).usePrefix(true).setMessage(worldNames).send();
         new DebugMode().info("Worlds: " + worldNames);
         return Result.SUCCESS;
     }
