@@ -3,7 +3,6 @@ package me.calrl.hubbly;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
@@ -51,12 +50,10 @@ public abstract class PluginTestBase {
 
     @BeforeEach
     public void init() {
-        System.out.println("Starting init");
 
         Hubbly.enableTestMode();
 
         assertNotNull(plugin, "Plugin failed to load");
-        System.out.println("Ending init");
     }
 
 //    @AfterEach

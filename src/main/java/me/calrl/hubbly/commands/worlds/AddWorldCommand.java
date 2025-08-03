@@ -12,22 +12,22 @@ import org.bukkit.command.CommandSender;
 import java.util.Collections;
 import java.util.List;
 
-public class RemoveCommand extends CommandNode {
+public class AddWorldCommand extends CommandNode {
     private Hubbly plugin;
-    public RemoveCommand(Hubbly plugin) {
+    public AddWorldCommand(Hubbly plugin) {
         super("add");
         this.plugin = plugin;
     }
 
     @Override
     public Result execute(CommandSender sender, String[] args, int depth) {
-        if(!sender.hasPermission(Permissions.COMMAND_WORLDS_REMOVE.getPermission())) {
+        if(!sender.hasPermission(Permissions.COMMAND_WORLDS_ADD.getPermission())) {
             new MessageBuilder(plugin).setKey("no_permission_command").setPlayer(sender).send();
             return Result.NO_PERMISSION;
         }
 
         if(args.length <= depth) {
-            new MessageBuilder(plugin).setKey("subcommands.worlds.remove.usage").setPlayer(sender).send();
+            new MessageBuilder(plugin).setKey("subcommands.worlds.add.usage").setPlayer(sender).send();
             return Result.USAGE_PRINTED;
         }
 
@@ -42,10 +42,10 @@ public class RemoveCommand extends CommandNode {
             return Result.FAILURE;
         }
 
-        plugin.getDisabledWorldsManager().removeWorld(world);
+        plugin.getDisabledWorldsManager().addWorld(world);
 
         new MessageBuilder(plugin)
-                .setKey("subcommands.worlds.remove.message")
+                .setKey("subcommands.worlds.add.message")
                 .setPlayer(sender)
                 .replace("%world%", world.getName())
                 .send();

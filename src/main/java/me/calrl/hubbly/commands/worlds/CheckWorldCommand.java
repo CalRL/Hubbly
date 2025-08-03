@@ -12,22 +12,22 @@ import org.bukkit.command.CommandSender;
 import java.util.Collections;
 import java.util.List;
 
-public class AddCommand extends CommandNode {
-    private Hubbly plugin;
-    public AddCommand(Hubbly plugin) {
+public class CheckWorldCommand extends CommandNode {
+    private final Hubbly plugin;
+    public CheckWorldCommand(Hubbly plugin) {
         super("add");
         this.plugin = plugin;
     }
 
     @Override
     public Result execute(CommandSender sender, String[] args, int depth) {
-        if(!sender.hasPermission(Permissions.COMMAND_WORLDS_ADD.getPermission())) {
+        if(!sender.hasPermission(Permissions.COMMAND_WORLDS_CHECK.getPermission())) {
             new MessageBuilder(plugin).setKey("no_permission_command").setPlayer(sender).send();
             return Result.NO_PERMISSION;
         }
 
         if(args.length <= depth) {
-            new MessageBuilder(plugin).setKey("subcommands.worlds.add.usage").setPlayer(sender).send();
+            new MessageBuilder(plugin).setKey("subcommands.worlds.check.usage").setPlayer(sender).send();
             return Result.USAGE_PRINTED;
         }
 
@@ -42,13 +42,20 @@ public class AddCommand extends CommandNode {
             return Result.FAILURE;
         }
 
-        plugin.getDisabledWorldsManager().addWorld(world);
+        MessageBuilder builder = new MessageBuilder(plugin);
 
-        new MessageBuilder(plugin)
-                .setKey("subcommands.worlds.add.message")
+        boolean inDisabledWorld = plugin.getDisabledWorldsManager().inDisabledWorld(world);
+        if(inDisabledWorld) {
+             builder.setKey("subcommands.worlds.check.disabled")
+                     .setPlayer(sender)
+                     .replace("%world%", world.getName()).send();
+            return Result.SUCCESS;
+        }
+
+        builder.setKey("subcommands.worlds.check.enabled")
                 .setPlayer(sender)
-                .replace("%world%", world.getName())
-                .send();
+                .replace("%world%", world.getName()).send();
+
         return Result.SUCCESS;
     }
 

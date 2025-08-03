@@ -7,7 +7,8 @@ import me.calrl.hubbly.utils.CommandNode;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.command.CommandSender;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 public class WorldsCommand extends CommandNode {
 
@@ -20,9 +21,10 @@ public class WorldsCommand extends CommandNode {
     }
 
     private void loadNodes() {
-        addChild("add", new AddCommand(plugin));
-        addChild("remove", new RemoveCommand(plugin));
-        addChild("check", new CheckCommand(plugin));
+        addChild("add", new AddWorldCommand(plugin));
+        addChild("remove", new RemoveWorldCommand(plugin));
+        addChild("check", new CheckWorldCommand(plugin));
+        addChild("list", new ListWorldCommand(plugin));
     }
 
     @Override
@@ -32,10 +34,17 @@ public class WorldsCommand extends CommandNode {
             return Result.NO_PERMISSION;
         }
 
-        this.executeIfChildPresent(sender, args, depth);
+        Result result = this.executeIfChildPresent(sender, args, depth);
+        if(result != Result.NO_CHILD) {
+            return result;
+        }
+
+        Map<String, CommandNode> children = this.getChildren();
+        String subCommands = String.join(" | ", children.keySet());
 
         new MessageBuilder(plugin)
                 .setKey("subcommands.worlds.usage")
+                .replace("%args%", subCommands)
                 .setPlayer(sender)
                 .send();
 

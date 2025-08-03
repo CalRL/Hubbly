@@ -28,7 +28,7 @@ public abstract class CommandNode {
                 return node.execute(sender, args, depth + 1);
             }
         }
-        return Result.FAILURE;
+        return Result.NO_CHILD;
     }
 
     public List<String> tabComplete(CommandSender sender, String[] args, int depth) {

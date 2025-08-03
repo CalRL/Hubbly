@@ -87,7 +87,7 @@ subcommands:
   debug:
     usage: /hubbly debug <args>
   worlds:
-    usage: /hubbly debug disabledworlds <add | remove | check>
+    usage: /hubbly worlds <%args%>
     description:
     add:
       usage: /hubbly worlds add <world>

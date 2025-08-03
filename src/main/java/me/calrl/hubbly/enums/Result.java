@@ -10,5 +10,6 @@ public enum Result {
     CONSOLE_ONLY,
     COOLDOWN,
     ALREADY_EXISTS,
-    NOTHING_TO_DO
+    NOTHING_TO_DO,
+    NO_CHILD
 }
