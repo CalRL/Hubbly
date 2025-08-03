@@ -18,15 +18,15 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.events.HubblySpawnEvent;
 import me.calrl.hubbly.interfaces.CustomItem;
+import me.calrl.hubbly.managers.SpawnTaskManager;
+import me.calrl.hubbly.tasks.spawn.SpawnTeleportTask;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -71,11 +71,11 @@ public class SpawnCommand implements TabExecutor {
             return true;
         }
 
-        if(!event.isCancelled()) {
-            Bukkit.getScheduler().runTaskLater(plugin, ()-> {
-                player.teleport(spawn);
-            }, 1L);
 
+        if(!event.isCancelled()) {
+            long timer = plugin.getConfig().getLong("spawn.timer");
+            SpawnTaskManager manager = plugin.getManagerFactory().getSpawnTaskManager();
+            new SpawnTeleportTask(plugin, player, timer).start();
         }
 
         return true;

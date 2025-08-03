@@ -17,6 +17,8 @@ invalid_argument: Invalid argument %value%
 invalid_world: World %world% does not exist
 unknown_player: Player %player% not found
 arg_must_be_number: Argument %value% must be a number
+teleporting: Don't move! Teleporting in %value% seconds
+teleport_cancelled: You moved, teleport cancelled.
 
 # No PAPI support, only %player_name% placeholder to get the person who locked the chat.
 chat_locked: Chat has been locked by %player_name%

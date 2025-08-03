@@ -82,6 +82,7 @@ spawn:
   #YAW AND PITCH WILL ROUND TO {-135, -90, -45, 0, 45, 90, 135} WHEN YOU USE /SETSPAWN, YOU CAN MANUALLY OVERRIDE THIS HERE
   yaw: 0
   pitch: 0
+  timer: 2
 
 
 #-----------------#

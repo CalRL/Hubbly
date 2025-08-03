@@ -149,6 +149,7 @@ public class Hubbly extends JavaPlugin {
         registerListener(new ChatListener(this));
         registerListener(new InventoryListener(this));
         registerListener(new XPListener(this), "player.experience.enabled");
+        registerListener(new PlayerMoveListener(this));
     }
 
     @Override
