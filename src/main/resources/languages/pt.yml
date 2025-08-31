@@ -1,0 +1,104 @@
+no_console: "Só jogadores podem usar este comando!"
+no_permission_command: Não tens permissão para usar este comando!
+no_permission_use: Não tens permissão para usar isto!
+reload: Hubbly plugin recarregado
+fly:
+  enable: Modo de voo ativado.
+  disable: Modo de voo desativado.
+no_fly_enabled: Flight está desativado na config
+blocked_command: Comando desconhecido. Use "/help" para ajuda
+blocked_message: Por favor não use essa palavra!
+success: Sucesso!
+failure: Falha!
+unknown_command: Comando desconhecido. Use '/hubbly help' para a lista de comandos.
+unknown_item: Item %value% não encontrado
+invalid_amount: Quantidade inválida %value%
+invalid_argument: Argumento inválido %value%
+invalid_world: Mundo %world% não existe
+unknown_player: Jogador %player% não encontrado
+arg_must_be_number: Argumento %value% tem de ser um número
+teleporting: Não mexa! Teletransportando em %value% segundos
+teleport_cancelled: Mexeu, teletransporte cancelado.
+
+# No PAPI support, only %player_name% placeholder to get the person who locked the chat.
+chat_locked: Chat foi bloqueado por %player_name%
+chat_unlocked: Chat foi desbloqueado por %player_name%
+
+update:
+  new_update:
+    Uma atualização está disponível! Hubbly %new% pode ser transferido em SpigotMC,
+    Você está atualmente em %current%
+  no_update: Hubbly %current% está atualizado
+  error: Não foi possível verificar se há uma nova versão...
+
+action:
+  errors:
+    null: Dados da ação estão nulos..."
+
+anti_wdl_notify: Jogador %player% tentou descarregar o mundo
+usage:
+  hubbly: "Uso: /hubbly <command> <args>"
+
+commands:
+  hubbly:
+    usage: /hubbly
+    description: Comando principal do plugin.
+  setspawn:
+    usage: /setspawn
+    description: Define o local de spawn para sua posição atual.
+  spawn:
+    usage: /spawn
+    description: Teletransporta você para o local de spawn.
+  fly:
+    usage: /fly
+    description: Alterna o modo de vôo para o jogador.
+  clearchat:
+    usage: /clearchat
+    description: Limpa o chat para todos os jogadores.
+  lockchat:
+    usage: /lockchat
+    description: Bloqueia ou desbloqueia o chat para todos os jogadores.
+
+subcommands:
+  version:
+    usage: /hubbly version
+    description: Mostra a versão atual do plugin.
+  help:
+    usage: /hubbly help
+    description: Mosta a lista de comandos disponíveis.
+  reload:
+    usage: /hubbly reload
+    description: Recarrega a configuração do plugin.
+  nextannouncement:
+    usage: /hubbly nextannouncement
+    description: Envia o próximo anúncio agendado.
+  give:
+    usage: /hubbly give <player> <item> [amount] [slot]
+    description: Dá um item a um jogador com valor e slot opcionais.
+    messages:
+      give_item: "Deu %amount% %item% para %player%"
+      give_item_with_slot: "Deu %amount% %item% para %player% no slot %slot%"
+  convert:
+    usage: /hubbly convert <selector/socials>
+    description: Converte arquivos
+  menu:
+    usage: /hubbly menu <menu>
+    description: Abre um menu fornecido
+  debug:
+    usage: /hubbly debug <args>
+  worlds:
+    usage: /hubbly worlds <%args%>
+    description:
+    add:
+      usage: /hubbly worlds add <world>
+      description:
+      message: Adicionado %world% para a lista de mundos desativados
+    remove:
+      usage: /hubbly worlds remove <world>
+      description:
+      message: Removido %world% da lista de mundos desativados
+    check:
+      usage: /hubbly worlds check <world>
+      description:
+      enabled: "Hubbly está abilitado em mundo: %world%"
+      disabled: "Hubbly está desabilitado em mundo: %world%"
