@@ -55,6 +55,7 @@ public class WorldEventListeners implements Listener {
         this.plugin = plugin;
         this.config = plugin.getConfig();
         this.bossBarManager = plugin.getBossBarManager();
+        this.plugin.getLogger().info("Loaded WorldEventListeners");
     }
 
     /**
