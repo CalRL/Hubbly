@@ -10,3 +10,8 @@
 - Added `spawn.timer` in config
 - Added `teleporting` and `teleport_cancelled` keys in en.yml
 - Added `/hubbly worlds list` command
+- OPs no longer always bypass `cancel_events` (you can deny them the permission)
+- Fix `/hubbly worlds` `remove` and `check` subcommands
+- `/hubbly worlds` `add` and `remove` now reflect in config
+- LockChat now properly sends Locale message
+- Added Portuguese language (Thank you snowy727. on discord)
