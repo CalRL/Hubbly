@@ -18,6 +18,7 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.Result;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -106,13 +107,22 @@ public class DisabledWorlds {
     public void addWorld(World world) {
         boolean isValid = this.checkValidity(world);
 
-        if(!isValid) return;
+        if (!isValid) return;
         DebugMode debugMode = new DebugMode();
-        if(disabledWorlds.contains(world)) {
+        if (disabledWorlds.contains(world)) {
             debugMode.info("World is already in DisabledWorlds list: ");
         }
 
         disabledWorlds.add(world);
+        this.updateConfig();
+    }
+
+    public Result updateConfig() {
+        List<String> worldNames = this.getDisabledWorldNames();
+        plugin.getConfig().set("disabled-worlds", worldNames);
+        plugin.saveConfig();
+
+        return Result.SUCCESS;
     }
 
     public boolean checkWorld(World world) {
@@ -144,6 +154,7 @@ public class DisabledWorlds {
         }
 
         disabledWorlds.remove(world);
+        this.updateConfig();
     }
 
     public List<World> getDisabledWorlds() {
