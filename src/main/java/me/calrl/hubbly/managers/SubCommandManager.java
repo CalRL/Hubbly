@@ -1,16 +1,14 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.commands.debug.DebugCommand;
 import me.calrl.hubbly.commands.subcommands.*;
-import me.calrl.hubbly.commands.subcommands.worlds.WorldsCommand;
+import me.calrl.hubbly.commands.worlds.WorldsCommand;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.CommandNode;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class SubCommandManager {
     private final Map<String, SubCommand> subCommands;
@@ -58,6 +56,7 @@ public class SubCommandManager {
 
     public void loadNodes() {
         this.registerNode(new WorldsCommand(plugin));
+        this.registerNode(new DebugCommand(plugin));
         new DebugMode().info("Loaded all WorldsCommand nodes");
     }
     public void registerNode(CommandNode node) {

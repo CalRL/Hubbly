@@ -1,36 +1,34 @@
-package me.calrl.hubbly.commands.subcommands.worlds;
+package me.calrl.hubbly.commands.worlds;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
-import me.calrl.hubbly.interfaces.SubCommand;
+import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.utils.CommandNode;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
-import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.Collections;
 import java.util.List;
 
-public class CheckCommand extends CommandNode {
+public class CheckWorldCommand extends CommandNode {
     private final Hubbly plugin;
-    public CheckCommand(Hubbly plugin) {
-        super("add");
+    public CheckWorldCommand(Hubbly plugin) {
+        super("check");
         this.plugin = plugin;
     }
 
     @Override
-    public void execute(CommandSender sender, String[] args, int depth) {
+    public Result execute(CommandSender sender, String[] args, int depth) {
         if(!sender.hasPermission(Permissions.COMMAND_WORLDS_CHECK.getPermission())) {
             new MessageBuilder(plugin).setKey("no_permission_command").setPlayer(sender).send();
-            return;
+            return Result.NO_PERMISSION;
         }
 
         if(args.length <= depth) {
             new MessageBuilder(plugin).setKey("subcommands.worlds.check.usage").setPlayer(sender).send();
-            return;
+            return Result.USAGE_PRINTED;
         }
 
         String worldName = args[depth];
@@ -41,7 +39,7 @@ public class CheckCommand extends CommandNode {
                     .setPlayer(sender)
                     .replace("%world%", worldName)
                     .send();
-            return;
+            return Result.FAILURE;
         }
 
         MessageBuilder builder = new MessageBuilder(plugin);
@@ -51,13 +49,14 @@ public class CheckCommand extends CommandNode {
              builder.setKey("subcommands.worlds.check.disabled")
                      .setPlayer(sender)
                      .replace("%world%", world.getName()).send();
-            return;
+            return Result.SUCCESS;
         }
 
         builder.setKey("subcommands.worlds.check.enabled")
                 .setPlayer(sender)
                 .replace("%world%", world.getName()).send();
 
+        return Result.SUCCESS;
     }
 
     @Override

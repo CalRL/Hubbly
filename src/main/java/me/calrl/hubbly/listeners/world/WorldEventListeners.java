@@ -55,6 +55,7 @@ public class WorldEventListeners implements Listener {
         this.plugin = plugin;
         this.config = plugin.getConfig();
         this.bossBarManager = plugin.getBossBarManager();
+        this.plugin.getLogger().info("Loaded WorldEventListeners");
     }
 
     /**
@@ -84,7 +85,7 @@ public class WorldEventListeners implements Listener {
     private void onBlockPlace(BlockPlaceEvent event) {
         Player player = event.getPlayer();
         if(inDisabledWorld(player)) return;
-        if(player.hasPermission("hubbly.bypass.place") || player.isOp()) return;
+        if(player.hasPermission("hubbly.bypass.place") ) return;
         if(config.getBoolean("cancel_events.block_place")) {
             event.setCancelled(true);
         }
@@ -94,7 +95,7 @@ public class WorldEventListeners implements Listener {
     private void onBlockBreak(BlockBreakEvent event) {
         Player player = event.getPlayer();
         if(inDisabledWorld(player)) return;
-        if(player.hasPermission("hubbly.bypass.break") || player.isOp()) return;
+        if(player.hasPermission("hubbly.bypass.break") ) return;
         if (config.getBoolean("cancel_events.block_break")) {
 
                 event.setCancelled(true);
@@ -138,7 +139,7 @@ public class WorldEventListeners implements Listener {
     private void onItemDrop(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         if(inDisabledWorld(player)) return;
-        if (player.hasPermission("hubbly.bypass.item.drop") || player.isOp()) return;
+        if (player.hasPermission("hubbly.bypass.item.drop") ) return;
         if(config.getBoolean("cancel_events.item_drop")) {
                 event.setCancelled(true);
         }
@@ -147,7 +148,7 @@ public class WorldEventListeners implements Listener {
     private void onItemPickup(EntityPickupItemEvent event) {
         if (event.getEntity() instanceof Player player) {
             if (inDisabledWorld(player)) return;
-            if (player.hasPermission("hubbly.bypass.item.pickup") || player.isOp()) return;
+            if (player.hasPermission("hubbly.bypass.item.pickup") ) return;
             if (config.getBoolean("cancel_events.item_pickup")) {
                 event.setCancelled(true);
             }
@@ -207,7 +208,7 @@ public class WorldEventListeners implements Listener {
     private void onItemThrow(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         if(config.getBoolean("cancel_events.item_throw", true)) {
-            if (player.hasPermission("hubbly.bypass.item.throw") || player.isOp()) return;
+            if (player.hasPermission("hubbly.bypass.item.throw") ) return;
             if (inDisabledWorld(player)) return;
 
         } else {

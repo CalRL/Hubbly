@@ -18,6 +18,7 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.Result;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -44,8 +45,9 @@ public class DisabledWorlds {
     }
 
     public void setDisabledWorlds() {
-        List<String> disabledWorldsList = this.getConfigWorldList();
         DebugMode debugMode = new DebugMode();
+        List<String> disabledWorldsList = this.getConfigWorldList();
+        debugMode.info("Worlds to disable: " + disabledWorldsList);
         if(disabledWorldsList.isEmpty()) {
             debugMode.info("No worlds to register");
         }
@@ -76,37 +78,51 @@ public class DisabledWorlds {
         }
 
         List<String> disabledWorldsList = config.getStringList("disabled-worlds");
+        new DebugMode().info("DWList: " + disabledWorldsList);
 
         boolean isInverted = config.getBoolean("invert", false);
         if (isInverted) {
-            disabledWorldsList = this.getInvertedWorlds();
+            disabledWorldsList = this.getInvertedWorlds(disabledWorldsList);
         }
 
         return disabledWorldsList;
     }
 
-    private List<String> getInvertedWorlds() {
+    private List<String> getInvertedWorlds(List<String> current) {
         List<World> allWorlds = Bukkit.getWorlds();
         List<String> invertedWorlds = new ArrayList<>();
 
         for (World world : allWorlds) {
-            if (!disabledWorlds.contains(world)) {
+            if (!current.contains(world.getName())) {
                 invertedWorlds.add(world.getName());
             }
         }
         return invertedWorlds;
     }
 
+    public void clear() {
+        this.disabledWorlds.clear();
+    }
+
     public void addWorld(World world) {
         boolean isValid = this.checkValidity(world);
 
-        if(!isValid) return;
+        if (!isValid) return;
         DebugMode debugMode = new DebugMode();
-        if(disabledWorlds.contains(world)) {
+        if (disabledWorlds.contains(world)) {
             debugMode.info("World is already in DisabledWorlds list: ");
         }
 
         disabledWorlds.add(world);
+        this.updateConfig();
+    }
+
+    public Result updateConfig() {
+        List<String> worldNames = this.getDisabledWorldNames();
+        plugin.getConfig().set("disabled-worlds", worldNames);
+        plugin.saveConfig();
+
+        return Result.SUCCESS;
     }
 
     public boolean checkWorld(World world) {
@@ -138,10 +154,19 @@ public class DisabledWorlds {
         }
 
         disabledWorlds.remove(world);
+        this.updateConfig();
     }
 
     public List<World> getDisabledWorlds() {
         return this.disabledWorlds;
+    }
+
+    public List<String> getDisabledWorldNames() {
+        List<String> list = new ArrayList<>();
+        for (World disabledWorld : this.disabledWorlds) {
+            list.add(disabledWorld.getName());
+        }
+        return list;
     }
 
     public void reload() {

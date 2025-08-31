@@ -12,7 +12,7 @@ public class MessageBuilder {
 
     private Player player;
     private Hubbly plugin;
-    private LocaleKey key;
+    private String key;
     private String content;
     private LocaleManager localeManager = null;
     private boolean usePrefix = true;
@@ -23,13 +23,23 @@ public class MessageBuilder {
 
     public MessageBuilder(Hubbly plugin) {
         this.plugin = plugin;
+
         this.localeManager = plugin.getLocaleManager();
     }
 
     public MessageBuilder(Hubbly plugin, Player player) {
         this.player = player;
         this.plugin = plugin;
+
         this.localeManager = plugin.getLocaleManager();
+    }
+
+    public MessageBuilder(Hubbly plugin, Player player, String key) {
+        this.plugin = plugin;
+        this.player = player;
+        this.key = key;
+
+        this.localeManager = this.plugin.getLocaleManager();
     }
 
     public MessageBuilder setKey(String key) {

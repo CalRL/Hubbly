@@ -69,7 +69,6 @@ public class AnnouncementsManager {
                 List<String> messages = section.getStringList(key);
                 String[] messageArray = messages.toArray(new String[0]);
                 announcements.add(messageArray);
-                debugMode.info(announcements.toString());
                 state.set(true);
             }
         } catch (Exception e) {

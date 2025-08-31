@@ -24,7 +24,9 @@ public class LockChat {
     private boolean isChatLocked;
     public LockChat(Hubbly plugin) {
         this.plugin = plugin;
-        isChatLocked = false;
+        isChatLocked = plugin.getConfig().getBoolean("lock_chat");
+        String msg = isChatLocked ? "Chat is LOCKED" : "Chat is UNLOCKED";
+        new DebugMode().info(msg);
     }
     public void flipChatLock() {
         isChatLocked = !isChatLocked;
