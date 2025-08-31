@@ -56,6 +56,7 @@ public class LockChatCommand implements CommandExecutor {
         }
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
         MessageBuilder builder = new MessageBuilder(plugin)
+                .setPlayer(commandSender)
                 .setKey(key)
                 .replace("%player_name%", commandSender.getName());
 
