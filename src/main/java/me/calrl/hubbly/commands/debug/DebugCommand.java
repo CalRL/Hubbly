@@ -41,7 +41,7 @@ public class DebugCommand extends CommandNode {
     }
 
     private void loadNodes() {
-        addChild("disabledworlds", new DisabledWorldsCommand(plugin));
+
     }
 
     @Override
