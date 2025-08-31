@@ -15,7 +15,7 @@ import java.util.List;
 public class RemoveWorldCommand extends CommandNode {
     private Hubbly plugin;
     public RemoveWorldCommand(Hubbly plugin) {
-        super("add");
+        super("remove");
         this.plugin = plugin;
     }
 

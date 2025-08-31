@@ -15,7 +15,7 @@ import java.util.List;
 public class CheckWorldCommand extends CommandNode {
     private final Hubbly plugin;
     public CheckWorldCommand(Hubbly plugin) {
-        super("add");
+        super("check");
         this.plugin = plugin;
     }
 
