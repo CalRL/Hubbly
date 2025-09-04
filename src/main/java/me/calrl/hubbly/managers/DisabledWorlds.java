@@ -176,6 +176,10 @@ public class DisabledWorlds {
         return this.disabledWorlds;
     }
 
+    public List<String> getNames() {
+        return this.disabledWorlds;
+    }
+
     public void reload() {
         disabledWorlds.clear();
         this.setDisabledWorlds();
