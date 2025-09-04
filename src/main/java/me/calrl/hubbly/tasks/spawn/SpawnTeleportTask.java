@@ -40,12 +40,14 @@ public class SpawnTeleportTask  implements ITask {
     public Result start() {
         registry.register(this.player.getUniqueId(), this.startLocation, this);
         this.task.runTaskLater(this.plugin, 20L * this.timer);
-
-        new MessageBuilder(this.plugin)
-                .setPlayer(this.player)
-                .setKey("teleporting")
-                .replace("%value%", String.valueOf(this.timer))
-                .send();
+        
+        if(this.timer >= 1) {
+            new MessageBuilder(this.plugin)
+                    .setPlayer(this.player)
+                    .setKey("teleporting")
+                    .replace("%value%", String.valueOf(this.timer))
+                    .send();
+        }
 
         return Result.SUCCESS;
     }

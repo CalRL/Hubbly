@@ -42,7 +42,7 @@ public class DisabledWorldsTest extends PluginTestBase {
         disabledWorlds.addWorld(world);
 
         assertTrue(disabledWorlds.inDisabledWorld(world));
-        assertTrue(disabledWorlds.getDisabledWorlds().contains(world.getName()));
+        assertTrue(disabledWorlds.getDisabledWorlds().contains(world));
     }
 
     @Test
