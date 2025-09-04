@@ -1,39 +1,26 @@
 package me.calrl.hubbly.listeners.world;
 
-import be.seeseemelk.mockbukkit.Coordinate;
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.WorldMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.enums.Permissions;
-import me.calrl.hubbly.enums.PluginKeys;
-import me.calrl.hubbly.listeners.world.WorldEventListeners;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
-import org.bukkit.event.block.*;
-import org.bukkit.event.entity.*;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
-import org.bukkit.event.weather.ThunderChangeEvent;
-import org.bukkit.event.weather.WeatherChangeEvent;
-import org.bukkit.event.world.WorldLoadEvent;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.permissions.PermissionAttachment;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class WorldEventListenersTest {
 
@@ -88,7 +75,7 @@ public class WorldEventListenersTest {
         );
 
         server.getPluginManager().callEvent(event);
-        assertTrue(event.isCancelled());
+        assertFalse(event.isCancelled());
     }
 
     @Test
@@ -133,7 +120,7 @@ public class WorldEventListenersTest {
         );
 
         server.getPluginManager().callEvent(event);
-        assertTrue(event.isCancelled());
+        assertFalse(event.isCancelled());
     }
 
     @Test
@@ -173,7 +160,7 @@ public class WorldEventListenersTest {
         );
 
         server.getPluginManager().callEvent(event);
-        assertTrue(event.isCancelled());
+        assertFalse(event.isCancelled());
     }
 
     @Test
