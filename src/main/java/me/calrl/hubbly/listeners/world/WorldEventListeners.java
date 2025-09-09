@@ -20,21 +20,22 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.functions.BossBarManager;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.ArmorStand;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
@@ -239,11 +240,13 @@ public class WorldEventListeners implements Listener {
     private void onMobSpawn(CreatureSpawnEvent event) {
         if(inDisabledWorld(event.getLocation().getWorld())) return;
         if (config.getBoolean("cancel_events.mob_spawn")) {
-            if(!(event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.COMMAND || event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM)) {
+            CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
+            if(!(reason == CreatureSpawnEvent.SpawnReason.COMMAND || reason == CreatureSpawnEvent.SpawnReason.CUSTOM)) {
                 event.setCancelled(true);
             }
         }
     }
+
     @EventHandler
     private void onBlockBurn(BlockBurnEvent event) {
         if(inDisabledWorld(event.getBlock().getWorld())) return;
@@ -251,6 +254,7 @@ public class WorldEventListeners implements Listener {
             event.setCancelled(true);
         }
     }
+
     @EventHandler
     private void onBlockIgnite(BlockIgniteEvent event) {
         if(inDisabledWorld(event.getBlock().getWorld())) return;
@@ -334,6 +338,36 @@ public class WorldEventListeners implements Listener {
         if(player.hasPermission(Permissions.BYPASS_INTERACT.getPermission())) return;
         if(inDisabledWorld(player.getWorld())) return;
         if(config.getBoolean("cancel_events.interact", false)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    private void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
+        Player player = event.getPlayer();
+        if(player.hasPermission(Permissions.BYPASS_DAMAGE.getPermission())) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    private void onArmorStandHit(EntityDamageByEntityEvent event) {
+        if(!plugin.getConfig().getBoolean("cancel_events.damage")) return;
+        if(event.getEntity().getType() != EntityType.ARMOR_STAND) {
+            // not an armor stand
+            return;
+        }
+
+        if(event.getDamager() instanceof Player player) {
+            // player damaged
+            if(player.hasPermission(Permissions.BYPASS_DAMAGE.getPermission())) {
+                return;
+            }
+            event.setCancelled(true);
+        } else {
+            // hit by non-player
             event.setCancelled(true);
         }
     }
