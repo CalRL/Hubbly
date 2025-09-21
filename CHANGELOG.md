@@ -16,7 +16,7 @@
 - LockChat now properly sends Locale message
 - Added Portuguese language (Thank you snowy727. on discord)
 
-## [3.2.1] - ??
+## [3.3.0] - ??
 - `launchpad.sound` key added, plays a sound when a launchpad is used.
 - `spawn.sound` key added, plays a sound when /spawn teleport occurs.
 - Fix `%new%` placeholder in update notifier on join
