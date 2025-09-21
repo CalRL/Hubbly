@@ -34,6 +34,9 @@ public class PlayerMoveListener implements Listener {
         if (from.getX() == to.getX() && from.getZ() == to.getZ() && from.getY() == to.getY()) {
             return;
         }
+        if(task.getTimer() == 0) {
+            return;
+        }
         new DebugMode().info("MOVED");
         task.cancel();
         registry.unregister(uuid);

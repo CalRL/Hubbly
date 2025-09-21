@@ -1,14 +1,7 @@
 package me.calrl.hubbly.managers;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.ServerMock;
-import be.seeseemelk.mockbukkit.WorldMock;
-import com.sun.source.tree.AssertTree;
-import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.PluginTestBase;
 import org.bukkit.World;
-import org.bukkit.entity.Wolf;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +20,7 @@ public class DisabledWorldsTest extends PluginTestBase {
     }
 
     @Test
-    public void worldsExist() {
+    void worldsExist() {
         List<World> worlds = server.getWorlds();
 
         World world = server.getWorld("world");
@@ -40,7 +33,7 @@ public class DisabledWorldsTest extends PluginTestBase {
     }
 
     @Test
-    public void addsToDisabledWorlds() {
+    void addsToDisabledWorlds() {
 
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
         disabledWorlds.clear();
@@ -53,7 +46,7 @@ public class DisabledWorldsTest extends PluginTestBase {
     }
 
     @Test
-    public void disabledWorldsTest() {
+    void disabledWorldsTest() {
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
         disabledWorlds.clear();
 
@@ -69,7 +62,7 @@ public class DisabledWorldsTest extends PluginTestBase {
     }
 
     @Test
-    public void disabledWorldsInvertedTest() {
+    void disabledWorldsInvertedTest() {
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
         disabledWorlds.clear();
 

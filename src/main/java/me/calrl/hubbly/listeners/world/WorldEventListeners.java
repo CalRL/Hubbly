@@ -20,21 +20,21 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.functions.BossBarManager;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.*;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
-import org.bukkit.event.player.PlayerDropItemEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.hanging.HangingBreakByEntityEvent;
+import org.bukkit.event.hanging.HangingBreakEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
 import org.bukkit.event.world.WorldLoadEvent;
@@ -104,14 +104,32 @@ public class WorldEventListeners implements Listener {
     }
     @EventHandler
     private void cancelDamage(EntityDamageEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            if (player.hasPermission("hubbly.bypass.damage")) return;
-            if (inDisabledWorld(player)) return;
-            if(config.getBoolean("cancel_events.damage")) {
-                event.setCancelled(true);
-            }
+        if (!(event.getEntity() instanceof Player player)) {
+            return;
+        }
+        if (player.hasPermission(Permissions.BYPASS_DAMAGE.getPermission())) {
+            return;
+        }
+        if (inDisabledWorld(player)) {
+            return;
+        }
+        if(!plugin.getConfig().getBoolean("cancel_events.damage")) {
+            return;
+        }
+        event.setCancelled(true);
+    }
+
+    @EventHandler
+    private void onHangingBreakEvent(HangingBreakByEntityEvent event) {
+        if(!(event.getRemover() instanceof Player player)) {
+            return;
+        }
+
+        if(this.shouldCancelInteract(player)) {
+            event.setCancelled(true);
         }
     }
+
     @EventHandler
     private void onWeatherChange(WeatherChangeEvent event) {
         if(inDisabledWorld(event.getWorld())) return;
@@ -194,15 +212,43 @@ public class WorldEventListeners implements Listener {
 
     @EventHandler
     private void onAnimalEat(EntityChangeBlockEvent event) {
-        EntityType type = event.getEntityType();
+        this.config = plugin.getConfig();
+
+        if(!config.getBoolean("cancel_events.animal_eat", false)) {
+            return;
+        }
+
         Block block = event.getBlock();
-        if(inDisabledWorld(block.getWorld()))
+        if(inDisabledWorld(block.getWorld())) return;
+
+        EntityType type = event.getEntityType();
         if(type != EntityType.SHEEP) return;
+
         if(event.getTo() == Material.DIRT) {
-            block.setType(Material.DIRT);
+            event.setCancelled(true);
         }
     }
 
+
+    @EventHandler
+    private void onInteractEntity(PlayerInteractEntityEvent event) {
+        this.config = plugin.getConfig();
+
+        if(!config.getBoolean("cancel_events.interact", false)) {
+            return;
+        }
+
+        if(event.getPlayer().hasPermission(Permissions.BYPASS_INTERACT.getPermission())) {
+            return;
+        }
+
+        Entity entity = event.getRightClicked();
+        if(inDisabledWorld(entity.getWorld())) {
+            return;
+        }
+
+        event.setCancelled(true);
+    }
 
     @EventHandler
     private void onItemThrow(PlayerDropItemEvent event) {
@@ -239,11 +285,13 @@ public class WorldEventListeners implements Listener {
     private void onMobSpawn(CreatureSpawnEvent event) {
         if(inDisabledWorld(event.getLocation().getWorld())) return;
         if (config.getBoolean("cancel_events.mob_spawn")) {
-            if(!(event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.COMMAND || event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.CUSTOM)) {
+            CreatureSpawnEvent.SpawnReason reason = event.getSpawnReason();
+            if(!(reason == CreatureSpawnEvent.SpawnReason.COMMAND || reason == CreatureSpawnEvent.SpawnReason.CUSTOM)) {
                 event.setCancelled(true);
             }
         }
     }
+
     @EventHandler
     private void onBlockBurn(BlockBurnEvent event) {
         if(inDisabledWorld(event.getBlock().getWorld())) return;
@@ -251,6 +299,7 @@ public class WorldEventListeners implements Listener {
             event.setCancelled(true);
         }
     }
+
     @EventHandler
     private void onBlockIgnite(BlockIgniteEvent event) {
         if(inDisabledWorld(event.getBlock().getWorld())) return;
@@ -338,4 +387,61 @@ public class WorldEventListeners implements Listener {
         }
     }
 
+    @EventHandler
+    private void onArmorStandManipulate(PlayerArmorStandManipulateEvent event) {
+        Player player = event.getPlayer();
+        if(shouldCancelInteract(player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onArmorStandInteract(PlayerInteractAtEntityEvent event) {
+        if (!(event.getRightClicked() instanceof ArmorStand)) return;
+
+        Player player = event.getPlayer();
+        if (shouldCancelInteract(player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void onItemFrameInteract(PlayerInteractEntityEvent event) {
+        if (!(event.getRightClicked() instanceof ItemFrame)) return;
+
+        Player player = event.getPlayer();
+        if (shouldCancelInteract(player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    private void onEntityDamageByPlayer(EntityDamageByEntityEvent event) {
+        if(!(event.getDamager() instanceof Player player)) {
+            return;
+        }
+        if(this.shouldCancelInteract(player)) {
+            event.setCancelled(true);
+        }
+    }
+
+    private boolean shouldCancelInteract(Player player) {
+        DebugMode debug = new DebugMode(plugin);
+        if (player.hasPermission(Permissions.BYPASS_INTERACT.getPermission())) {
+            debug.info("Player has permission BYPASS.INTERACT");
+            return false;
+        }
+
+        this.config = plugin.getConfig();
+        if (!config.getBoolean("cancel_events.interact")) {
+            debug.info("cancel_events.interact disabled in config.");
+            return false;
+        }
+
+        if (inDisabledWorld(player.getWorld())) {
+            debug.info("Player is not in a disabled world.");
+            return false;
+        }
+        return true;
+    }
 }

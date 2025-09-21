@@ -29,14 +29,18 @@ import java.util.List;
 
 public class DisabledWorlds {
 
-    private final List<World> disabledWorlds = new ArrayList<>();
+    private final List<String> disabledWorlds = new ArrayList<>();
     private final Hubbly plugin;
     public DisabledWorlds(Hubbly plugin) {
         this.plugin = plugin;
         this.setDisabledWorlds();
     }
     public boolean inDisabledWorld(World world) {
-        return !disabledWorlds.isEmpty() && disabledWorlds.contains(world);
+        return !disabledWorlds.isEmpty() && disabledWorlds.contains(world.getName());
+    }
+
+    public boolean inDisabledWorld(String worldName) {
+        return !disabledWorlds.isEmpty() && disabledWorlds.contains(worldName);
     }
 
     public boolean inDisabledWorld(Location location) {
@@ -58,8 +62,7 @@ public class DisabledWorlds {
                 String errorMessage = String.format("World not found: %s", worldName);
                 plugin.getLogger().warning(errorMessage);
             } else {
-                World world = Bukkit.getWorld(worldName);
-                disabledWorlds.add(world);
+                disabledWorlds.add(worldName);
                 debugMode.info("Registered Disabled World: " + worldName);
             }
         }
@@ -109,11 +112,11 @@ public class DisabledWorlds {
 
         if (!isValid) return;
         DebugMode debugMode = new DebugMode();
-        if (disabledWorlds.contains(world)) {
+        if (disabledWorlds.contains(world.getName())) {
             debugMode.info("World is already in DisabledWorlds list: ");
         }
 
-        disabledWorlds.add(world);
+        disabledWorlds.add(world.getName());
         this.updateConfig();
     }
 
@@ -153,20 +156,28 @@ public class DisabledWorlds {
             debugMode.info("World is not in DisabledWorlds list: ");
         }
 
-        disabledWorlds.remove(world);
+        disabledWorlds.remove(world.getName());
         this.updateConfig();
     }
 
     public List<World> getDisabledWorlds() {
-        return this.disabledWorlds;
+        List<World> worlds = new ArrayList<>();
+
+        for(String worldName : this.disabledWorlds) {
+            if(Bukkit.getWorld(worldName) == null) {
+                continue;
+            }
+            worlds.add(Bukkit.getWorld(worldName));
+        }
+        return worlds;
     }
 
     public List<String> getDisabledWorldNames() {
-        List<String> list = new ArrayList<>();
-        for (World disabledWorld : this.disabledWorlds) {
-            list.add(disabledWorld.getName());
-        }
-        return list;
+        return this.disabledWorlds;
+    }
+
+    public List<String> getNames() {
+        return this.disabledWorlds;
     }
 
     public void reload() {

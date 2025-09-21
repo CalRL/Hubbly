@@ -28,6 +28,7 @@ import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -82,6 +83,14 @@ public class LaunchpadListener implements Listener {
         }
 
         ActionManager actionManager = plugin.getActionManager();
+        String soundString = config.getString("launchpad.sound");
+        if(soundString != null) {
+            Sound sound = Sound.valueOf(soundString);
+
+            player.playSound(player, sound, 1L, 1L);
+        }
+
         actionManager.executeAction(player, "[LAUNCH]");
+
     }
 }

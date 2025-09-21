@@ -108,7 +108,7 @@ public class PlayerJoinListener implements Listener {
                     .setPlayer(player)
                     .setKey(updateUtil.getKey())
                     .replace("%current%", updateUtil.getCurrent())
-                    .replace("%new", updateUtil.getNew())
+                    .replace("%new%", updateUtil.getNew())
                     .send();
         }
     }
