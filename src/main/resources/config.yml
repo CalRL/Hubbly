@@ -25,6 +25,7 @@ launchpad:
   power_y: 0.5
   # INTEGERS ONLY
   cooldown: 2
+  sound: entity.firework_rocket.blast
 
 double_jump:
   enabled: true
@@ -83,6 +84,7 @@ spawn:
   yaw: 0
   pitch: 0
   timer: 2
+  sound: entity.firework_rocket.blast
 
 
 #-----------------#
@@ -142,6 +144,7 @@ cancel_events:
   death_messages: true
   leaf_decay: true
   projectiles: false
+  animal_eat: false
 
 anti_world_download:
   enabled: true
