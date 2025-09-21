@@ -24,3 +24,5 @@
 - ItemFrames and the items they hold are no longer interactable/breakable.
 - ArmorStands are no longer breakable and interactable
 - Fix: if `spawn.timer` is 0, it will no longer check for movement (could not /spawn during freefall)
+- DisabledWorlds no longer stops tracking if a world is reloaded
+- Spawn timer no longer sends message if timer = 0
