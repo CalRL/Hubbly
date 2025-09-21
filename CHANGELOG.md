@@ -15,3 +15,12 @@
 - `/hubbly worlds` `add` and `remove` now reflect in config
 - LockChat now properly sends Locale message
 - Added Portuguese language (Thank you snowy727. on discord)
+
+## [3.2.1] - ??
+- `launchpad.sound` key added, plays a sound when a launchpad is used.
+- `spawn.sound` key added, plays a sound when /spawn teleport occurs.
+- Fix `%new%` placeholder in update notifier on join
+- added: cancel_events.animal_eat
+- ItemFrames and the items they hold are no longer interactable/breakable.
+- ArmorStands are no longer breakable and interactable
+- Fix: if `spawn.timer` is 0, it will no longer check for movement (could not /spawn during freefall)
