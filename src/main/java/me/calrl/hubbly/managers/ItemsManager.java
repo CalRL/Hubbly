@@ -1,7 +1,9 @@
 package me.calrl.hubbly.managers;
 
+import com.google.common.base.Supplier;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
+import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.items.*;
 import me.calrl.hubbly.listeners.items.movement.AoteListener;
@@ -14,6 +16,7 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,6 +34,7 @@ public class ItemsManager {
     private FileConfiguration itemsConfig;
     private DebugMode debugMode;
     private final Map<String, CustomItem> items = new HashMap<>();
+    private final Map<String, Listener> listeners;
     private File itemsFile;
     private final ActionManager actionManager;
     private Player player;
@@ -38,9 +42,13 @@ public class ItemsManager {
     public ItemsManager(Hubbly plugin) {
         this.plugin = plugin;
         this.debugMode = plugin.getDebugMode();
+        this.config = plugin.getConfig();
         this.itemsFile =  new File(plugin.getDataFolder(), "items.yml");
         this.actionManager = plugin.getActionManager();
         this.itemsConfig = plugin.getItemsConfig();
+
+        this.listeners = new HashMap<>();
+
         this.registerItems();
     }
 
@@ -88,12 +96,33 @@ public class ItemsManager {
 
         Bukkit.getPluginManager().registerEvents(listener, plugin);
         items.put(itemName, item);
+        listeners.put(itemName, listener);
+        debugMode.info("Registered item: " + itemName);
+    }
+
+    private void register(String itemName, CustomItem item) {
+        this.config = plugin.getConfig();
+        String enabledPath = "movementitems." + itemName + ".enabled";
+        boolean isEnabled = config.getBoolean(enabledPath);
+        if(!isEnabled) {
+            debugMode.info("Item: " + itemName + " not registered.");
+            return;
+        }
+
+        items.put(itemName, item);
         debugMode.info("Registered item: " + itemName);
     }
 
     public void reload() {
         this.clear();
         this.registerItems();
+    }
+
+    public void clean() {
+        Collection<Listener> collection = this.listeners.values();
+        for(Listener listener : collection) {
+            HandlerList.unregisterAll(listener);
+        }
     }
 
     public void clear() {

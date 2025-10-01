@@ -22,11 +22,19 @@ import me.calrl.hubbly.commands.*;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.hooks.HookManager;
 import me.calrl.hubbly.inventory.InventoryListener;
+import me.calrl.hubbly.items.AoteItem;
+import me.calrl.hubbly.items.EnderbowItem;
+import me.calrl.hubbly.items.RodItem;
+import me.calrl.hubbly.items.TridentItem;
 import me.calrl.hubbly.listeners.ServerLoadListener;
 import me.calrl.hubbly.listeners.chat.ChatListener;
 import me.calrl.hubbly.listeners.chat.CommandBlockerListener;
 import me.calrl.hubbly.listeners.items.ConfigItemListener;
 import me.calrl.hubbly.listeners.items.PlayerVisibilityListener;
+import me.calrl.hubbly.listeners.items.movement.AoteListener;
+import me.calrl.hubbly.listeners.items.movement.EnderbowListener;
+import me.calrl.hubbly.listeners.items.movement.RodListener;
+import me.calrl.hubbly.listeners.items.movement.TridentListener;
 import me.calrl.hubbly.listeners.player.*;
 import me.calrl.hubbly.listeners.world.AntiWDL;
 import me.calrl.hubbly.listeners.world.LaunchpadListener;
@@ -150,6 +158,10 @@ public class Hubbly extends JavaPlugin {
         registerListener(new InventoryListener(this));
         registerListener(new XPListener(this), "player.experience.enabled");
         registerListener(new PlayerMoveListener(this));
+        registerListener(new TridentListener(this));
+        registerListener(new EnderbowListener(this));
+        registerListener(new AoteListener(this));
+        registerListener(new RodListener(this));
     }
 
     @Override
