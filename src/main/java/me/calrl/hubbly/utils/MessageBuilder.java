@@ -7,6 +7,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.util.Objects;
 import java.util.Optional;
 
 public class MessageBuilder {
@@ -105,9 +106,9 @@ public class MessageBuilder {
         return this;
     }
 
-    public Optional<String> build() {
+    public String build() {
         if(this.content.isEmpty() || this.content.isBlank()) {
-            return Optional.empty();
+            return "";
         }
         String finalMsg = this.content;
         if(this.usePrefix) {
@@ -116,23 +117,15 @@ public class MessageBuilder {
 
         finalMsg = ChatUtils.processMessage(player, finalMsg);
         if(finalMsg.contains("nomessage")) {
-            return Optional.empty();
+            return "";
         }
-        return Optional.of(content);
+        return content;
     }
 
     public Result send() {
-        return build()
-                .map(toSend -> {
-                    if(player != null) {
-                        ChatUtils.processMessage(player, toSend);
-                        player.sendMessage(toSend);
-                    } else {
-                        Bukkit.getConsoleSender().sendMessage(toSend);
-                    }
+        String message = this.build();
+        Objects.requireNonNullElseGet(this.player, Bukkit::getConsoleSender).sendMessage(message);
 
-                    return Result.SUCCESS;
-                })
-                .orElse(Result.FAILURE);
+        return Result.SUCCESS;
     }
 }
