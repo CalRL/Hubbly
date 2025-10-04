@@ -56,24 +56,27 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
 
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
-        if(disabledWorlds.inDisabledWorld(player.getWorld())) return;
+        boolean inDisabledWorld = disabledWorlds.inDisabledWorld(player.getWorld());
 
-        this.sendUpdateMessage(player);
+        if(!inDisabledWorld) {
+            this.sendUpdateMessage(player);
+        }
+
 
         boolean doubleJump = config.getBoolean("double_jump.enabled");
-        if(doubleJump) {
+        if(doubleJump && !inDisabledWorld) {
             plugin.setPlayerFlight(player, (byte) 0);
             player.setAllowFlight(true);
         }
 
 
-        if (config.getBoolean("player.join_message.enabled")) {
+        if (config.getBoolean("player.join_message.enabled") && !inDisabledWorld) {
             String joinMessage = config.getString("player.join_message.message");
             joinMessage = ChatUtils.parsePlaceholders(player, joinMessage);
             event.setJoinMessage(ChatUtils.translateHexColorCodes(joinMessage));
         }
 
-        if (config.getBoolean("player.bossbar.enabled")) {
+        if (config.getBoolean("player.bossbar.enabled") && !inDisabledWorld) {
             bossBarManager = plugin.getBossBarManager();
             bossBarManager.createBossBar(player);
         }
@@ -119,7 +122,7 @@ public class PlayerJoinListener implements Listener {
         if(actions.isEmpty()) {
             return;
         }
-
+        debugMode.info("Running actions...");
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             for(String action : actions) {
                 actionManager.executeAction(player, action, true);
