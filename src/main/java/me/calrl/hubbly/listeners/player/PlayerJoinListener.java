@@ -122,7 +122,7 @@ public class PlayerJoinListener implements Listener {
 
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             for(String action : actions) {
-                actionManager.executeAction(player, action);
+                actionManager.executeAction(player, action, true);
                 debugMode.info("Executed " + action);
             }
 
