@@ -14,7 +14,8 @@ public class MessageAction implements Action {
 
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
-        new MessageBuilder(plugin, player)
+        new MessageBuilder(plugin)
+                .setPlayer(player)
                 .setMessage(data)
                 .send();
     }
