@@ -2,6 +2,7 @@ package me.calrl.hubbly.utils;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Result;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.LocaleManager;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -108,6 +109,7 @@ public class MessageBuilder {
 
     public String build() {
         if(this.content.isEmpty() || this.content.isBlank()) {
+            new DebugMode(plugin).info("MessageBuilder > Content is empty... Returning.");
             return "";
         }
         String finalMsg = this.content;
@@ -117,9 +119,11 @@ public class MessageBuilder {
 
         finalMsg = ChatUtils.processMessage(player, finalMsg);
         if(finalMsg.contains("nomessage")) {
+            new DebugMode(plugin).info("MessageBuilder > \"nomessage\" found");
             return "";
         }
-        return content;
+        new DebugMode(plugin).info(String.format("MessageBuilder > Content: %s", content));
+        return finalMsg;
     }
 
     public Result send() {
