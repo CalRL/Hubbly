@@ -33,6 +33,7 @@ public enum Permissions {
     COMMAND_CONVERT("command.convert"),
     COMMAND_MENU("command.menu"),
     COMMAND_DEBUG("command.debug"),
+    COMMAND_PLAYER_VISIBILITY("command.playervisibility"),
 
     COMMAND_WORLDS("commands.worlds"),
     COMMAND_WORLDS_ADD("commands.worlds.add"),
