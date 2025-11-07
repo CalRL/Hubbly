@@ -7,6 +7,8 @@ import me.calrl.hubbly.managers.SpawnTaskManager;
 import me.calrl.hubbly.tasks.ITask;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Location;
+import org.bukkit.NamespacedKey;
+import org.bukkit.Registry;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -30,10 +32,12 @@ public class SpawnTeleportTask  implements ITask {
             @Override
             public void run() {
                 if(player.isOnline()) {
-                    String soundString = plugin.getConfig().getString("spawn.sound");
+                    String soundString = plugin.getConfig().getString("spawn.sound", null);
                     if(soundString != null) {
-                        Sound sound = Sound.valueOf(soundString);
-                        player.playSound(player, sound, 1L, 1L);
+                        Sound sound = Registry.SOUNDS.get(NamespacedKey.minecraft(soundString));
+                        if(sound != null) {
+                            player.playSound(player, sound, 1L, 1L);
+                        }
                     }
                     player.teleport(spawn);
                     cleanup();
@@ -41,8 +45,8 @@ public class SpawnTeleportTask  implements ITask {
             }
         };
         this.timer = timer;
-
     }
+
     public Result start() {
         registry.register(this.player.getUniqueId(), this.startLocation, this);
         this.task.runTaskLater(this.plugin, 20L * this.timer);
