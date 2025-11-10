@@ -16,5 +16,13 @@ public enum Result {
     DISABLED_WORLD,
     // event cancelled
     CANCELLED,
-    NOT_FOUND
+    NOT_FOUND;
+
+    public static Result from(boolean bool) {
+        if(bool) {
+            return Result.SUCCESS;
+        } else {
+            return Result.FAILURE;
+        }
+    }
 }

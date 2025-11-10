@@ -16,11 +16,12 @@ public class ShowCommand extends CommandNode {
 
     @Override
     public Result execute(CommandSender sender, String[] args, int depth) {
-        if(sender instanceof Player player) {
-            for(Player onlinePlayer : plugin.getServer().getOnlinePlayers()) {
-                player.showPlayer(plugin, onlinePlayer);
-            }
-            new MessageBuilder(plugin).setPlayer(player).setMessage("Showing players").send();
+        if (sender instanceof Player player) {
+            plugin.getManagerFactory().getPlayerVisibilityManager().setHideMode(player, false);
+//            new MessageBuilder(plugin)
+//                    .setPlayer(player)
+//                    .setMessage("Showing players")
+//                    .send();
             return Result.SUCCESS;
         }
         return Result.PLAYER_ONLY;

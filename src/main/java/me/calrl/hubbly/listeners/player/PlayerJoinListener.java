@@ -23,6 +23,7 @@ import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
+import me.calrl.hubbly.managers.PlayerVisibilityManager;
 import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.MessageBuilder;
 import me.calrl.hubbly.utils.update.UpdateUtil;
@@ -54,6 +55,9 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+
+        PlayerVisibilityManager manager =  plugin.getManagerFactory().getPlayerVisibilityManager();
+        manager.handleJoin(player);
 
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
         boolean inDisabledWorld = disabledWorlds.inDisabledWorld(player.getWorld());
