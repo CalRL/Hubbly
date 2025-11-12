@@ -26,3 +26,17 @@
 - Fix: if `spawn.timer` is 0, it will no longer check for movement (could not /spawn during freefall)
 - DisabledWorlds no longer stops tracking if a world is reloaded
 - Spawn timer no longer sends message if timer = 0
+
+## [3.4.0] - 12-11-2025
+- /spawn task now correctly plays sounds on Paper/Purpur
+- actions_on_join bypass disabledworlds
+- EnderBow now longer sends spammy console message while in debug mode
+- Added debug logging to messagebuilder
+- Added hide mode
+  - Tracks to see if players join, if in hide mode, will automatically hide players
+  - PlayerVisibilityItem now uses this logic
+- Added `/hubbly pv` command (for toggling hide mode)
+  - `/hubbly pv show` to disable hide mode
+  - `/hubbly pv hide` to enable hide mode
+- Added `playervisibility.hide` and `playervisibility.show` keys in the messages file
+  (available on github in english and portuguese)
