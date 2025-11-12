@@ -24,6 +24,10 @@ teleport_cancelled: You moved, teleport cancelled.
 chat_locked: Chat has been locked by %player_name%
 chat_unlocked: Chat has been unlocked by %player_name%
 
+playervisibility:
+  show: Showing players
+  hide: Hiding players
+
 update:
   new_update:
     An update is available! Hubbly %new% can be downloaded on SpigotMC,
