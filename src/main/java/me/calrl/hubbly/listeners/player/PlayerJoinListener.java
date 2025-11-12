@@ -56,8 +56,8 @@ public class PlayerJoinListener implements Listener {
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
 
-        PlayerVisibilityManager manager =  plugin.getManagerFactory().getPlayerVisibilityManager();
-        manager.handleJoin(player);
+        PlayerVisibilityManager pvManager =  plugin.getManagerFactory().getPlayerVisibilityManager();
+        pvManager.handleJoin(player);
 
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
         boolean inDisabledWorld = disabledWorlds.inDisabledWorld(player.getWorld());

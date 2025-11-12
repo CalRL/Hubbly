@@ -37,6 +37,14 @@ public class PlayerVisibilityManager{
         return player.getPersistentDataContainer().has(hideKey, PersistentDataType.BYTE);
     }
 
+    public void sendMessageToVisiblePlayers(String message) {
+        for (Player player : Bukkit.getOnlinePlayers()) {
+            if (!isHideMode(player)) {
+                player.sendMessage(message);
+            }
+        }
+    }
+
     private void hideAll(Player player) {
         for(Player onlinePlayer : this.plugin.getServer().getOnlinePlayers()) {
             player.hidePlayer(this.plugin, onlinePlayer);
