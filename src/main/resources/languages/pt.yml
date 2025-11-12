@@ -24,6 +24,10 @@ teleport_cancelled: Mexeu, teletransporte cancelado.
 chat_locked: Chat foi bloqueado por %player_name%
 chat_unlocked: Chat foi desbloqueado por %player_name%
 
+playervisibility:
+  show: Mostrando jogadores
+  hide: Escondendo jogadores
+
 update:
   new_update:
     Uma atualização está disponível! Hubbly %new% pode ser transferido em SpigotMC,

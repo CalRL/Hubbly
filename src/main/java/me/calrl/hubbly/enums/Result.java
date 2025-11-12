@@ -11,5 +11,18 @@ public enum Result {
     COOLDOWN,
     ALREADY_EXISTS,
     NOTHING_TO_DO,
-    NO_CHILD
+    NO_CHILD,
+    // in disabled world
+    DISABLED_WORLD,
+    // event cancelled
+    CANCELLED,
+    NOT_FOUND;
+
+    public static Result from(boolean bool) {
+        if(bool) {
+            return Result.SUCCESS;
+        } else {
+            return Result.FAILURE;
+        }
+    }
 }

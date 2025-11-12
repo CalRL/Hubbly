@@ -1,15 +1,14 @@
 package me.calrl.hubbly.commands;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.ServerMock;
 import be.seeseemelk.mockbukkit.entity.PlayerMock;
-import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.PluginTestBase;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class HubblyCommandTest extends PluginTestBase {
 

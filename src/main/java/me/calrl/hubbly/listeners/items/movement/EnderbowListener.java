@@ -50,7 +50,6 @@ public class EnderbowListener implements Listener {
     private void onInteract(PlayerInteractEvent event) {
         FileConfiguration config = plugin.getConfig();
         if(!config.getBoolean("movementitems.enderbow.enabled")) {
-            plugin.getDebugMode().info("Ender Bow is disabled in config.");
             return;
         }
 

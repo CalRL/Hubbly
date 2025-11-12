@@ -19,6 +19,7 @@ package me.calrl.hubbly.action;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.actions.*;
+import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.events.ActionEvent;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.utils.MessageBuilder;
@@ -91,6 +92,53 @@ public class ActionManager {
             plugin.getDebugMode().info("Executing action: " + identifier + " " + data);
             action.execute(plugin, player, data);
         }
+    }
+
+    /**
+     * @param player the player
+     * @param actionData e.g. "[PLAYER] spawn"
+     * @param bypass the disabled world check
+     * @return
+     */
+    public Result executeAction(Player player, String actionData, boolean bypass) {
+
+        if(!bypass) {
+            DisabledWorlds disabledWorldsManager = plugin.getDisabledWorldsManager();
+            boolean inDisabledWorld = disabledWorldsManager.inDisabledWorld(player.getLocation());
+
+            if(inDisabledWorld) return Result.DISABLED_WORLD;
+        }
+
+
+        if(!actionData.startsWith("[") || !actionData.contains("]")) {
+            return Result.INVALID_ARGS;
+        }
+
+        String identifier = this.getIdentifier(actionData);
+        String data = this.getData(actionData);
+
+        Action action = actions.get(identifier);
+        ActionEvent event = new ActionEvent(player, action, data);
+        Bukkit.getPluginManager().callEvent(event);
+
+        if (action == null) {
+            String errorMessage = new MessageBuilder(plugin)
+                    .setKey("action.errors.null")
+                    .setPlayer(Bukkit.getConsoleSender())
+                    .build();
+
+            plugin.getLogger().warning(errorMessage);
+            return Result.NOT_FOUND;
+        }
+
+        plugin.getDebugMode().info("Checking if ActionEvent is cancelled...");
+        if(event.isCancelled()) {
+            return Result.CANCELLED;
+        }
+
+        plugin.getDebugMode().info("Executing action: " + identifier + " " + data);
+        action.execute(plugin, player, data);
+        return Result.SUCCESS;
     }
 
     public void executeActions(Player player, String actionData) {

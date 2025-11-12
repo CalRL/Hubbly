@@ -17,7 +17,6 @@
 package me.calrl.hubbly.listeners.items;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.managers.DebugMode;
@@ -73,12 +72,92 @@ public class PlayerVisibilityListener implements Listener {
             return;
         }
 
-        Bukkit.getScheduler().runTaskLater(plugin, () -> swapDye(player, itemInHand), 2L);
+        Bukkit.getScheduler().runTaskLater(plugin, () -> swapDye(player), 2L);
         event.setCancelled(true);
-        debugMode.info("Holding: " + player.getInventory().getItemInMainHand());
+    }
+
+    enum VisDye {
+        VISIBLE("visible"),
+        HIDDEN("hidden"),
+        ;
+
+        private final String key;
+
+        VisDye(String key) {
+            this.key = key;
+        }
+        public final String getKey() { return this.key; }
+
+        public final boolean asBool() {
+            return switch (this.key) {
+                case "visible" -> false;
+                case "hidden" -> true;
+                default -> throw new IllegalStateException("Unexpected value: " + key);
+            };
+        }
+
+        public static VisDye fromKey(String key) {
+            return switch (key) {
+                case "visible" -> VisDye.VISIBLE;
+                case "hidden" -> VisDye.HIDDEN;
+                default -> throw new IllegalStateException("Unexpected value: " + key);
+            };
+        }
+
+        public final VisDye getOpposite() {
+            return switch (this) {
+                case VISIBLE -> HIDDEN;
+                case HIDDEN -> VISIBLE;
+            };
+        }
+
+        private ItemStack buildDye(FileConfiguration config) {
+            String key = this.getKey();
+            String format = "playervisibility.%s.%s";
+            Material mat = Material.valueOf(config.getString(format.formatted(key, "item")));
+            String displayName = ChatUtils.translateHexColorCodes(
+                    config.getString(format.formatted(key, "text"))
+            );
+
+            ItemStack item = new ItemStack(mat);
+            ItemMeta meta = item.getItemMeta();
+            if(meta != null) {
+                meta.setDisplayName(displayName);
+                PersistentDataContainer container = meta.getPersistentDataContainer();
+                container.set(
+                        PluginKeys.PLAYER_VISIBILITY.getKey(),
+                        PersistentDataType.STRING,
+                        this.getKey()
+                );
+                item.setItemMeta(meta);
+            }
+            return item;
+        }
     }
 
 
+    private void swapDye(Player player) {
+        ItemStack itemInHand = player.getInventory().getItemInMainHand();
+        ItemMeta meta = itemInHand.getItemMeta();
+        if(meta == null) {
+            new DebugMode().info("Failed to swap dyes, item meta is null?");
+            return;
+        }
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        String key = container.get(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING);
+        if(key == null) {
+            new DebugMode().info("PlaverVisibility key is null?");
+            return;
+        }
+        VisDye dye = VisDye.fromKey(key);
+        VisDye oppositeDye = dye.getOpposite();
+
+        ItemStack newDye = oppositeDye.buildDye(config);
+        plugin.getManagerFactory().getPlayerVisibilityManager().setHideMode(player, oppositeDye.asBool());
+
+        player.getInventory().setItemInMainHand(newDye);
+    }
 
     private void swapDye(Player player, ItemStack itemInHand) {
         Material newMaterial;
@@ -91,7 +170,9 @@ public class PlayerVisibilityListener implements Listener {
                     .send();
             return;
         }
+
         PersistentDataContainer container = meta.getPersistentDataContainer();
+
         String finalString;
         if (Objects.equals(container.get(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING), "visible")) {
             newMaterial = Material.valueOf(config.getString("playervisibility.hidden.item", "GRAY_DYE"));

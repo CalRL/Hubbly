@@ -1,12 +1,15 @@
 package me.calrl.hubbly.utils;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.enums.LocaleKey;
+import me.calrl.hubbly.enums.Result;
+import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.LocaleManager;
-import net.minecraft.world.entity.ai.behavior.warden.TryToSniff;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Objects;
+import java.util.Optional;
 
 public class MessageBuilder {
 
@@ -105,20 +108,28 @@ public class MessageBuilder {
     }
 
     public String build() {
-        return content;
+        if(this.content.isEmpty() || this.content.isBlank()) {
+            new DebugMode(plugin).info("MessageBuilder > Content is empty... Returning.");
+            return "";
+        }
+        String finalMsg = this.content;
+        if(this.usePrefix) {
+            finalMsg = ChatUtils.prefixMessage(plugin, player, finalMsg);
+        }
+
+        finalMsg = ChatUtils.processMessage(player, finalMsg);
+        if(finalMsg.contains("nomessage")) {
+            new DebugMode(plugin).info("MessageBuilder > \"nomessage\" found");
+            return "";
+        }
+        new DebugMode(plugin).info(String.format("MessageBuilder > Content: %s", content));
+        return finalMsg;
     }
 
-    public void send() {
-        String toSend = ChatUtils.prefixMessage(plugin, player, content);
-        if(toSend.contains("nomessage")) {
-            return;
-        }
+    public Result send() {
+        String message = this.build();
+        Objects.requireNonNullElseGet(this.player, Bukkit::getConsoleSender).sendMessage(message);
 
-        if(player != null) {
-            ChatUtils.processMessage(player, toSend);
-            player.sendMessage(toSend);
-        } else {
-            Bukkit.getConsoleSender().sendMessage(toSend);
-        }
+        return Result.SUCCESS;
     }
 }
