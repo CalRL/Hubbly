@@ -66,10 +66,10 @@ public class DoubleJumpListener implements Listener {
                 Vector direction = player.getLocation().getDirection();
 
                 // Set the Y component of the direction to ensure upward launch
-                direction.setY(config.getDouble("double_jump.power_y")); // Adjust this value for the desired upward strength
+                direction.setY(config.getDouble("double_jump.power_y"));
 
                 // Scale the direction vector for forward boost
-                direction.multiply(config.getDouble("double_jump.power", 1.0)); // Adjust this value for the desired forward strength
+                direction.multiply(config.getDouble("double_jump.power", 1.0));
 
                 // Set the player's velocity to the new direction
 

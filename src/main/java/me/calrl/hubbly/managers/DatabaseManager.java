@@ -32,9 +32,9 @@ public class DatabaseManager {
         return new Credentials(host, port, database, username, password);
     }
 
-    public void start(Hubbly plugin) {
-        if (!plugin.getConfig().getBoolean("database.enabled", false)) {
-            plugin.getLogger().info("Database disabled in config");
+    public void start() {
+        if (!this.plugin.getConfig().getBoolean("database.enabled", false)) {
+            this.plugin.getLogger().info("Database disabled in config");
             this.isActive = false;
             return;
         }
@@ -86,7 +86,7 @@ public class DatabaseManager {
                         "uuid VARCHAR(36) PRIMARY KEY, " +
                         "name VARCHAR(16) NOT NULL, " +
                         "double_jump_nbt TEXT, " +
-                        "player_visibility_nbt TEXT, " +
+                        "hide_mode BOOLEAN, " +
                         "last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                         "INDEX idx_name (name)" +
                         ")";

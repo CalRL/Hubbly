@@ -74,7 +74,6 @@ public class Hubbly extends JavaPlugin {
     private AnnouncementsManager announcementsManager;
     private LockChat lockChat;
     private Utils utils;
-    private PlayerManager playerManager;
     private BossBarManager bossBarManager;
     private ItemsManager itemsManager;
     private FileManager fileManager;
@@ -82,6 +81,7 @@ public class Hubbly extends JavaPlugin {
     private SubCommandManager subCommandManager;
     private HookManager hookManager;
     private ManagerFactory managerFactory;
+    private DatabaseManager databaseManager;
     private boolean isLoaded;
 
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
@@ -187,15 +187,19 @@ public class Hubbly extends JavaPlugin {
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
         utils = new Utils(this);
-        playerManager = new PlayerManager(this);
         bossBarManager = new BossBarManager(this);
         subCommandManager = new SubCommandManager(this);
         localeManager = new LocaleManager(this);
         managerFactory = new ManagerFactory(this);
 
-
-
         logger.info("Instances created");
+
+        if(this.getConfig().getBoolean("database.enabled")) {
+            this.getLogger().info("Starting database manager");
+            DatabaseManager mg = new DatabaseManager(this);
+            mg.start();
+            this.databaseManager = mg;
+        }
 
         prefix = this.getConfig().getString("prefix");
 
@@ -321,7 +325,6 @@ public class Hubbly extends JavaPlugin {
     public LockChat getLockChat() {return lockChat;}
     public Utils getUtils() { return utils; }
     public UpdateUtil getUpdateUtil() { return updateUtil; }
-    public PlayerManager getPlayerManager() { return playerManager; }
     public BossBarManager getBossBarManager() { return bossBarManager; }
     public String getPrefix() {
         return prefix;
@@ -341,6 +344,9 @@ public class Hubbly extends JavaPlugin {
     public ManagerFactory getManagerFactory() { return this.managerFactory; }
     public static void setInstance(Hubbly hubbly) {
         instance = hubbly;
+    }
+    public DatabaseManager getDatabaseManager() {
+        return this.databaseManager;
     }
 
     public static void enableTestMode() {

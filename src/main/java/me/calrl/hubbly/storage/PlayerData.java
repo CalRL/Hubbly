@@ -1,18 +1,19 @@
 package me.calrl.hubbly.storage;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public class PlayerData {
     private final UUID uuid;
     private final String name;
     private String doubleJumpNbt;
-    private String playerVisibilityNbt;
+    private boolean hideMode;
 
-    public PlayerData(UUID uuid, String name, String doubleJumpNbt, String playerVisibilityNbt) {
+    public PlayerData(UUID uuid, String name, String doubleJumpNbt, boolean hideMode) {
         this.uuid = uuid;
         this.name = name;
         this.doubleJumpNbt = doubleJumpNbt;
-        this.playerVisibilityNbt = playerVisibilityNbt;
+        this.hideMode = hideMode;
     }
 
     public UUID getUuid() {
@@ -27,15 +28,19 @@ public class PlayerData {
         return doubleJumpNbt;
     }
 
+    public boolean isChanged(String doubleJumpNbt) {
+        return Objects.equals(doubleJumpNbt, this.doubleJumpNbt);
+    }
+
     public void setDoubleJumpNbt(String doubleJumpNbt) {
         this.doubleJumpNbt = doubleJumpNbt;
     }
 
-    public String getPlayerVisibilityNbt() {
-        return playerVisibilityNbt;
+    public boolean getHideMode() {
+        return hideMode;
     }
 
-    public void setPlayerVisibilityNbt(String playerVisibilityNbt) {
-        this.playerVisibilityNbt = playerVisibilityNbt;
+    public void setHideMode(boolean hideMode) {
+        this.hideMode = hideMode;
     }
 }
