@@ -114,3 +114,11 @@ run/
 obsidian.md/.obsidian/
 build/
 /.gradle
+
+.classpath
+
+.project
+
+.settings/
+
+.bin/
