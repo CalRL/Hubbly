@@ -5,6 +5,7 @@
 plugins {
     `java-library`
     `maven-publish`
+    id("com.gradleup.shadow") version "9.3.0"
 }
 
 repositories {
@@ -29,10 +30,6 @@ repositories {
     maven {
         url = uri("https://repo.codemc.io/repository/maven-public/")
     }
-
-
-
-
 }
 
 dependencies {
@@ -58,6 +55,10 @@ publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
     }
+}
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
 }
 
 tasks.withType<JavaCompile>() {
@@ -86,4 +87,10 @@ tasks.processResources {
         // Use a map to define the variables for substitution
         expand("project" to project, "version" to project.version.toString())
     }
+}
+
+tasks.shadowJar {
+    archiveClassifier.set("")
+
+    relocate("com.zaxxer.hikari", "me.calrl.hubbly.libs.hikari")
 }
