@@ -1,10 +1,15 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.enums.Result;
+import me.calrl.hubbly.enums.data.PlayerVisibilityMode;
+import me.calrl.hubbly.storage.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.HashSet;
@@ -18,7 +23,7 @@ public class PlayerVisibilityManager{
 
     public PlayerVisibilityManager(Hubbly plugin) {
         this.plugin = plugin;
-        this.hideKey = new NamespacedKey(plugin, "hide_mode");
+        this.hideKey = PluginKeys.PLAYER_VISIBILITY.getKey();
     }
 
     public void reload() {
@@ -54,6 +59,18 @@ public class PlayerVisibilityManager{
     private void revealAll(Player player) {
         for(Player onlinePlayer : this.plugin.getServer().getOnlinePlayers()) {
             player.showPlayer(this.plugin, onlinePlayer);
+        }
+    }
+
+    public void setHideMode(Player player, PlayerVisibilityMode mode) {
+        PersistentDataContainer container = player.getPersistentDataContainer();
+        container.set(this.hideKey, PersistentDataType.STRING, mode.toString());
+
+        FileConfiguration config = this.plugin.getConfig();
+        StorageManager storage = this.plugin.getStorageManager();
+        if(config.getBoolean("database.enabled") && storage.isActive()) {
+            PlayerData data = PlayerData.from(player);
+            storage.enqueueSave(data);
         }
     }
 

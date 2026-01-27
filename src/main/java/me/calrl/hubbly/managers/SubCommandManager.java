@@ -2,6 +2,7 @@ package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.commands.debug.DebugCommand;
+import me.calrl.hubbly.commands.movement.MovementCommand;
 import me.calrl.hubbly.commands.subcommands.*;
 import me.calrl.hubbly.commands.visibility.VisibilityCommand;
 import me.calrl.hubbly.commands.worlds.WorldsCommand;
@@ -63,6 +64,8 @@ public class SubCommandManager {
 
         this.registerNode(new VisibilityCommand(plugin));
         debug.info("Loaded Visibility command");
+
+        this.registerNode(new MovementCommand(plugin));
 
     }
     public void registerNode(CommandNode node) {

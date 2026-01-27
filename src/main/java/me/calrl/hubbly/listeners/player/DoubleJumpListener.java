@@ -18,6 +18,9 @@
 package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.PluginKeys;
+import me.calrl.hubbly.enums.data.PlayerMovementMode;
+import me.calrl.hubbly.handlers.PlayerMovementHandler;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -50,41 +53,15 @@ public class DoubleJumpListener implements Listener {
         }
 
         if(player.getGameMode() == GameMode.CREATIVE || player.getGameMode() == GameMode.SPECTATOR) return;
-        FileConfiguration config = Hubbly.getInstance().getConfig();
+        FileConfiguration config = this.plugin.getConfig();
 
         PersistentDataContainer dataContainer = player.getPersistentDataContainer();
-        if(!dataContainer.has(plugin.FLY_KEY)) return;
-        if(!plugin.canPlayerFly(player) && config.getBoolean("double_jump.enabled")) {
-                event.setCancelled(true);
-                player.setFlying(false);
-                player.setAllowFlight(false);
-                UUID uuid = player.getUniqueId();
+        if(!dataContainer.has(PluginKeys.MOVEMENT_KEY.getKey())) return;
 
-                if(!plugin.getCooldownManager().tryCooldown(uuid, CooldownType.DOUBLE_JUMP, config.getLong("double_jump.cooldown")))  return;
+        if(config.getBoolean("double_jump.enabled")) {
+            new PlayerMovementHandler(player, plugin).handleMovement(event);
+        }
 
-
-                Vector direction = player.getLocation().getDirection();
-
-                // Set the Y component of the direction to ensure upward launch
-                direction.setY(config.getDouble("double_jump.power_y")); // Adjust this value for the desired upward strength
-
-                // Scale the direction vector for forward boost
-                direction.multiply(config.getDouble("double_jump.power", 1.0)); // Adjust this value for the desired forward strength
-
-                // Set the player's velocity to the new direction
-
-                player.setVelocity(direction);
-
-                new BukkitRunnable() {
-                    @Override
-                    public void run() {
-                        Location location = player.getLocation();
-                        if(!plugin.getDisabledWorldsManager().inDisabledWorld(location)) {
-                            player.setAllowFlight(true);
-                        }
-                    }
-                }.runTaskLater(plugin, plugin.getConfig().getLong("double_jump.cooldown") * 20L);
-            }
     }
     @EventHandler
     private void onGamemodeChange(PlayerGameModeChangeEvent event) {
@@ -94,7 +71,6 @@ public class DoubleJumpListener implements Listener {
             FileConfiguration config = plugin.getConfig();
             if(config.getBoolean("double_jump.enabled")) {
                 new BukkitRunnable() {
-
                     @Override
                     public void run() {
                         player.setAllowFlight(true);

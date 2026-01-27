@@ -20,10 +20,14 @@ package me.calrl.hubbly.listeners.player;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.enums.Permissions;
+import me.calrl.hubbly.enums.data.PlayerVisibilityMode;
 import me.calrl.hubbly.functions.BossBarManager;
+import me.calrl.hubbly.handlers.PlayerMovementHandler;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.PlayerVisibilityManager;
+import me.calrl.hubbly.managers.StorageManager;
+import me.calrl.hubbly.storage.PlayerData;
 import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.MessageBuilder;
 import me.calrl.hubbly.utils.update.UpdateUtil;
@@ -32,10 +36,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerPreLoginEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import java.util.List;
+import java.util.UUID;
 
 public class PlayerJoinListener implements Listener {
     private FileConfiguration config;
@@ -53,10 +59,26 @@ public class PlayerJoinListener implements Listener {
     }
 
     @EventHandler
+    private void onPlayerPreJoin(AsyncPlayerPreLoginEvent event) {
+        UUID uuid = event.getUniqueId();
+        StorageManager storage = plugin.getStorageManager();
+
+        PlayerData data = storage.loadPlayer(uuid, event.getName());
+        storage.addToMap(uuid, data);
+    }
+
+    @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        StorageManager storage = plugin.getStorageManager();
+        PlayerData data = storage.getAndRemove(player.getUniqueId());
+
+        new PlayerMovementHandler(player, plugin).handleJoin(data);
 
         PlayerVisibilityManager pvManager =  plugin.getManagerFactory().getPlayerVisibilityManager();
+
+        boolean isHideMode = data.visibility().getMode() == PlayerVisibilityMode.HIDDEN;
+        pvManager.setHideMode(player, isHideMode);
         pvManager.handleJoin(player);
 
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
@@ -64,15 +86,8 @@ public class PlayerJoinListener implements Listener {
 
         if(!inDisabledWorld) {
             this.sendUpdateMessage(player);
+
         }
-
-
-        boolean doubleJump = config.getBoolean("double_jump.enabled");
-        if(doubleJump && !inDisabledWorld) {
-            plugin.setPlayerFlight(player, (byte) 0);
-            player.setAllowFlight(true);
-        }
-
 
         if (config.getBoolean("player.join_message.enabled") && !inDisabledWorld) {
             String joinMessage = config.getString("player.join_message.message");
@@ -142,6 +157,13 @@ public class PlayerJoinListener implements Listener {
         Player player = event.getPlayer();
         bossBarManager = plugin.getBossBarManager();
         bossBarManager.removeBossBar(player);
+
+        StorageManager storage = plugin.getStorageManager();
+        if(plugin.getConfig().getBoolean("database.enabled") && storage.isActive()) {
+            PlayerData data = PlayerData.from(player);
+            storage.enqueueSave(data);
+        }
+
         boolean isEnabled = config.getBoolean("player.leave_message.enabled");
         if(isEnabled) {
             String quitMessage = config.getString("player.leave_message.message");

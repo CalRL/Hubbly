@@ -1,5 +1,7 @@
 package me.calrl.hubbly.storage;
 
+import org.bukkit.configuration.file.FileConfiguration;
+
 public class Credentials {
     private final String HOST;
     private final Integer PORT;
@@ -39,5 +41,15 @@ public class Credentials {
 
     public String getPASSWORD() {
         return this.PASSWORD;
+    }
+
+    public static Credentials fromConfig(FileConfiguration config) {
+        return new Credentials(
+                config.getString("database.host"),
+                config.getInt("database.port"),
+                config.getString("database.database"),
+                config.getString("database.username"),
+                config.getString("database.password")
+        );
     }
 }

@@ -29,8 +29,8 @@ public class Database {
         config.setUsername(credentials.getUSERNAME());
         config.setPassword(credentials.getPASSWORD());
 
-        config.setMaximumPoolSize(1);
-        config.setMinimumIdle(2);
+        config.setMaximumPoolSize(2);
+        config.setMinimumIdle(1);
         config.setMaxLifetime(600000);
         config.setConnectionTimeout(5000);
         config.setLeakDetectionThreshold(60000);

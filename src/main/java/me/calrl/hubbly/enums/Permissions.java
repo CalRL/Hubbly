@@ -40,6 +40,10 @@ public enum Permissions {
     COMMAND_WORLDS_REMOVE("commands.worlds.remove"),
     COMMAND_WORLDS_CHECK("commands.worlds.check"),
 
+    COMMAND_MOVEMENT_NONE("commands.movement.none"),
+    COMMAND_MOVEMENT_DOUBLEJUMP("commands.movement.doublejump"),
+    COMMAND_MOVEMENT_FLY("commands.movement.fly"),
+
     BYPASS_FORCE_INVENTORY("bypass.forceinventory"),
     BYPASS_ANTI_SWEAR("bypass.antiswear"),
     BYPASS_BLOCKED_COMMANDS("bypass.blockedcommands"),

@@ -29,7 +29,8 @@ public enum PluginKeys {
     AOTE(new NamespacedKey(Hubbly.getInstance(), "aote")),
     ENDER_BOW(new NamespacedKey(Hubbly.getInstance(),"ender_bow")),
     ACTIONS_KEY(new NamespacedKey(Hubbly.getInstance(), "customActions")),
-    LAUNCHPAD_KEY(new NamespacedKey(Hubbly.getInstance(), "launchpad"));
+    LAUNCHPAD_KEY(new NamespacedKey(Hubbly.getInstance(), "launchpad")),
+    MOVEMENT_KEY(new NamespacedKey(Hubbly.getInstance(), "movement"));
 
 
     private final NamespacedKey key;
