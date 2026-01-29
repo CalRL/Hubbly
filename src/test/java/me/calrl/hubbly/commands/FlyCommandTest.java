@@ -41,14 +41,18 @@ public class FlyCommandTest extends PluginTestBase {
 
     @Test
     public void testPlayerWithoutPermissionIsBlocked() {
+        System.out.println("Starting");
         PlayerMock player = server.addPlayer("NoPerms");
         player.setOp(false);
 
+        System.out.println("commanding");
         flyCommand.onCommand(player, mockCommand(), "fly", new String[0]);
         String message = player.nextMessage();
 
+        System.out.println("asserting");
         assertNotNull(message);
         assertTrue(message.toLowerCase().contains("permission"));
+        System.out.println("chat is this real?");
     }
 
     @Test

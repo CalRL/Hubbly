@@ -1,6 +1,7 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.storage.Database;
 
 public class ManagerFactory {
 
@@ -18,6 +19,7 @@ public class ManagerFactory {
         this.tridentDataManager = new TridentDataManager();
         this.spawnTaskManager = new SpawnTaskManager();
         this.playerVisibilityManager = new PlayerVisibilityManager(this.plugin);
+
     }
 
     public TridentDataManager getTridentDataManager() {

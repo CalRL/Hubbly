@@ -22,10 +22,6 @@ import me.calrl.hubbly.commands.*;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.hooks.HookManager;
 import me.calrl.hubbly.inventory.InventoryListener;
-import me.calrl.hubbly.items.AoteItem;
-import me.calrl.hubbly.items.EnderbowItem;
-import me.calrl.hubbly.items.RodItem;
-import me.calrl.hubbly.items.TridentItem;
 import me.calrl.hubbly.listeners.ServerLoadListener;
 import me.calrl.hubbly.listeners.chat.ChatListener;
 import me.calrl.hubbly.listeners.chat.CommandBlockerListener;
@@ -42,6 +38,7 @@ import me.calrl.hubbly.listeners.world.WorldEventListeners;
 import me.calrl.hubbly.managers.*;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.metrics.Metrics;
+import me.calrl.hubbly.managers.StorageManager;
 import me.calrl.hubbly.utils.Utils;
 import me.calrl.hubbly.utils.update.UpdateUtil;
 import org.bukkit.Bukkit;
@@ -82,6 +79,7 @@ public class Hubbly extends JavaPlugin {
     private SubCommandManager subCommandManager;
     private HookManager hookManager;
     private ManagerFactory managerFactory;
+    private StorageManager storageManager = null;
     private boolean isLoaded;
 
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
@@ -176,6 +174,10 @@ public class Hubbly extends JavaPlugin {
 
         instance = this;
 
+        if(this.getConfig().getBoolean("database.enabled")) {
+            storageManager = new StorageManager(this);
+        }
+
         updateUtil = new UpdateUtil();
         disabledWorlds = new DisabledWorlds(this);
         cooldownManager = new CooldownManager();
@@ -214,7 +216,8 @@ public class Hubbly extends JavaPlugin {
 
         logger.info("Components loaded");
 
-        if (!isTestMode()) {
+        if (!this.isTestEnvironment()) {
+            logger.info("Plugin is not in test mode");
             final int pluginId = 22219;
             new Metrics(this, pluginId);
             updateUtil.checkForUpdate(this);
@@ -229,8 +232,14 @@ public class Hubbly extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        logger.info("Disabling Hubbly");
         // Plugin shutdown logic
         cleanup();
+        logger.info("Cleanup success");
+
+        if(this.storageManager != null && this.storageManager.isActive()) {
+            this.storageManager.shutdown();
+        }
 
         bossBarManager.removeAllBossBars();
         logger.info("Hubbly has been disabled!");
@@ -339,16 +348,17 @@ public class Hubbly extends JavaPlugin {
         this.hookManager = hookManager;
     }
     public ManagerFactory getManagerFactory() { return this.managerFactory; }
+    public StorageManager getStorageManager() { return this.storageManager; }
     public static void setInstance(Hubbly hubbly) {
         instance = hubbly;
     }
 
-    public static void enableTestMode() {
+    public void enableTestMode() {
         testMode = true;
     }
 
-    public static boolean isTestMode() {
-        return testMode;
+    private boolean isTestEnvironment() {
+        return Boolean.getBoolean("hubbly.test");
     }
 
     public boolean isLoaded() {

@@ -5,9 +5,22 @@ check_for_update: true
 notify_on_no_update: false
 default_language: en
 
-#----------------#
+#---------#
+# Storage #
+#---------#
+
+database:
+  enabled: true
+  host: localhost
+  port: 3306
+  database: minecraft
+  username: hubbly
+  password: hubblypassword
+
+
+#-----------------#
 # Disabled Worlds #
-#----------------#
+#-----------------#
 
 disabled-worlds:
   - 'world_nether'

@@ -9,7 +9,7 @@ no_fly_enabled: Flight is disabled in config
 blocked_command: Unknown command. Type "/help" for help
 blocked_message: Please do not use that word!
 success: Success!
-
+movement_update: Updated movement to %movement%
 # No PAPI support, only %player% placeholder to get the person who locked the chat.
 chat_locked: Chat has been locked by %player%
 chat_unlocked: Chat has been unlocked by %player%

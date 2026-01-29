@@ -5,6 +5,7 @@
 plugins {
     `java-library`
     `maven-publish`
+    id("com.gradleup.shadow") version "9.3.0"
 }
 
 repositories {
@@ -29,10 +30,6 @@ repositories {
     maven {
         url = uri("https://repo.codemc.io/repository/maven-public/")
     }
-
-
-
-
 }
 
 dependencies {
@@ -42,13 +39,15 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
 
+    implementation("com.zaxxer:HikariCP:7.0.2")
+
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
     testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.93.2")
     testImplementation("org.slf4j:slf4j-simple:2.0.9")
 }
 
 group = "me.calrl"
-version = "3.4.0"
+version = "3.5.0"
 description = "Hubbly"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -56,6 +55,10 @@ publishing {
     publications.create<MavenPublication>("maven") {
         from(components["java"])
     }
+}
+
+tasks.build {
+    dependsOn(tasks.shadowJar)
 }
 
 tasks.withType<JavaCompile>() {
@@ -68,6 +71,8 @@ tasks.withType<Javadoc>() {
 
 tasks.test {
     useJUnitPlatform()
+
+    systemProperty("hubbly.test", "true")
 
     testLogging {
         events("passed", "failed", "skipped", "standard_out", "standard_error")
@@ -84,4 +89,10 @@ tasks.processResources {
         // Use a map to define the variables for substitution
         expand("project" to project, "version" to project.version.toString())
     }
+}
+
+tasks.shadowJar {
+    archiveClassifier.set("")
+
+    relocate("com.zaxxer.hikari", "me.calrl.hubbly.libs.hikari")
 }

@@ -5,6 +5,9 @@ check_for_update: true
 notify_on_no_update: false
 default_language: en
 
+database:
+  enabled: false
+
 #----------------#
 # Disabled Worlds #
 #----------------#
