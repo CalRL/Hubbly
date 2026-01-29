@@ -24,3 +24,10 @@ items:
       - "&7Opens the shop"
     actions:
       - "[PLAYER] buy"
+  movement:
+    name: "&aMovement"
+    material: FEATHER
+    lore:
+      - "&7Click me to open the movement menu"
+    actions:
+      - "[PLAYER] hubbly menu movement"

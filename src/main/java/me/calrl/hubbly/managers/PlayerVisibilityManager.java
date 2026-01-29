@@ -4,7 +4,6 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.enums.data.PlayerVisibilityMode;
-import me.calrl.hubbly.storage.PlayerData;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -39,7 +38,12 @@ public class PlayerVisibilityManager{
     }
 
     public boolean isHideMode(Player player) {
-        return player.getPersistentDataContainer().has(hideKey, PersistentDataType.BYTE);
+        PersistentDataContainer container = player.getPersistentDataContainer();
+        if (container.has(hideKey, PersistentDataType.BYTE)) {
+            migrateLegacyHideMode(player);
+        }
+        String value = container.get(hideKey, PersistentDataType.STRING);
+        return value != null && value.equalsIgnoreCase(PlayerVisibilityMode.HIDDEN.name());
     }
 
     public void sendMessageToVisiblePlayers(String message) {
@@ -64,39 +68,51 @@ public class PlayerVisibilityManager{
 
     public void setHideMode(Player player, PlayerVisibilityMode mode) {
         PersistentDataContainer container = player.getPersistentDataContainer();
-        container.set(this.hideKey, PersistentDataType.STRING, mode.toString());
+        container.set(this.hideKey, PersistentDataType.STRING, mode.name());
+
+        if (mode == PlayerVisibilityMode.HIDDEN) {
+            this.hideAll(player);
+        } else {
+            this.revealAll(player);
+        }
 
         FileConfiguration config = this.plugin.getConfig();
         StorageManager storage = this.plugin.getStorageManager();
         if(config.getBoolean("database.enabled") && storage.isActive()) {
-            PlayerData data = PlayerData.from(player);
-            storage.enqueueSave(data);
+            storage.updateVisibilityMode(player, mode);
         }
     }
 
+    /**
+     * @deprecated Use {@link #setHideMode(Player, PlayerVisibilityMode)} to persist STRING values.
+     */
+    @Deprecated
     public void setHideMode(Player player, boolean hidden) {
-        if (hidden) {
-            player.getPersistentDataContainer().set(hideKey, PersistentDataType.BYTE, (byte) 1);
-            if(player.getPersistentDataContainer().has(hideKey)) {
-                this.hideAll(player);
-            } else {
-                new DebugMode(this.plugin).info(String.format("Failed to enable hide mode for player: %s", player));
-            }
+        this.setHideMode(player, hidden ? PlayerVisibilityMode.HIDDEN : PlayerVisibilityMode.VISIBLE);
+    }
+
+    private void migrateLegacyHideMode(Player player) {
+        PersistentDataContainer container = player.getPersistentDataContainer();
+        Byte legacyValue = container.get(hideKey, PersistentDataType.BYTE);
+        container.remove(hideKey);
+        if (legacyValue != null && legacyValue == (byte) 1) {
+            this.setHideMode(player, PlayerVisibilityMode.HIDDEN);
         } else {
-            player.getPersistentDataContainer().remove(hideKey);
-            if(!player.getPersistentDataContainer().has(hideKey)) {
-                this.revealAll(player);
-            } else {
-                new DebugMode(this.plugin).info(String.format("Failed to disable hide mode for player: %s", player));
-            }
+            this.setHideMode(player, PlayerVisibilityMode.VISIBLE);
         }
     }
 
     public void handleJoin(Player joined) {
+        boolean joinedHidden = isHideMode(joined);
+
         for (Player viewer : Bukkit.getOnlinePlayers()) {
+            if(viewer.equals(joined)) continue;
+
             if (isHideMode(viewer)) {
-                new DebugMode(plugin).info(String.format("Player: %s is in hide mode?", viewer));
                 viewer.hidePlayer(plugin, joined);
+            }
+            if (joinedHidden) {
+                joined.hidePlayer(plugin, viewer);
             }
         }
     }

@@ -2,9 +2,7 @@ package me.calrl.hubbly;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 import be.seeseemelk.mockbukkit.ServerMock;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +18,7 @@ public abstract class PluginTestBase {
 
     @BeforeAll
     public static void startup() throws Exception {
-
+        System.out.println(">>> ENTER BeforeAll " + PluginTestBase.class.getName());
         if (!MockBukkit.isMocked()) {
             server = MockBukkit.mock();
         } else {
@@ -28,7 +26,7 @@ public abstract class PluginTestBase {
         }
 
         plugin = (Hubbly) MockBukkit.load(Hubbly.class);
-        plugin.onEnable();
+        plugin.getConfig().set("database.enabled", false);
 
         long start = System.currentTimeMillis();
         while (!plugin.isLoaded()) {
@@ -49,10 +47,8 @@ public abstract class PluginTestBase {
     }
 
     @BeforeEach
-    public void init() {
-
-        Hubbly.enableTestMode();
-
+    public void init(TestInfo info) {
+        System.out.println(">>> ENTER Test " + info.getDisplayName());
         assertNotNull(plugin, "Plugin failed to load");
     }
 
@@ -75,5 +71,10 @@ public abstract class PluginTestBase {
             assertNotNull(in, "Missing test resource: " + resourcePath);
             Files.copy(in, target, StandardCopyOption.REPLACE_EXISTING);
         }
+    }
+
+    @AfterEach
+    public void after(TestInfo info) {
+        System.out.println(">>> FINISH Test " + info.getDisplayName());
     }
 }

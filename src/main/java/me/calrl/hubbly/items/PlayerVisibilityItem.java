@@ -19,6 +19,7 @@ package me.calrl.hubbly.items;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.PluginKeys;
+import me.calrl.hubbly.enums.data.PlayerVisibilityMode;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Material;
@@ -33,14 +34,30 @@ import org.bukkit.persistence.PersistentDataType;
 public class PlayerVisibilityItem implements CustomItem {
     private Player player;
     public final ItemStack createItem() {
+        if(player == null) {
+            throw new NullPointerException("Player is null");
+        }
+
+        PersistentDataContainer playerContainer = this.player.getPersistentDataContainer();
+        String value = playerContainer.get(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING);
+        PlayerVisibilityMode mode = PlayerVisibilityMode.valueOf(value);
+
+        String modeString = mode.toString();
+        String itemFormatted = String.format("playervisibility.%s.item", modeString.toLowerCase());
+        String textFormatted = String.format("playervisibility.%s.text", modeString.toLowerCase());
+
         FileConfiguration config = Hubbly.getInstance().getConfig();
-        ItemStack item = new ItemStack(Material.valueOf(config.getString("playervisibility.visible.item", "GREEN_DYE")));
+        String dyeString = mode == PlayerVisibilityMode.VISIBLE ? "GREEN_DYE" : "GRAY_DYE";
+        String configItemString = config.getString(itemFormatted, dyeString);
+        ItemStack item = new ItemStack(Material.valueOf(configItemString));
         ItemMeta meta = item.getItemMeta();
 
         if(meta != null) {
             PersistentDataContainer container = meta.getPersistentDataContainer();
-            container.set(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING, "visible");
-            String itemName = ChatUtils.translateHexColorCodes(config.getString("playervisibility.visible.text"));
+            container.set(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING, modeString);
+
+            String configTextString = config.getString(textFormatted);
+            String itemName = ChatUtils.translateHexColorCodes(configTextString);
             meta.setDisplayName(itemName);
             item.setItemMeta(meta);
         }

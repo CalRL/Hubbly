@@ -19,11 +19,12 @@ package me.calrl.hubbly.listeners.items;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
+import me.calrl.hubbly.enums.data.PlayerVisibilityMode;
+import me.calrl.hubbly.items.DyeItem;
 import me.calrl.hubbly.managers.DebugMode;
-import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.managers.PlayerVisibilityManager;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -35,7 +36,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.Objects;
+import java.util.Locale;
 
 public class PlayerVisibilityListener implements Listener {
 
@@ -76,133 +77,30 @@ public class PlayerVisibilityListener implements Listener {
         event.setCancelled(true);
     }
 
-    enum VisDye {
-        VISIBLE("visible"),
-        HIDDEN("hidden"),
-        ;
-
-        private final String key;
-
-        VisDye(String key) {
-            this.key = key;
-        }
-        public final String getKey() { return this.key; }
-
-        public final boolean asBool() {
-            return switch (this.key) {
-                case "visible" -> false;
-                case "hidden" -> true;
-                default -> throw new IllegalStateException("Unexpected value: " + key);
-            };
-        }
-
-        public static VisDye fromKey(String key) {
-            return switch (key) {
-                case "visible" -> VisDye.VISIBLE;
-                case "hidden" -> VisDye.HIDDEN;
-                default -> throw new IllegalStateException("Unexpected value: " + key);
-            };
-        }
-
-        public final VisDye getOpposite() {
-            return switch (this) {
-                case VISIBLE -> HIDDEN;
-                case HIDDEN -> VISIBLE;
-            };
-        }
-
-        private ItemStack buildDye(FileConfiguration config) {
-            String key = this.getKey();
-            String format = "playervisibility.%s.%s";
-            Material mat = Material.valueOf(config.getString(format.formatted(key, "item")));
-            String displayName = ChatUtils.translateHexColorCodes(
-                    config.getString(format.formatted(key, "text"))
-            );
-
-            ItemStack item = new ItemStack(mat);
-            ItemMeta meta = item.getItemMeta();
-            if(meta != null) {
-                meta.setDisplayName(displayName);
-                PersistentDataContainer container = meta.getPersistentDataContainer();
-                container.set(
-                        PluginKeys.PLAYER_VISIBILITY.getKey(),
-                        PersistentDataType.STRING,
-                        this.getKey()
-                );
-                item.setItemMeta(meta);
-            }
-            return item;
-        }
-    }
-
-
     private void swapDye(Player player) {
         ItemStack itemInHand = player.getInventory().getItemInMainHand();
         ItemMeta meta = itemInHand.getItemMeta();
         if(meta == null) {
-            new DebugMode().info("Failed to swap dyes, item meta is null?");
+            debugMode.info("Failed to swap dyes, item meta is null?");
             return;
         }
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
         String key = container.get(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING);
         if(key == null) {
-            new DebugMode().info("PlaverVisibility key is null?");
+            debugMode.info("PlaverVisibility key is null?");
             return;
         }
-        VisDye dye = VisDye.fromKey(key);
-        VisDye oppositeDye = dye.getOpposite();
 
-        ItemStack newDye = oppositeDye.buildDye(config);
-        plugin.getManagerFactory().getPlayerVisibilityManager().setHideMode(player, oppositeDye.asBool());
+        PlayerVisibilityMode mode = PlayerVisibilityMode.valueOf(key);
+        PlayerVisibilityMode oppositeMode = mode.opposite();
+
+        String oppositeKey = oppositeMode.toString();
+        ItemStack newDye = new DyeItem(oppositeKey).build(config);
+        PlayerVisibilityManager manager = plugin.getManagerFactory().getPlayerVisibilityManager();
+        manager.setHideMode(player, oppositeMode);
 
         player.getInventory().setItemInMainHand(newDye);
-    }
-
-    private void swapDye(Player player, ItemStack itemInHand) {
-        Material newMaterial;
-        String displayName;
-        ItemMeta meta = itemInHand.getItemMeta();
-        if(meta == null) {
-            new MessageBuilder()
-                    .setPlayer(Bukkit.getConsoleSender())
-                    .setKey("failure")
-                    .send();
-            return;
-        }
-
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-
-        String finalString;
-        if (Objects.equals(container.get(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING), "visible")) {
-            newMaterial = Material.valueOf(config.getString("playervisibility.hidden.item", "GRAY_DYE"));
-            displayName = ChatUtils.translateHexColorCodes(
-                    config.getString("playervisibility.hidden.text"));
-            finalString = "hidden";
-            for(Player online : Bukkit.getOnlinePlayers()){
-                player.hidePlayer(plugin, online);
-            }
-        } else if(Objects.equals(container.get(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING), "hidden")) {
-            newMaterial = Material.valueOf(config.getString("playervisibility.visible.item", "LIME_DYE"));
-            displayName = ChatUtils.translateHexColorCodes(
-                    config.getString("playervisibility.visible.text"));
-            finalString = "visible";
-            for(Player online : Bukkit.getOnlinePlayers()){
-                player.showPlayer(plugin, online);
-            }
-        } else {
-            plugin.getLogger().info("Error! Please report to developer!");
-            return;
-        }
-
-        ItemStack newItem = new ItemStack(newMaterial);
-        meta = newItem.getItemMeta();
-        if (meta != null) {
-            meta.setDisplayName(displayName);
-            meta.getPersistentDataContainer().set(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING, finalString);
-            newItem.setItemMeta(meta);
-        }
-        player.getInventory().setItemInMainHand(newItem);
     }
 }
 

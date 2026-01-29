@@ -54,7 +54,9 @@ public final class PlayerData {
         if (container.has(PluginKeys.MOVEMENT_KEY.getKey(), PersistentDataType.STRING)) {
             String movementString = container.get(PluginKeys.MOVEMENT_KEY.getKey(), PersistentDataType.STRING);
             if (movementString != null) {
-                movementMode = PlayerMovementMode.valueOf(movementString);
+                try {
+                    movementMode = PlayerMovementMode.valueOf(movementString);
+                } catch (IllegalArgumentException ignored) {}
             }
         }
 
@@ -62,7 +64,9 @@ public final class PlayerData {
         if (container.has(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING)) {
             String visibilityString = container.get(PluginKeys.PLAYER_VISIBILITY.getKey(), PersistentDataType.STRING);
             if (visibilityString != null) {
-                visibilityMode = PlayerVisibilityMode.valueOf(visibilityString);
+                try {
+                    visibilityMode = PlayerVisibilityMode.valueOf(visibilityString);
+                } catch (IllegalArgumentException ignored) {}
             }
         }
 
@@ -70,5 +74,25 @@ public final class PlayerData {
         PlayerVisibilityData visibilityData = new PlayerVisibilityData(visibilityMode);
 
         return new PlayerData(uuid, name, movementData, visibilityData);
+    }
+
+    public boolean isValid() {
+        return uuid != null
+                && name != null
+                && movement != null
+                && movement.getMode() != null
+                && visibility != null
+                && visibility.getMode() != null;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("[UUID: %s, NAME: %s, MOVEMENT: %s, VISIBILITY: %s]", this.uuid, this.name, this.movement, this.visibility);
+    }
+
+    public void assertValid() {
+        if (!isValid()) {
+            throw new IllegalStateException("Invalid PlayerData: " + this);
+        }
     }
 }

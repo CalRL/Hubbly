@@ -113,7 +113,7 @@ public class StorageManager {
             return null;
         }
 
-        return null;
+        return defaultPlayer(uuid, name);
     }
 
     private void savePlayer(PlayerData data) {
@@ -168,7 +168,12 @@ public class StorageManager {
     }
 
     public Result updateMovementMode(Player player, PlayerMovementMode mode) {
-        PlayerVisibilityData pvData = new PlayerVisibilityData(PlayerVisibilityMode.valueOf(this.getVisibilityMode(player)));
+        PlayerVisibilityMode visibilityMode = PlayerVisibilityMode.VISIBLE;
+        String visibilityValue = this.getVisibilityMode(player);
+        if (visibilityValue != null) {
+            visibilityMode = PlayerVisibilityMode.valueOf(visibilityValue);
+        }
+        PlayerVisibilityData pvData = new PlayerVisibilityData(visibilityMode);
         PlayerData data = new PlayerData(
             player.getUniqueId(),
             player.getName(),
@@ -181,7 +186,12 @@ public class StorageManager {
     }
 
     public Result updateVisibilityMode(Player player, PlayerVisibilityMode mode) {
-        PlayerMovementData mvData = new PlayerMovementData(PlayerMovementMode.valueOf(this.getMovementMode(player)));
+        PlayerMovementMode movementMode = PlayerMovementMode.NONE;
+        String movementValue = this.getMovementMode(player);
+        if (movementValue != null) {
+            movementMode = PlayerMovementMode.valueOf(movementValue);
+        }
+        PlayerMovementData mvData = new PlayerMovementData(movementMode);
         PlayerData data = new PlayerData(
                 player.getUniqueId(),
                 player.getName(),

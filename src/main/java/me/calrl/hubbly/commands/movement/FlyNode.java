@@ -13,8 +13,10 @@ class FlyNode extends CommandNode {
         super("fly");
         this.plugin = plugin;
     }
+
     @Override
     public Result execute(CommandSender sender, String[] args, int depth) {
-        return new Handler(plugin, sender).execute(PlayerMovementMode.FLY, Permissions.COMMAND_MOVEMENT_FLY);
+        return new MovementHandler(plugin, sender)
+                .execute(PlayerMovementMode.FLY, Permissions.COMMAND_MOVEMENT_FLY);
     }
 }

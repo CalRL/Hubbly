@@ -62,23 +62,35 @@ public class PlayerJoinListener implements Listener {
     private void onPlayerPreJoin(AsyncPlayerPreLoginEvent event) {
         UUID uuid = event.getUniqueId();
         StorageManager storage = plugin.getStorageManager();
-
-        PlayerData data = storage.loadPlayer(uuid, event.getName());
-        storage.addToMap(uuid, data);
+        FileConfiguration config = plugin.getConfig();
+        if(config.getBoolean("database.enabled") && storage.isActive()) {
+            PlayerData data = storage.loadPlayer(uuid, event.getName());
+            storage.addToMap(uuid, data);
+        }
     }
 
     @EventHandler
     private void onPlayerJoin(PlayerJoinEvent event) {
         Player player = event.getPlayer();
+        PlayerData data = PlayerData.from(player);
+
+        // assert throws
+        data.assertValid();
+
+        UUID uuid = player.getUniqueId();
+
         StorageManager storage = plugin.getStorageManager();
-        PlayerData data = storage.getAndRemove(player.getUniqueId());
+        FileConfiguration config = plugin.getConfig();
+        if(config.getBoolean("database.enabled") && storage.isActive()) {
+            data = storage.loadPlayer(uuid, player.getName());
+            storage.addToMap(uuid, data);
+        }
 
         new PlayerMovementHandler(player, plugin).handleJoin(data);
 
         PlayerVisibilityManager pvManager =  plugin.getManagerFactory().getPlayerVisibilityManager();
 
-        boolean isHideMode = data.visibility().getMode() == PlayerVisibilityMode.HIDDEN;
-        pvManager.setHideMode(player, isHideMode);
+        pvManager.setHideMode(player, data.visibility().getMode());
         pvManager.handleJoin(player);
 
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();

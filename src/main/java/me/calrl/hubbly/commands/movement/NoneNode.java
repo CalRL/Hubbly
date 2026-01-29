@@ -13,8 +13,10 @@ class NoneNode extends CommandNode {
         super("none");
         this.plugin = plugin;
     }
+
     @Override
     public Result execute(CommandSender sender, String[] args, int depth) {
-        return new Handler(plugin, sender).execute(PlayerMovementMode.NONE, Permissions.COMMAND_MOVEMENT_NONE);
+        return new MovementHandler(plugin, sender)
+                .execute(PlayerMovementMode.NONE, Permissions.COMMAND_MOVEMENT_NONE);
     }
 }

@@ -216,7 +216,8 @@ public class Hubbly extends JavaPlugin {
 
         logger.info("Components loaded");
 
-        if (!isTestMode()) {
+        if (!this.isTestEnvironment()) {
+            logger.info("Plugin is not in test mode");
             final int pluginId = 22219;
             new Metrics(this, pluginId);
             updateUtil.checkForUpdate(this);
@@ -231,10 +232,12 @@ public class Hubbly extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        logger.info("Disabling Hubbly");
         // Plugin shutdown logic
         cleanup();
+        logger.info("Cleanup success");
 
-        if(this.storageManager != null) {
+        if(this.storageManager != null && this.storageManager.isActive()) {
             this.storageManager.shutdown();
         }
 
@@ -350,12 +353,12 @@ public class Hubbly extends JavaPlugin {
         instance = hubbly;
     }
 
-    public static void enableTestMode() {
+    public void enableTestMode() {
         testMode = true;
     }
 
-    public static boolean isTestMode() {
-        return testMode;
+    private boolean isTestEnvironment() {
+        return Boolean.getBoolean("hubbly.test");
     }
 
     public boolean isLoaded() {

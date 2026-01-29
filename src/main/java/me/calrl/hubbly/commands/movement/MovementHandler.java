@@ -7,21 +7,20 @@ import me.calrl.hubbly.enums.data.PlayerMovementMode;
 import me.calrl.hubbly.handlers.PlayerMovementHandler;
 import me.calrl.hubbly.managers.StorageManager;
 import me.calrl.hubbly.storage.PlayerData;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-class Handler {
+public class MovementHandler {
     private final Hubbly plugin;
     private final CommandSender sender;
-    public Handler(Hubbly plugin, CommandSender sender) {
+    public MovementHandler(Hubbly plugin, CommandSender sender) {
         this.plugin = plugin;
         this.sender = sender;
     }
 
     public Result execute(PlayerMovementMode mode, Permissions permission) {
-        plugin.getDebugMode().info(String.format("Running handler for mode: %s", mode.toString()));
-
         if(!(sender instanceof Player player)) return Result.PLAYER_ONLY;
         if(!player.hasPermission(permission.getPermission())) return Result.NO_PERMISSION;
 
@@ -35,6 +34,12 @@ class Handler {
             PlayerData data = PlayerData.from(player);
             storage.enqueueSave(data);
         }
+
+        new MessageBuilder(plugin)
+                .setPlayer(player)
+                .setKey("movement_update")
+                .replace("%movement%", mode.toString())
+                .send();
 
         return Result.SUCCESS;
     }
