@@ -1,8 +1,0 @@
-- Serverselector.yml and socials are changing! A standardized menu format is coming along with a menus folder generated in the Hubbly config folder. You will also be able to create your own menus.
-- With this comes a conversion tool that can be used to convert the legacy files to the new format.
-- ItemsAdder + Oraxen support.
-- HeadDatabase support.
-- [LINK] action, takes message, hover, and link as an argument, will work like the current socials system.
-- Added `/hubbly help` command
-- items.yml will now also work on blocks, interacting and walking over these blocks will trigger actions.
-- [LAUNCH] action will take 2 arguments for X and Y power
