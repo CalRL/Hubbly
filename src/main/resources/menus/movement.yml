@@ -1,0 +1,35 @@
+title: "&6Movement"
+size: 45
+items:
+  none:
+    material: BARRIER
+    name: "&cNone"
+    slot: 19
+    lore:
+      - "&aSet to walk"
+    actions:
+      - "[PLAYER] hubbly movement none"
+      - "[CLOSE]"
+  djump:
+    material: GOLD_BOOTS
+    name: "&cDouble Jump"
+    slot: 22
+    lore:
+      - "&aSet to doublejump"
+    actions:
+      - "[PLAYER] hubbly movement doublejump"
+      - "[CLOSE]"
+  fly:
+    material: FEATHER
+    name: "&rFlight"
+    slot: 25
+    lore:
+      - "&aSet to fly"
+    actions:
+      - "[PLAYER] hubbly movement fly"
+      - "[CLOSE]"
+
+  fill:
+    slot: -1
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
