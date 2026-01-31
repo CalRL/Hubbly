@@ -6,7 +6,7 @@ items:
     name: "&cNone"
     slot: 19
     lore:
-      - "&aJoin the Discord Server!"
+      - "&aSet to walk"
     actions:
       - "[PLAYER] hubbly movement none"
       - "[CLOSE]"
@@ -15,7 +15,7 @@ items:
     name: "&cDouble Jump"
     slot: 22
     lore:
-      - "&aFollow me on TikTok!"
+      - "&aSet to doublejump"
     actions:
       - "[PLAYER] hubbly movement doublejump"
       - "[CLOSE]"
@@ -24,7 +24,7 @@ items:
     name: "&rFlight"
     slot: 25
     lore:
-      - "&aFollow me on TikTok!"
+      - "&aSet to fly"
     actions:
       - "[PLAYER] hubbly movement fly"
       - "[CLOSE]"
