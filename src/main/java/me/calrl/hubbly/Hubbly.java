@@ -54,6 +54,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
+import java.util.List;
 import java.util.logging.Logger;
 
 public class Hubbly extends JavaPlugin {
@@ -71,7 +72,6 @@ public class Hubbly extends JavaPlugin {
     private AnnouncementsManager announcementsManager;
     private LockChat lockChat;
     private Utils utils;
-    private PlayerManager playerManager;
     private BossBarManager bossBarManager;
     private ItemsManager itemsManager;
     private FileManager fileManager;
@@ -100,9 +100,9 @@ public class Hubbly extends JavaPlugin {
         itemsManager.reload();
         localeManager.reload();
 
+
         try {
             cleanup();
-            loadComponents();
             loadFiles();
         } catch(Exception e) {
             e.printStackTrace();
@@ -110,57 +110,8 @@ public class Hubbly extends JavaPlugin {
         debugMode.info("Restarted.");
     }
 
-    public void loadComponents() {
 
-        loadListeners();
 
-        getServer().getPluginManager().registerEvents(new WorldEventListeners(this), this);
-        getServer().getPluginManager().registerEvents(new ConfigItemListener(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerOffHandListener(this), this);
-        getServer().getPluginManager().registerEvents(new WorldChangeListener(this), this);
-
-        getCommand("hubbly").setExecutor(new HubblyCommand(this));
-        getCommand("setspawn").setExecutor(new SetSpawnCommand(this));
-        getCommand("spawn").setExecutor(new SpawnCommand(this));
-        getCommand("fly").setExecutor(new FlyCommand(this));
-        getCommand("clearchat").setExecutor(new ClearChatCommand(this));
-        getCommand("lockchat").setExecutor(new LockChatCommand(this));
-    }
-
-    private void registerListener(Listener listener, String enabledPath) {
-        if(config.getBoolean(enabledPath) || enabledPath.equals("null")) {
-            try {
-                getServer().getPluginManager().registerEvents(listener, this);
-            } catch(Exception e) {
-                logger.severe("PLEASE REPORT TO DEVELOPER");
-                logger.severe(listener.getClass().getName()  + " failed to load, printing stacktrace...");
-                debugMode.info(e.getMessage());
-            }
-
-        }
-    }
-
-    private void registerListener(Listener listener) {
-        registerListener(listener, "null");
-    }
-    private void loadListeners() {
-        registerListener(new ServerLoadListener(this));
-        registerListener(new VoidDamageListener(this), "antivoid.enabled");
-        registerListener(new DoubleJumpListener(this), "double_jump.enabled");
-        registerListener(new PlayerVisibilityListener(), "playervisibility.enabled");
-        registerListener(new LaunchpadListener(this), "launchpad.enabled");
-        registerListener(new PlayerJoinListener(this));
-        registerListener(new CommandBlockerListener(this));
-        registerListener(new ForceinvListener(this), "player.forceinventory");
-        registerListener(new ChatListener(this));
-        registerListener(new InventoryListener(this));
-        registerListener(new XPListener(this), "player.experience.enabled");
-        registerListener(new PlayerMoveListener(this));
-        registerListener(new TridentListener(this));
-        registerListener(new EnderbowListener(this));
-        registerListener(new AoteListener(this));
-        registerListener(new RodListener(this));
-    }
 
     @Override
     public void onEnable() {
@@ -189,13 +140,16 @@ public class Hubbly extends JavaPlugin {
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
         utils = new Utils(this);
-        playerManager = new PlayerManager(this);
         bossBarManager = new BossBarManager(this);
         subCommandManager = new SubCommandManager(this);
         localeManager = new LocaleManager(this);
         managerFactory = new ManagerFactory(this);
 
+        new CommandRegistrar(this);
+        new ListenerRegistrar(this);
 
+        ServiceRegistry serviceRegistry = new ServiceRegistry(this);
+        serviceRegistry.onEnable();
 
         logger.info("Instances created");
 
@@ -208,7 +162,6 @@ public class Hubbly extends JavaPlugin {
                 this.getServer().getMessenger().registerOutgoingPluginChannel(this, "wdl:control");
             }
 
-            loadComponents();
             bossBarManager.reAddAllBossBars();
         } catch (Exception e) {
             e.printStackTrace();
@@ -330,7 +283,6 @@ public class Hubbly extends JavaPlugin {
     public LockChat getLockChat() {return lockChat;}
     public Utils getUtils() { return utils; }
     public UpdateUtil getUpdateUtil() { return updateUtil; }
-    public PlayerManager getPlayerManager() { return playerManager; }
     public BossBarManager getBossBarManager() { return bossBarManager; }
     public String getPrefix() {
         return prefix;
