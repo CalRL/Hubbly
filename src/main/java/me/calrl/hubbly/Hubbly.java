@@ -18,23 +18,9 @@
 package me.calrl.hubbly;
 
 import me.calrl.hubbly.action.ActionManager;
-import me.calrl.hubbly.commands.*;
 import me.calrl.hubbly.functions.BossBarManager;
 import me.calrl.hubbly.hooks.HookManager;
-import me.calrl.hubbly.inventory.InventoryListener;
-import me.calrl.hubbly.listeners.ServerLoadListener;
-import me.calrl.hubbly.listeners.chat.ChatListener;
-import me.calrl.hubbly.listeners.chat.CommandBlockerListener;
-import me.calrl.hubbly.listeners.items.ConfigItemListener;
-import me.calrl.hubbly.listeners.items.PlayerVisibilityListener;
-import me.calrl.hubbly.listeners.items.movement.AoteListener;
-import me.calrl.hubbly.listeners.items.movement.EnderbowListener;
-import me.calrl.hubbly.listeners.items.movement.RodListener;
-import me.calrl.hubbly.listeners.items.movement.TridentListener;
-import me.calrl.hubbly.listeners.player.*;
 import me.calrl.hubbly.listeners.world.AntiWDL;
-import me.calrl.hubbly.listeners.world.LaunchpadListener;
-import me.calrl.hubbly.listeners.world.WorldEventListeners;
 import me.calrl.hubbly.managers.*;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.metrics.Metrics;
@@ -47,14 +33,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.event.Listener;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
-import java.util.List;
 import java.util.logging.Logger;
 
 public class Hubbly extends JavaPlugin {
@@ -148,8 +132,8 @@ public class Hubbly extends JavaPlugin {
         new CommandRegistrar(this);
         new ListenerRegistrar(this);
 
-        ServiceRegistry serviceRegistry = new ServiceRegistry(this);
-        serviceRegistry.onEnable();
+        Services services = new Services(this);
+        services.onEnable();
 
         logger.info("Instances created");
 

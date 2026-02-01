@@ -47,7 +47,6 @@ public class ActionManager {
                 new PlayerCommandAction(),
                 new ConsoleCommandAction(),
                 new CloseAction(),
-                new SoundAction(),
                 new GamemodeAction(),
                 new SoundAction(),
                 new TitleAction(),

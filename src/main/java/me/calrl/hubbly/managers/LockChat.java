@@ -25,12 +25,20 @@ public class LockChat {
     public LockChat(Hubbly plugin) {
         this.plugin = plugin;
         isChatLocked = plugin.getConfig().getBoolean("lock_chat");
-        String msg = isChatLocked ? "Chat is LOCKED" : "Chat is UNLOCKED";
-        new DebugMode().info(msg);
     }
-    public void flipChatLock() {
+    public void toggle() {
         isChatLocked = !isChatLocked;
         saveState();
+    }
+
+    public void setLocked() {
+        this.isChatLocked = true;
+        this.saveState();
+    }
+
+    public void setUnlocked() {
+        this.isChatLocked = false;
+        this.saveState();
     }
 
     public boolean getChatLock() {

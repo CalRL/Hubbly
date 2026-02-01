@@ -2,9 +2,9 @@ package me.calrl.hubbly;
 
 import me.calrl.hubbly.interfaces.ILifecycle;
 
-public class ServiceRegistry implements ILifecycle {
+public class Services implements ILifecycle {
     private final Hubbly plugin;
-    public ServiceRegistry(Hubbly plugin) {
+    public Services(Hubbly plugin) {
         this.plugin = plugin;
 
     }

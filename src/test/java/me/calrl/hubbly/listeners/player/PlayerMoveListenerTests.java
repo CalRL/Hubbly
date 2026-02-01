@@ -5,8 +5,10 @@ import me.calrl.hubbly.PluginTestBase;
 import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.managers.SpawnTaskManager;
 import me.calrl.hubbly.tasks.spawn.SpawnTeleportTask;
+import me.calrl.hubbly.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -30,11 +32,11 @@ class PlayerMoveListenerTests extends PluginTestBase {
 
         task.start();
 
-        Location newLoc = start.clone().add(20, 0, 0);
+        Location newLoc = start.clone().add(20, 0, -20);
         player.simulatePlayerMove(newLoc);
 
         server.getScheduler().performTicks(20 * 5);
-        Location spawn = plugin.getUtils().getSpawn();
+        Location spawn = Utils.getSpawn(plugin.getConfig());
         System.out.println(newLoc);
         System.out.println(player.getLocation());
         System.out.println(spawn);

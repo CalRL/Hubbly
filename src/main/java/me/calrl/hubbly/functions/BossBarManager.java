@@ -18,6 +18,7 @@ package me.calrl.hubbly.functions;
 
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.interfaces.ILifecycle;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
@@ -35,7 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class BossBarManager {
+public class BossBarManager implements ILifecycle {
 
     private FileConfiguration config;
     private final Map<Player, BossBar> playerBossBars = new ConcurrentHashMap<>();
@@ -97,7 +98,7 @@ public class BossBarManager {
         BossBar bar = playerBossBars.remove(player);
         if (bar != null) {
             bar.removePlayer(player);
-            bar.setVisible(false);  // Ensure the boss bar is hidden
+            bar.setVisible(false);
         }
 
         BukkitRunnable task = playerAnimations.remove(player);
@@ -120,7 +121,7 @@ public class BossBarManager {
         for (Player player : Bukkit.getOnlinePlayers()) {
             if(disabledWorlds.inDisabledWorld(player.getWorld())) return;
             if(!isEnaled) return;
-            createBossBar(player);
+            this.createBossBar(player);
         }
     }
 
@@ -136,5 +137,20 @@ public class BossBarManager {
 
     public void setConfig() {
         this.config = plugin.getConfig();
+    }
+
+    @Override
+    public void onEnable() {
+        this.reAddAllBossBars();
+    }
+
+    @Override
+    public void onReload() {
+
+    }
+
+    @Override
+    public void onDisable() {
+        this.removeAllBossBars();
     }
 }

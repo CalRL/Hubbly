@@ -20,7 +20,6 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.LockChat;
-import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -68,7 +67,7 @@ public class LockChatCommand implements CommandExecutor {
             builder.setPlayer(p).send();
         }
 
-        lockChat.flipChatLock();
+        lockChat.toggle();
 
         return true;
     }

@@ -18,11 +18,24 @@ public class Utils {
     public Utils(Hubbly plugin){
         this.plugin = plugin;
     }
-
+    public Utils() {}
 
     public Location getSpawn() {
         FileConfiguration config = plugin.getConfig();
 
+        String worldName = config.getString("spawn.world", "world");
+
+        World world = Bukkit.getWorld(worldName);
+        double x = config.getDouble("spawn.x");
+        double y = config.getDouble("spawn.y");
+        double z = config.getDouble("spawn.z");
+        float yaw = (float) config.getDouble("spawn.yaw");
+        float pitch = (float) config.getDouble("spawn.pitch");
+
+        return new Location(world, x, y, z, yaw, pitch);
+    }
+
+    public static Location getSpawn(FileConfiguration config) {
         String worldName = config.getString("spawn.world", "world");
 
         World world = Bukkit.getWorld(worldName);
