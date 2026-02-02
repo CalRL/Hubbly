@@ -131,12 +131,8 @@ public class BossBarManager implements ILifecycle {
 
 
     public boolean isEnabled() {
-        this.setConfig();
-        return config.getBoolean("player.bossbar.enabled");
-    }
-
-    public void setConfig() {
         this.config = plugin.getConfig();
+        return config.getBoolean("player.bossbar.enabled");
     }
 
     @Override
