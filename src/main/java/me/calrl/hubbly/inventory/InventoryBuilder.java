@@ -5,7 +5,6 @@ import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.ItemBuilder;
-import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -15,10 +14,8 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,11 +63,15 @@ public class InventoryBuilder implements InventoryHolder {
 
     @Override
     public @NotNull Inventory getInventory() {
+        return this.build();
+    }
+
+    public Inventory build() {
         if(size > 54) size = 54;
         if(size < 9) size = 9;
 
-        String title = ChatUtils.translateHexColorCodes(this.title);
-        Inventory inventory = Bukkit.createInventory(this, size, title);
+        String titleString = ChatUtils.translateHexColorCodes(this.title);
+        Inventory inventory = Bukkit.createInventory(this, size, titleString);
         for(Map.Entry<Integer, ItemStack> entry : icons.entrySet()) {
             inventory.setItem(entry.getKey(), entry.getValue());
         }
