@@ -1,7 +1,5 @@
 package me.calrl.hubbly.commands;
 
-import be.seeseemelk.mockbukkit.command.ConsoleCommandSenderMock;
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.calrl.hubbly.PluginTestBase;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
@@ -10,6 +8,8 @@ import me.calrl.hubbly.enums.data.PlayerMovementMode;
 import org.bukkit.persistence.PersistentDataType;
 import org.junit.jupiter.api.Test;
 import me.calrl.hubbly.commands.movement.MovementHandler;
+import org.mockbukkit.mockbukkit.command.ConsoleCommandSenderMock;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

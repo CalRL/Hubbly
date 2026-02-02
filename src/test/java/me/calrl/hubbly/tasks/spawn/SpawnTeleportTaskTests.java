@@ -1,11 +1,11 @@
 package me.calrl.hubbly.tasks.spawn;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.calrl.hubbly.PluginTestBase;
 import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.managers.SpawnTaskManager;
 import org.bukkit.Location;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 import static org.junit.jupiter.api.Assertions.*;
 

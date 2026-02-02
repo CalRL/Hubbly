@@ -1,6 +1,5 @@
 package me.calrl.hubbly.listeners.player;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.calrl.hubbly.PluginTestBase;
 import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.managers.SpawnTaskManager;
@@ -8,8 +7,8 @@ import me.calrl.hubbly.tasks.spawn.SpawnTeleportTask;
 import me.calrl.hubbly.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerTeleportEvent;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 import static org.junit.jupiter.api.Assertions.*;
 

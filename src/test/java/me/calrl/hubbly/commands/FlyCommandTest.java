@@ -1,6 +1,5 @@
 package me.calrl.hubbly.commands;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.PluginTestBase;
 import me.calrl.hubbly.managers.LocaleManager;
@@ -9,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.persistence.PersistentDataType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 import static org.junit.jupiter.api.Assertions.*;
 
