@@ -59,6 +59,7 @@ public abstract class PluginTestBase {
 //
     @AfterAll
     public static void clean() {
+        plugin.onDisable();
         MockBukkit.unmock();
         System.out.println("cleanup!");
     }
