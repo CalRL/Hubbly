@@ -1,8 +1,14 @@
 package me.calrl.hubbly.action.actions;
 
 import me.calrl.hubbly.PluginTestBase;
+import me.calrl.hubbly.inventory.InventoryBuilder;
+import me.calrl.hubbly.managers.FileManager;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;
@@ -11,7 +17,9 @@ import org.bukkit.util.Vector;
 import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -95,17 +103,24 @@ class ActionTests extends PluginTestBase {
         PlayerMock player = server.addPlayer();
         MenuAction action = new MenuAction();
 
-        plugin.getConfig().set("menus.selector.title", "Server Selector");
-        plugin.getConfig().set("menus.selector.size", 36);
+        FileManager manager = plugin.getFileManager();
+        YamlConfiguration config = manager.getConfig("menus/selector.yml");
 
         action.execute(plugin, player, "selector");
         server.getScheduler().performTicks(1);
 
-        assertNotNull(player.getOpenInventory());
+        List<Material> materials = new ArrayList<>();
+        ItemStack[] items = player.getOpenInventory().getTopInventory().getContents();
+        for(ItemStack itemStack : items) {
+            Material type = itemStack.getType();
+            if(materials.contains(type)) continue;
+            materials.add(type);
+        }
 
-        String titleText = player.getOpenInventory().getTitle();
-        System.out.println(titleText);
-        assertTrue(titleText.contains("Selector"));
+        assertTrue(materials.contains(Material.BLACK_STAINED_GLASS_PANE));
+        assertTrue(materials.contains(Material.LEATHER_CHESTPLATE));
+
+        assertNotNull(player.getOpenInventory());
         assertEquals(36, player.getOpenInventory().getTopInventory().getSize());
     }
 }
