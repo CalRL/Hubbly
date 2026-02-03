@@ -20,6 +20,9 @@ package me.calrl.hubbly.commands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
+import me.calrl.hubbly.enums.PluginKeys;
+import me.calrl.hubbly.enums.data.PlayerMovementMode;
+import me.calrl.hubbly.handlers.PlayerMovementHandler;
 import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.ChatColor;
@@ -32,6 +35,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FlyCommand implements CommandExecutor {
 
@@ -64,23 +70,19 @@ public class FlyCommand implements CommandExecutor {
             return true;
         }
 
-        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
+        PersistentDataContainer container = player.getPersistentDataContainer();
 
-        Byte canFly = dataContainer.get(plugin.FLY_KEY, PersistentDataType.BYTE);
+        String modeString = container.get(PluginKeys.MOVEMENT_KEY.getKey(), PersistentDataType.STRING);
+        PlayerMovementMode mode = PlayerMovementMode.valueOf(modeString);
 
-        if (canFly == null) {
-            canFly = 0;
-        }
-
-        if (canFly == 1) {
-            player.setFlying(false);
-            builder.setKey("fly.disable").send();
-            dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 0);
-        } else {
+        if(mode == PlayerMovementMode.DOUBLEJUMP || mode == PlayerMovementMode.NONE) {
             builder.setKey("fly.enable").send();
-            dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 1);
+            new PlayerMovementHandler(player, plugin).setMovementMode(PlayerMovementMode.FLY);
+            return true;
         }
 
+        builder.setKey("fly.disable").send();
+        new PlayerMovementHandler(player, plugin).setMovementMode(PlayerMovementMode.NONE);
         return true;
     }
 }

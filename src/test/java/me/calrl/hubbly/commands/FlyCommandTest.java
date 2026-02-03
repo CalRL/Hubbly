@@ -2,6 +2,8 @@ package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.PluginTestBase;
+import me.calrl.hubbly.enums.data.PlayerMovementMode;
+import me.calrl.hubbly.handlers.PlayerMovementHandler;
 import me.calrl.hubbly.managers.LocaleManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -41,18 +43,14 @@ public class FlyCommandTest extends PluginTestBase {
 
     @Test
     public void testPlayerWithoutPermissionIsBlocked() {
-        System.out.println("Starting");
         PlayerMock player = server.addPlayer("NoPerms");
         player.setOp(false);
 
-        System.out.println("commanding");
         flyCommand.onCommand(player, mockCommand(), "fly", new String[0]);
         String message = player.nextMessage();
 
-        System.out.println("asserting");
         assertNotNull(message);
         assertTrue(message.toLowerCase().contains("permission"));
-        System.out.println("chat is this real?");
     }
 
     @Test
@@ -61,12 +59,12 @@ public class FlyCommandTest extends PluginTestBase {
         player.setOp(true);
 
         flyCommand.onCommand(player, mockCommand(), "fly", new String[0]);
-        byte state = player.getPersistentDataContainer().get(plugin.FLY_KEY, PersistentDataType.BYTE);
-        assertEquals((byte) 1, state);
+        PlayerMovementMode mode = new PlayerMovementHandler(player, plugin).getMovementMode();
+        assertEquals(PlayerMovementMode.FLY, mode);
 
         flyCommand.onCommand(player, mockCommand(), "fly", new String[0]);
-        byte newState = player.getPersistentDataContainer().get(plugin.FLY_KEY, PersistentDataType.BYTE);
-        assertEquals((byte) 0, newState);
+        mode = new PlayerMovementHandler(player, plugin).getMovementMode();
+        assertEquals(PlayerMovementMode.NONE, mode);
     }
 
     @Test
