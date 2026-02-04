@@ -1,14 +1,10 @@
 package me.calrl.hubbly.action.actions;
 
 import me.calrl.hubbly.PluginTestBase;
-import me.calrl.hubbly.inventory.InventoryBuilder;
 import me.calrl.hubbly.managers.FileManager;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 import org.bukkit.potion.PotionEffect;

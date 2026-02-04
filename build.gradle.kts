@@ -102,7 +102,8 @@ tasks.jacocoTestReport {
                         "me/calrl/hubbly/utils/xseries/**",
                         "me/calrl/hubbly/metrics/**",
                         "me/calrl/hubbly/utils/update/UpdateChecker.class",
-                        "me/calrl/hubbly/utils/update/UpdateChecker$*.class"
+                        "me/calrl/hubbly/utils/update/UpdateChecker$*.class",
+                        "me/calrl/hubbly/interfaces/**"
                     )
                 }
             }
