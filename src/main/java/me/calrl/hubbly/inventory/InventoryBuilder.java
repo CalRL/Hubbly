@@ -137,6 +137,7 @@ public class InventoryBuilder implements InventoryHolder {
         return this;
     }
 
+    @Deprecated(since = "3.6.0", forRemoval = true)
     public InventoryBuilder fromLegacySelector(FileConfiguration config) {
         ConfigurationSection selector = config.getConfigurationSection("selector");
         if (selector == null) {
@@ -224,8 +225,7 @@ public class InventoryBuilder implements InventoryHolder {
         return this;
     }
 
-
-
+    @Deprecated(since = "3.6.0", forRemoval = true)
     public InventoryBuilder handleLegacy(FileConfiguration config) {
         ConfigurationSection section = config.getConfigurationSection("legacy");
 
