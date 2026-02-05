@@ -46,9 +46,8 @@ public class SpawnTeleportTaskTests extends PluginTestBase {
         SpawnTeleportTask task = new SpawnTeleportTask(plugin, player, timer);
         task.start();
 
-
         server.getScheduler().performTicks(20 * timer);
-
+        assertNotEquals(start, player.getLocation(), "Player should have been teleported to spawn");
         assertEquals(spawn, player.getLocation(), "Player should have been teleported to spawn");
     }
 }

@@ -15,9 +15,8 @@
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.calrl.hubbly.functions;
+package me.calrl.hubbly.utils;
 
-import me.calrl.hubbly.interfaces.CustomItem;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;

@@ -30,6 +30,8 @@ public class PlayerMovementHandler {
         this.plugin = plugin;
     }
 
+
+
     public void handleMovement(PlayerToggleFlightEvent event) {
         if(this.getMovementMode() != PlayerMovementMode.DOUBLEJUMP) return;
         FileConfiguration config = this.plugin.getConfig();
@@ -59,15 +61,12 @@ public class PlayerMovementHandler {
     }
 
     public PlayerMovementMode getMovementMode() {
-        // Get from PlayerMovementData
-
         PersistentDataContainer container = player.getPersistentDataContainer();
-        if(container.has(PluginKeys.MOVEMENT_KEY.getKey())) {
-            String value = container.get(PluginKeys.MOVEMENT_KEY.getKey(), PersistentDataType.STRING);
-            return PlayerMovementMode.valueOf(value);
-        }
+        NamespacedKey key = PluginKeys.MOVEMENT_KEY.getKey();
+        assert container.has(key);
 
-        return null;
+        String value = container.get(key, PersistentDataType.STRING);
+        return PlayerMovementMode.valueOf(value);
     }
 
     public void setMovementMode(PlayerMovementMode mode) {

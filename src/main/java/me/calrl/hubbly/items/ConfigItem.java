@@ -19,30 +19,16 @@ package me.calrl.hubbly.items;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
-import me.calrl.hubbly.functions.CreateCustomHead;
 import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.FileManager;
-import me.calrl.hubbly.managers.ItemsManager;
-import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.ItemBuilder;
 import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.persistence.PersistentDataType;
-import org.yaml.snakeyaml.Yaml;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 import java.util.logging.Logger;
 
 public class ConfigItem implements CustomItem {

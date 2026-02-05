@@ -18,17 +18,12 @@
 package me.calrl.hubbly.commands.subcommands;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
-import me.calrl.hubbly.functions.BossBarManager;
+import me.calrl.hubbly.utils.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
-import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class ReloadCommand implements SubCommand {
 
