@@ -19,7 +19,7 @@ package me.calrl.hubbly.commands.subcommands;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
-import me.calrl.hubbly.utils.BossBarManager;
+import me.calrl.hubbly.managers.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.command.CommandSender;

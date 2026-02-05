@@ -14,12 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
-package me.calrl.hubbly.utils;
+package me.calrl.hubbly.managers;
 
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.interfaces.ILifecycle;
-import me.calrl.hubbly.managers.DisabledWorlds;
+import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.boss.BarColor;

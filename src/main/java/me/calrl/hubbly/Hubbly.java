@@ -18,7 +18,7 @@
 package me.calrl.hubbly;
 
 import me.calrl.hubbly.action.ActionManager;
-import me.calrl.hubbly.utils.BossBarManager;
+import me.calrl.hubbly.managers.BossBarManager;
 import me.calrl.hubbly.hooks.HookManager;
 import me.calrl.hubbly.listeners.world.AntiWDL;
 import me.calrl.hubbly.managers.*;
