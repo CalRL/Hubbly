@@ -1,6 +1,7 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.items.PlayerTridentData;
+import me.calrl.hubbly.service.ILifecycle;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Trident;
 import org.bukkit.inventory.ItemStack;
@@ -8,11 +9,8 @@ import org.yaml.snakeyaml.constructor.DuplicateKeyException;
 
 import java.util.HashMap;
 
-public class TridentDataManager {
+public class TridentDataManager implements ILifecycle {
     private HashMap<Player, PlayerTridentData> playerTridents;
-    public TridentDataManager() {
-        this.playerTridents = new HashMap<>();
-    }
 
     public void add(Player player, ItemStack trident, int slot) {
         if(playerTridents.containsKey(player)) {
@@ -40,8 +38,18 @@ public class TridentDataManager {
         this.playerTridents.clear();
     }
 
-    public void panic() {
-
+    @Override
+    public void onEnable() {
+        this.playerTridents = new HashMap<>();
     }
 
+    @Override
+    public void onReload() {
+        this.purge();
+    }
+
+    @Override
+    public void onDisable() {
+        this.purge();
+    }
 }

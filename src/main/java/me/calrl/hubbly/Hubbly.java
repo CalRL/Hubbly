@@ -23,18 +23,17 @@ import me.calrl.hubbly.hooks.HookManager;
 import me.calrl.hubbly.listeners.world.AntiWDL;
 import me.calrl.hubbly.managers.*;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
+import me.calrl.hubbly.managers.LockChat;
 import me.calrl.hubbly.metrics.Metrics;
 import me.calrl.hubbly.managers.StorageManager;
+import me.calrl.hubbly.service.Services;
 import me.calrl.hubbly.utils.Utils;
 import me.calrl.hubbly.utils.update.UpdateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
-import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,6 +63,7 @@ public class Hubbly extends JavaPlugin {
     private HookManager hookManager;
     private ManagerFactory managerFactory;
     private StorageManager storageManager = null;
+    private Services services;
     private boolean isLoaded;
 
     public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
@@ -84,9 +84,11 @@ public class Hubbly extends JavaPlugin {
         itemsManager.reload();
         localeManager.reload();
 
+        services().onReload();
+
 
         try {
-            cleanup();
+//            cleanup();
             loadFiles();
         } catch(Exception e) {
             e.printStackTrace();
@@ -113,7 +115,10 @@ public class Hubbly extends JavaPlugin {
             storageManager = new StorageManager(this);
         }
 
-        updateUtil = new UpdateUtil();
+        Services services = new Services(this);
+        services.onEnable();
+        this.services = services;
+
         disabledWorlds = new DisabledWorlds(this);
         cooldownManager = new CooldownManager();
         actionManager = new ActionManager(this);
@@ -123,7 +128,6 @@ public class Hubbly extends JavaPlugin {
         itemsManager = new ItemsManager(this);
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
-        utils = new Utils(this);
         bossBarManager = new BossBarManager(this);
         subCommandManager = new SubCommandManager(this);
         localeManager = new LocaleManager(this);
@@ -131,9 +135,6 @@ public class Hubbly extends JavaPlugin {
 
         new CommandRegistrar(this);
         new ListenerRegistrar(this);
-
-        Services services = new Services(this);
-        services.onEnable();
 
         logger.info("Instances created");
 
@@ -157,7 +158,7 @@ public class Hubbly extends JavaPlugin {
             logger.info("Plugin is not in test mode");
             final int pluginId = 22219;
             new Metrics(this, pluginId);
-            updateUtil.checkForUpdate(this);
+            this.services().updateUtil().checkForUpdate(this);
 
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
             debugMode.info("BungeeCord channel registered");
@@ -224,35 +225,10 @@ public class Hubbly extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(this);
     }
 
-    /**
-     * todo: put this in playermanager
-     * @param player the target
-     * @param state 0 (djump) or 1 (flight)
-     */
-    public void setPlayerFlight(Player player, int state) {
-        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
-
-
-        if (!dataContainer.has(this.FLY_KEY, PersistentDataType.BYTE)) {
-            dataContainer.set(this.FLY_KEY, PersistentDataType.BYTE, (byte) state);
-        }
-    }
-
-    public boolean canPlayerFly(Player player) {
-        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
-        Byte state = dataContainer.get(this.FLY_KEY, PersistentDataType.BYTE);
-        if(state == null) {
-            debugMode.info("Critical error...");
-            return false;
-        }
-        return state == 1;
-    }
-
 
     public FileConfiguration getItemsConfig() {
         return itemsConfig;
     }
-    public FileConfiguration getServerSelectorConfig() { return serverSelectorConfig; }
     public ActionManager getActionManager() {
         return actionManager;
     }
@@ -265,7 +241,6 @@ public class Hubbly extends JavaPlugin {
     public DebugMode getDebugMode() { return debugMode; }
     public AnnouncementsManager getAnnouncementsManager() { return announcementsManager; }
     public LockChat getLockChat() {return lockChat;}
-    public Utils getUtils() { return utils; }
     public UpdateUtil getUpdateUtil() { return updateUtil; }
     public BossBarManager getBossBarManager() { return bossBarManager; }
     public String getPrefix() {
@@ -288,21 +263,10 @@ public class Hubbly extends JavaPlugin {
     public static void setInstance(Hubbly hubbly) {
         instance = hubbly;
     }
-
-    public void enableTestMode() {
-        testMode = true;
-    }
+    public Services services() { return this.services; }
 
     private boolean isTestEnvironment() {
         return Boolean.getBoolean("hubbly.test");
-    }
-
-    public boolean isLoaded() {
-        return isLoaded;
-    }
-
-    public void setLoaded(boolean loaded) {
-        isLoaded = loaded;
     }
 
 }

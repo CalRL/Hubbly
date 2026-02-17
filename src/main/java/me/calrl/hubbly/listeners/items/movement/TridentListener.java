@@ -41,39 +41,6 @@ public class TridentListener implements Listener {
     private FileConfiguration config;
     public TridentListener(Hubbly plugin) {
         this.plugin = plugin;
-        this.tridentManager = new TridentDataManager();
-    }
-
-    @EventHandler
-    public void onTridentLaunch(ProjectileLaunchEvent event) {
-        if(!(event.getEntity() instanceof Trident trident)) {
-            return;
-        }
-
-        if(!(trident.getShooter() instanceof Player player)) {
-            return;
-        }
-
-        new BukkitRunnable() {
-
-            @Override
-            public void run() {
-
-                if (!trident.isValid() || trident.isDead()) {
-                    new DebugMode().info("Cleaned invalid/dead trident");
-                    cancel();
-                    return;
-                }
-
-                World world = trident.getWorld();
-                if(trident.getLocation().getY() < getVoidLevel(world)) {
-                    replace(player);
-                    trident.remove();
-                    new DebugMode().info("Cleaned up voided trident");
-                    cancel();
-                }
-            }
-        }.runTaskTimer(plugin, 0L, 20L);
     }
 
     public int getVoidLevel(World world) {
@@ -85,41 +52,75 @@ public class TridentListener implements Listener {
 
 
     @EventHandler
-    public void onTridentThrow(ProjectileLaunchEvent event) {
+    public void onTridentLaunch(ProjectileLaunchEvent event) {
         this.config = plugin.getConfig();
 
-        if(!config.getBoolean("movementitems.trident.enabled")) return;
-        if (!(event.getEntity() instanceof Trident trident) || !(trident.getShooter() instanceof Player player)) {
-            return;
-        }
+        if (!config.getBoolean("movementitems.trident.enabled")) return;
+        if (!(event.getEntity() instanceof Trident trident)) return;
+        if (!(trident.getShooter() instanceof Player player)) return;
 
         DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
-        if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
-        if(!player.hasPermission(Permissions.USE_TRIDENT.getPermission())) return;
+        if (disabledWorlds.inDisabledWorld(player.getLocation())) return;
+        if (!player.hasPermission(Permissions.USE_TRIDENT.getPermission())) return;
 
         PlayerInventory playerInventory = player.getInventory();
         ItemStack itemInHand = playerInventory.getItemInMainHand();
 
+        if (itemInHand.getType() != Material.TRIDENT) return;
+
         ItemMeta meta = itemInHand.getItemMeta();
+        if (meta == null) return;
+
+        if (!meta.getPersistentDataContainer().has(PluginKeys.TRIDENT.getKey())) return;
+
         int slot = playerInventory.getHeldItemSlot();
 
-        if(meta != null && itemInHand.getType() == Material.TRIDENT && meta.getPersistentDataContainer().has(PluginKeys.TRIDENT.getKey())) {
+        boolean cooldown = plugin.getCooldownManager()
+                .tryCooldown(player.getUniqueId(),
+                        CooldownType.TRIDENT,
+                        config.getLong("movementitems.trident.cooldown"));
 
-            if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.TRIDENT, config.getLong("movementitems.trident.cooldown"))) {
-                event.setCancelled(true);
-                return;
-            }
-
-            event.getEntity().getPersistentDataContainer().set(PluginKeys.TRIDENT.getKey(), PersistentDataType.STRING, player.getName());
+        if (!cooldown) {
+            new DebugMode(plugin).info(Long.toString(
+                    plugin.getCooldownManager()
+                            .getCooldown(player.getUniqueId(), CooldownType.TRIDENT)));
+            event.setCancelled(true);
+            return;
         }
-        ItemStack newTrident = itemInHand.clone();
 
-        tridentManager.add(player, newTrident, slot);
+        trident.getPersistentDataContainer().set(
+                PluginKeys.TRIDENT.getKey(),
+                PersistentDataType.STRING,
+                player.getName()
+        );
+
+        ItemStack newTrident = itemInHand.clone();
+        plugin.services().tridentDataManager().add(player, newTrident, slot);
         new DebugMode().info("Starting tracking trident");
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+
+                if (!trident.isValid() || trident.isDead()) {
+                    cancel();
+                    return;
+                }
+
+                World world = trident.getWorld();
+                if (trident.getLocation().getY() < getVoidLevel(world)) {
+                    replace(player);
+                    trident.remove();
+                    new DebugMode().info("Cleaned up voided trident");
+                    cancel();
+                }
+            }
+        }.runTaskTimer(plugin, 0L, 20L);
     }
 
+
     private void replace(Player player) {
-        PlayerTridentData data = tridentManager.get(player);
+        PlayerTridentData data = plugin.services().tridentDataManager().get(player);
         ItemStack newTrident = data.getTrident();
         int slot = data.getSlot();
 
@@ -131,7 +132,7 @@ public class TridentListener implements Listener {
         } else {
             player.getInventory().addItem(newTrident);
         }
-        tridentManager.remove(player);
+        plugin.services().tridentDataManager().remove(player);
     }
 
 
@@ -165,7 +166,6 @@ public class TridentListener implements Listener {
 
             this.replace(player);
         }
-
     }
 
     @EventHandler

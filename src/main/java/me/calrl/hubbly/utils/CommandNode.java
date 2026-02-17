@@ -46,6 +46,7 @@ public abstract class CommandNode {
 
         return Collections.emptyList();
     }
+
     public String getIdentifier() { return this.identifier; }
 
     public Map<String, CommandNode> getChildren() {

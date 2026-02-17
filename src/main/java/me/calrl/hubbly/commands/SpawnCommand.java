@@ -75,7 +75,7 @@ public class SpawnCommand implements TabExecutor {
 
         if(!event.isCancelled()) {
             long timer = plugin.getConfig().getLong("spawn.timer");
-            SpawnTaskManager manager = plugin.getManagerFactory().getSpawnTaskManager();
+            SpawnTaskManager manager = plugin.services().spawnTaskManager();
             new SpawnTeleportTask(plugin, player, timer).start();
         }
 

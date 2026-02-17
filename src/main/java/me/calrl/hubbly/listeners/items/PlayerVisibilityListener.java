@@ -97,7 +97,7 @@ public class PlayerVisibilityListener implements Listener {
 
         String oppositeKey = oppositeMode.toString();
         ItemStack newDye = new DyeItem(oppositeKey).build(config);
-        PlayerVisibilityManager manager = plugin.getManagerFactory().getPlayerVisibilityManager();
+        PlayerVisibilityManager manager = plugin.services().playerVisibilityManager();
         manager.setHideMode(player, oppositeMode);
 
         player.getInventory().setItemInMainHand(newDye);

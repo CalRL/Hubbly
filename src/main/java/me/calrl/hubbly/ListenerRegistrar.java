@@ -40,7 +40,6 @@ public class ListenerRegistrar {
         registerListener(new InventoryListener(plugin));
         registerListener(new XPListener(plugin), "player.experience.enabled");
         registerListener(new PlayerMoveListener(plugin));
-        registerListener(new TridentListener(plugin));
         registerListener(new EnderbowListener(plugin));
         registerListener(new AoteListener(plugin));
         registerListener(new RodListener(plugin));

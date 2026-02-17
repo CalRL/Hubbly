@@ -18,7 +18,6 @@ public class Utils {
     public Utils(Hubbly plugin){
         this.plugin = plugin;
     }
-    public Utils() {}
 
     public Location getSpawn() {
         FileConfiguration config = plugin.getConfig();

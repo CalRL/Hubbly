@@ -18,7 +18,7 @@ package me.calrl.hubbly.managers;
 
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.interfaces.ILifecycle;
+import me.calrl.hubbly.service.ILifecycle;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

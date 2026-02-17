@@ -18,7 +18,7 @@ class PlayerMoveListenerTests extends PluginTestBase {
         PlayerMock player = server.addPlayer();
         SpawnTeleportTask task = new SpawnTeleportTask(plugin, player, 5);
         Location loc = player.getLocation();
-        SpawnTaskManager registry = plugin.getManagerFactory().getSpawnTaskManager();
+        SpawnTaskManager registry = plugin.services().spawnTaskManager();
         assertEquals(Result.SUCCESS, registry.register(player.getUniqueId(), loc, task));
         assertEquals(Result.SUCCESS, registry.unregister(player.getUniqueId()));
     }
@@ -48,7 +48,7 @@ class PlayerMoveListenerTests extends PluginTestBase {
         SpawnTeleportTask task = new SpawnTeleportTask(plugin, player, 2);
         Location start = player.getLocation();
 
-        SpawnTaskManager registry = plugin.getManagerFactory().getSpawnTaskManager();
+        SpawnTaskManager registry = plugin.services().spawnTaskManager();
 
         registry.register(player.getUniqueId(), start, task);
         task.start();
@@ -58,6 +58,6 @@ class PlayerMoveListenerTests extends PluginTestBase {
 
         server.getScheduler().performTicks(20 * 2);
 
-        assertEquals(plugin.getUtils().getSpawn(), player.getLocation(), "Teleport should NOT have been cancelled");
+        assertEquals(new Utils(plugin).getSpawn(), player.getLocation(), "Teleport should NOT have been cancelled");
     }
 }

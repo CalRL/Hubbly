@@ -28,7 +28,7 @@ public class SpawnTeleportTask  implements ITask {
         this.player = player;
         this.startLocation = player.getLocation();
         this.spawn = Utils.getSpawn(plugin.getConfig());
-        this.registry = plugin.getManagerFactory().getSpawnTaskManager();
+        this.registry = plugin.services().spawnTaskManager();
         this.task = new BukkitRunnable() {
             @Override
             public void run() {

@@ -1,4 +1,4 @@
-package me.calrl.hubbly.interfaces;
+package me.calrl.hubbly.service;
 
 public interface ILifecycle {
     void onEnable();

@@ -3,6 +3,7 @@ package me.calrl.hubbly.tasks.spawn;
 import me.calrl.hubbly.PluginTestBase;
 import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.managers.SpawnTaskManager;
+import me.calrl.hubbly.utils.Utils;
 import org.bukkit.Location;
 import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
@@ -32,7 +33,7 @@ public class SpawnTeleportTaskTests extends PluginTestBase {
 
         assertEquals(Result.SUCCESS, result);
 
-        SpawnTaskManager registry = plugin.getManagerFactory().getSpawnTaskManager();
+        SpawnTaskManager registry = plugin.services().spawnTaskManager();
         assertDoesNotThrow(() -> registry.unregister(player.getUniqueId()));
     }
 
@@ -40,7 +41,7 @@ public class SpawnTeleportTaskTests extends PluginTestBase {
     void testTeleportAfterDelay() {
         PlayerMock player = server.addPlayer();
         Location start = player.getLocation();
-        Location spawn = plugin.getUtils().getSpawn();
+        Location spawn = new Utils(plugin).getSpawn();
         long timer = 2;
 
         SpawnTeleportTask task = new SpawnTeleportTask(plugin, player, timer);

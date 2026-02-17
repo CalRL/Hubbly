@@ -16,8 +16,7 @@ public class PlayerVisibilityListenerTests extends PluginTestBase {
     void visibilityHidden_isWrittenToPdc() {
         PlayerMock player = server.addPlayer("TestPlayer");
 
-        plugin.getManagerFactory()
-                .getPlayerVisibilityManager()
+        plugin.services().playerVisibilityManager()
                 .setHideMode(player, PlayerVisibilityMode.HIDDEN);
 
         String stored = player.getPersistentDataContainer().get(

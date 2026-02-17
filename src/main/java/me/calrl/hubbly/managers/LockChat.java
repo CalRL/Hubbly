@@ -17,11 +17,12 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.service.ILifecycle;
 import org.bukkit.configuration.file.FileConfiguration;
 
-public class LockChat {
+public class LockChat implements ILifecycle {
     private final Hubbly plugin;
-    private boolean isChatLocked;
+    private Boolean isChatLocked;
     public LockChat(Hubbly plugin) {
         this.plugin = plugin;
         isChatLocked = plugin.getConfig().getBoolean("lock_chat");
@@ -41,6 +42,10 @@ public class LockChat {
         this.saveState();
     }
 
+    public boolean isLocked() {
+        return this.isChatLocked;
+    }
+
     public boolean getChatLock() {
         return isChatLocked;
     }
@@ -50,5 +55,21 @@ public class LockChat {
         FileConfiguration config = plugin.getConfig();
         config.set("lock_chat", getChatLock());
         plugin.saveConfig();
+    }
+
+    @Override
+    public void onEnable() {
+        this.isChatLocked = this.plugin.getConfig().getBoolean("lock_chat", false);
+    }
+
+    @Override
+    public void onReload() {
+        this.isChatLocked = null;
+        this.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+        this.isChatLocked = null;
     }
 }

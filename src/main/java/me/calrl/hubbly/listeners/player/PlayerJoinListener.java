@@ -87,7 +87,7 @@ public class PlayerJoinListener implements Listener {
 
         new PlayerMovementHandler(player, plugin).handleJoin(data);
 
-        PlayerVisibilityManager pvManager =  plugin.getManagerFactory().getPlayerVisibilityManager();
+        PlayerVisibilityManager pvManager = plugin.services().playerVisibilityManager();
 
         pvManager.setHideMode(player, data.visibility().getMode());
         pvManager.handleJoin(player);

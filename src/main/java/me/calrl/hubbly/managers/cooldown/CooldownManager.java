@@ -44,5 +44,4 @@ public class CooldownManager {
     private long calculateRemainder(Long expireTime) {
         return expireTime != null ? expireTime - System.currentTimeMillis() : Long.MIN_VALUE;
     }
-
 }

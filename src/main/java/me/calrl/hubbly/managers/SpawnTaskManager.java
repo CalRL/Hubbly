@@ -1,6 +1,7 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.enums.Result;
+import me.calrl.hubbly.service.ILifecycle;
 import me.calrl.hubbly.tasks.ITask;
 import me.calrl.hubbly.tasks.spawn.SpawnTeleportTask;
 import org.bukkit.Location;
@@ -10,9 +11,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class SpawnTaskManager {
-    private final Map<UUID, Location> locationMap = new HashMap<>();
-    private final Map<UUID, SpawnTeleportTask> tasks = new HashMap<>();
+public class SpawnTaskManager implements ILifecycle {
+    private Map<UUID, Location> locationMap = new HashMap<>();
+    private Map<UUID, SpawnTeleportTask> tasks = new HashMap<>();
 
     public Result register(Player player, Location location, SpawnTeleportTask task) {
         UUID uuid = player.getUniqueId();
@@ -60,4 +61,20 @@ public class SpawnTaskManager {
     }
 
 
+    @Override
+    public void onEnable() {
+        this.locationMap = new HashMap<>();
+        this.tasks = new HashMap<>();
+    }
+
+    @Override
+    public void onReload() {
+
+    }
+
+    @Override
+    public void onDisable() {
+        this.locationMap = null;
+        this.tasks = null;
+    }
 }
