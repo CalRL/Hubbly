@@ -107,6 +107,9 @@ public class Hubbly extends JavaPlugin {
             storageManager = new StorageManager(this);
         }
 
+        fileManager = new FileManager(this);
+        debugMode = new DebugMode();
+
         Services services = new Services(this);
         services.onEnable();
         this.services = services;
@@ -114,8 +117,6 @@ public class Hubbly extends JavaPlugin {
         cooldownManager = new CooldownManager();
         actionManager = new ActionManager(this);
 
-        fileManager = new FileManager(this);
-        debugMode = new DebugMode();
         itemsManager = new ItemsManager(this);
         announcementsManager = new AnnouncementsManager(this);
         lockChat = new LockChat(this);
@@ -231,9 +232,6 @@ public class Hubbly extends JavaPlugin {
     }
     public AnnouncementsManager getAnnouncementsManager() {
         return announcementsManager;
-    }
-    public LockChat getLockChat() {
-        return lockChat;
     }
     public BossBarManager getBossBarManager() { return bossBarManager; }
     public ItemsManager getItemsManager() { return itemsManager; }
