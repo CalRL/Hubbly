@@ -48,7 +48,7 @@ public class DoubleJumpListener implements Listener {
     public void onToggleFlight(PlayerToggleFlightEvent event) {
         Player player = event.getPlayer();
 
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) {
+        if(plugin.services().disabledWorlds().inDisabledWorld(player.getLocation())) {
             return;
         }
 
@@ -66,7 +66,7 @@ public class DoubleJumpListener implements Listener {
     @EventHandler
     private void onGamemodeChange(PlayerGameModeChangeEvent event) {
         Player player = event.getPlayer();
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) return;
+        if(plugin.services().disabledWorlds().inDisabledWorld(player.getLocation())) return;
         if(event.getNewGameMode() == GameMode.ADVENTURE || event.getNewGameMode() == GameMode.SURVIVAL) {
             FileConfiguration config = plugin.getConfig();
             if(config.getBoolean("double_jump.enabled")) {

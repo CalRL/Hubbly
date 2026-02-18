@@ -24,7 +24,7 @@ public class WorldChangeListener implements Listener {
         World world = player.getWorld();
 
         FileConfiguration config = plugin.getConfig();
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
 
         plugin.getDebugMode().info(player.getName() + " switched worlds: " + player.getWorld());
 

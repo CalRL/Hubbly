@@ -19,6 +19,7 @@ package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Result;
+import me.calrl.hubbly.service.ILifecycle;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -27,13 +28,12 @@ import org.bukkit.configuration.file.FileConfiguration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DisabledWorlds {
+public class DisabledWorlds implements ILifecycle {
 
     private final List<String> disabledWorlds = new ArrayList<>();
     private final Hubbly plugin;
     public DisabledWorlds(Hubbly plugin) {
         this.plugin = plugin;
-        this.setDisabledWorlds();
     }
     public boolean inDisabledWorld(World world) {
         return !disabledWorlds.isEmpty() && disabledWorlds.contains(world.getName());
@@ -180,8 +180,19 @@ public class DisabledWorlds {
         return this.disabledWorlds;
     }
 
-    public void reload() {
+    @Override
+    public void onEnable() {
+        this.setDisabledWorlds();
+    }
+
+    @Override
+    public void onReload() {
         disabledWorlds.clear();
         this.setDisabledWorlds();
+    }
+
+    @Override
+    public void onDisable() {
+
     }
 }

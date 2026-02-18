@@ -50,7 +50,7 @@ public class VoidDamageListener implements Listener {
         if (!(entity instanceof Player player)) return;
 
         Location playerLocation = player.getLocation();
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(playerLocation)) return;
 
         GameMode gameMode = player.getGameMode();

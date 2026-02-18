@@ -25,7 +25,7 @@ public class AoteListener implements Listener {
     private void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
 
         ItemStack item = player.getInventory().getItemInMainHand();

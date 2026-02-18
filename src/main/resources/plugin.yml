@@ -5,7 +5,7 @@ api-version: '1.20'
 
 prefix: Hubbly
 authors: [cal]
-website: cal.ceo/hubbly
+website: https://docs.cal.ceo/hubbly/getting-started/
 commands:
   hubbly:
     description: main command

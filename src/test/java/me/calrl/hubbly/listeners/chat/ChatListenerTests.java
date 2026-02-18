@@ -27,10 +27,7 @@ public class ChatListenerTests extends PluginTestBase {
         lastChatEvent = new AtomicReference<>();
 
         server.getPluginManager().registerEvents(new Listener() {
-            @EventHandler(
-                    priority = EventPriority.MONITOR,
-                    ignoreCancelled = false
-            )
+            @EventHandler
             public void onChat(AsyncPlayerChatEvent event) {
                 lastChatEvent.set(event);
             }
@@ -41,7 +38,7 @@ public class ChatListenerTests extends PluginTestBase {
     void chatLockedWithBypassAllowsChat() {
         PlayerMock player = server.addPlayer();
 
-        plugin.getLockChat().setLocked();
+        plugin.services().lockChat().setLocked();
         player.addAttachment(plugin, "hubbly.bypass.chatlock", true);
 
         player.chat("this should work");
@@ -55,7 +52,7 @@ public class ChatListenerTests extends PluginTestBase {
     void chatLockedNoBypassCancelsProperly() {
         PlayerMock player = server.addPlayer();
 
-        plugin.getLockChat().setLocked();
+        plugin.services().lockChat().setLocked();
 
         player.chat("this should be blocked");
         server.getScheduler().performTicks(1);
@@ -68,7 +65,7 @@ public class ChatListenerTests extends PluginTestBase {
     void chatUnlockedAllowsChat() {
         PlayerMock player = server.addPlayer();
 
-        plugin.getLockChat().setUnlocked();
+        plugin.services().lockChat().setUnlocked();
 
         player.chat("normal chat");
         server.getScheduler().performTicks(1);
@@ -124,7 +121,7 @@ public class ChatListenerTests extends PluginTestBase {
         plugin.getConfig().set("blocked_words.words", List.of("badword"));
         plugin.saveConfig();
 
-        plugin.getDisabledWorldsManager().addWorld(player.getWorld());
+        plugin.services().disabledWorlds().addWorld(player.getWorld());
 
         player.chat("badword");
         server.getScheduler().performTicks(1);

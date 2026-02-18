@@ -64,7 +64,7 @@ public class WorldEventListeners implements Listener {
      * @return return true if the player is in a disabled world
      */
     private boolean inDisabledWorld(Player player) {
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         return disabledWorlds.inDisabledWorld(player.getLocation());
     }
 
@@ -75,7 +75,7 @@ public class WorldEventListeners implements Listener {
      * @return return true if the world is a disabled world
      */
     private boolean inDisabledWorld(World world) {
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         return disabledWorlds.inDisabledWorld(world);
     }
 

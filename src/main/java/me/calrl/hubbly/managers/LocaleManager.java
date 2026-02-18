@@ -2,6 +2,7 @@ package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.LocaleKey;
+import me.calrl.hubbly.service.ILifecycle;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
@@ -9,7 +10,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LocaleManager {
+public class LocaleManager implements ILifecycle {
 
     private final Map<String, FileConfiguration> locales = new HashMap<>();
     private FileManager fileManager;
@@ -47,13 +48,10 @@ public class LocaleManager {
         return config.getString(path, "Missing message: " + path);
     }
 
-
-
     private String getOrDefault(FileConfiguration config, LocaleKey key) {
         String value = config.getString(key.getPath());
         return (value != null) ? value : key.getDefault();
     }
-
 
     public void loadAllLocales() {
         this.saveDefaultLanguages();
@@ -91,7 +89,6 @@ public class LocaleManager {
     }
 
     private void saveDefaultLanguages() {
-        // List all the language files you want to include
         String[] languages = { "en.yml" };
 
         for (String lang : languages) {
@@ -102,9 +99,26 @@ public class LocaleManager {
         }
     }
 
+    @Deprecated(forRemoval = true)
     public String getLocaleMessage(Player player, String key) {
         return this.get(player, key);
     }
 
 
+    @Override
+    public void onEnable() {
+        this.loadAllLocales();
+        this.loadFallback();
+    }
+
+    @Override
+    public void onReload() {
+        this.clear();
+        this.onEnable();
+    }
+
+    @Override
+    public void onDisable() {
+
+    }
 }

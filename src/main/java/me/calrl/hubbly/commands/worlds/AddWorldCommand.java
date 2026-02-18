@@ -42,7 +42,7 @@ public class AddWorldCommand extends CommandNode {
             return Result.FAILURE;
         }
 
-        plugin.getDisabledWorldsManager().addWorld(world);
+        plugin.services().disabledWorlds().addWorld(world);
 
         new MessageBuilder(plugin)
                 .setKey("subcommands.worlds.add.message")

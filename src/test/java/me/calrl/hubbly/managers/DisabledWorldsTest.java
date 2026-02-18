@@ -35,7 +35,7 @@ public class DisabledWorldsTest extends PluginTestBase {
     @Test
     void addsToDisabledWorlds() {
 
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         disabledWorlds.clear();
 
         World world = server.getWorld("world");
@@ -47,7 +47,7 @@ public class DisabledWorldsTest extends PluginTestBase {
 
     @Test
     void disabledWorldsTest() {
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         disabledWorlds.clear();
 
         plugin.getConfig().set("disabled-worlds", List.of("world_nether", "world_the_end"));
@@ -63,7 +63,7 @@ public class DisabledWorldsTest extends PluginTestBase {
 
     @Test
     void disabledWorldsInvertedTest() {
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         disabledWorlds.clear();
 
         plugin.getConfig().set("disabled-worlds", List.of("world_nether", "world_the_end"));

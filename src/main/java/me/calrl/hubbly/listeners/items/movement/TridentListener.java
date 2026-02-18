@@ -59,7 +59,7 @@ public class TridentListener implements Listener {
         if (!(event.getEntity() instanceof Trident trident)) return;
         if (!(trident.getShooter() instanceof Player player)) return;
 
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if (disabledWorlds.inDisabledWorld(player.getLocation())) return;
         if (!player.hasPermission(Permissions.USE_TRIDENT.getPermission())) return;
 
@@ -177,7 +177,7 @@ public class TridentListener implements Listener {
         this.config = plugin.getConfig();
         if(!config.getBoolean("movementitems.trident.enabled")) return;
 
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
 
 

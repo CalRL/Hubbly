@@ -18,7 +18,7 @@ public class ForceinvListener implements Listener {
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(player.getLocation())) { return; }
+        if(plugin.services().disabledWorlds().inDisabledWorld(player.getLocation())) { return; }
         boolean forceInventory = plugin.getConfig().getBoolean("player.forceinventory");
 
         if (forceInventory && !player.hasPermission(Permissions.BYPASS_FORCE_INVENTORY.getPermission())) {

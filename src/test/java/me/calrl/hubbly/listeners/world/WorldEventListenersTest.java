@@ -52,7 +52,7 @@ public class WorldEventListenersTest {
         server.getPluginManager().registerEvents(listener, plugin);
 
         // Mock disabled worlds manager
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         World disabledWorld = server.getWorld("disabled_world");
         disabledWorlds.addWorld(disabledWorld);
     }

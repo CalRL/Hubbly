@@ -64,7 +64,7 @@ public class ActionManager {
         );
     }
     public void executeAction(Player player, String actionData) {
-        DisabledWorlds disabledWorldsManager = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorldsManager = plugin.services().disabledWorlds();
         boolean inDisabledWorld = disabledWorldsManager.inDisabledWorld(player.getLocation());
 
         if(inDisabledWorld) return;
@@ -102,7 +102,7 @@ public class ActionManager {
     public Result executeAction(Player player, String actionData, boolean bypass) {
 
         if(!bypass) {
-            DisabledWorlds disabledWorldsManager = plugin.getDisabledWorldsManager();
+            DisabledWorlds disabledWorldsManager = plugin.services().disabledWorlds();
             boolean inDisabledWorld = disabledWorldsManager.inDisabledWorld(player.getLocation());
 
             if(inDisabledWorld) return Result.DISABLED_WORLD;

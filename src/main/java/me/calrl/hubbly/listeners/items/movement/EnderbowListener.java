@@ -34,7 +34,7 @@ public class EnderbowListener implements Listener {
         FileConfiguration config = plugin.getConfig();
         if(!config.getBoolean("movementitems.enderbow.enabled")) return;
 
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
 
         final Player player = event.getPlayer();
         if(disabledWorlds.inDisabledWorld(player.getWorld())) return;
@@ -53,7 +53,7 @@ public class EnderbowListener implements Listener {
             return;
         }
 
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         Player player = event.getPlayer();
 
         if(disabledWorlds.inDisabledWorld(event.getPlayer().getLocation())) {
@@ -112,7 +112,7 @@ public class EnderbowListener implements Listener {
 
         if (!(event.getEntity() instanceof Player player)) return;
 
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(player.getLocation())) {
             plugin.getDebugMode().info("Entity is in a disabled world.");
             return;
@@ -159,7 +159,7 @@ public class EnderbowListener implements Listener {
         FileConfiguration config = plugin.getConfig();
         if(!config.getBoolean("movementitems.enderbow.enabled")) return;
 
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(event.getEntity().getWorld())) return;
 
         if(!(event.getEntity().getShooter() instanceof Player player)) return;

@@ -37,7 +37,7 @@ public class ChatHandler implements ILifecycle {
         }
 
 
-        final DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        final DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         final World playerWorld = player.getWorld();
         final boolean notInDisabledWorld = !disabledWorlds.inDisabledWorld(playerWorld);
         FileConfiguration config = plugin.getConfig();

@@ -46,7 +46,7 @@ public class PlayerVisibilityListener implements Listener {
 
     @EventHandler
     public void onItemClick(PlayerInteractEvent event) {
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
+        if(plugin.services().disabledWorlds().inDisabledWorld(event.getPlayer().getWorld())) return;
 
         ItemStack itemInHand = event.getItem();
         if (itemInHand == null) {

@@ -47,7 +47,7 @@ public class CommandBlockerListener implements Listener {
     private void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         if(event.isCancelled()) return;
 
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
+        if(plugin.services().disabledWorlds().inDisabledWorld(event.getPlayer().getWorld())) return;
         String message = event.getMessage().toLowerCase();
         FileConfiguration config = plugin.getConfig();
         blockedCommands = config.getStringList("blocked_commands");

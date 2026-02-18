@@ -51,7 +51,7 @@ public class LaunchpadListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(event.getPlayer().getLocation())) return;
         
         config = plugin.getConfig();

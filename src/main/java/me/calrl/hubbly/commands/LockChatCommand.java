@@ -38,7 +38,7 @@ public class LockChatCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(!commandSender.hasPermission(Permissions.COMMAND_LOCK_CHAT.getPermission())) return true;
-        lockChat = plugin.getLockChat();
+        lockChat = plugin.services().lockChat();
         String key;
         if(lockChat.getChatLock()) {
             key = "chat_unlocked";
@@ -53,7 +53,7 @@ public class LockChatCommand implements CommandExecutor {
                 message = message.replace("%player%", commandSender.getName());
             }
         }
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         MessageBuilder builder = new MessageBuilder(plugin)
                 .setPlayer(commandSender)
                 .setKey(key)

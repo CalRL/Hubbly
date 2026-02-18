@@ -20,7 +20,7 @@ public class ListWorldCommand extends CommandNode {
     @Override
     public Result execute(CommandSender sender, String[] args, int depth) {
 
-        List<World> disabledWorlds = plugin.getDisabledWorldsManager().getDisabledWorlds();
+        List<World> disabledWorlds = plugin.services().disabledWorlds().getDisabledWorlds();
         String disabledWorldNames = disabledWorlds
                 .stream()
                 .map(World::getName)

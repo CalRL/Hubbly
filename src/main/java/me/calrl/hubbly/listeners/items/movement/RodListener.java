@@ -26,7 +26,7 @@ public class RodListener implements Listener {
         if (!config.getBoolean("movementitems.grappling_hook.enabled")) return;
 
         Player player = event.getPlayer();
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
 
         if(!player.hasPermission(Permissions.USE_GRAPPLING_HOOK.getPermission())) return;

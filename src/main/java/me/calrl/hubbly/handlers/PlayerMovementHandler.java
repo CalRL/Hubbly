@@ -53,7 +53,7 @@ public class PlayerMovementHandler {
             @Override
             public void run() {
                 Location location = player.getLocation();
-                if(!plugin.getDisabledWorldsManager().inDisabledWorld(location)) {
+                if(!plugin.services().disabledWorlds().inDisabledWorld(location)) {
                     player.setAllowFlight(true);
                 }
             }

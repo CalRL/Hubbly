@@ -45,7 +45,7 @@ public class ChatListener implements Listener {
 
     @EventHandler
     private void checkChatLock(AsyncPlayerChatEvent event) {
-        if(plugin.getLockChat().getChatLock() && !event.getPlayer().hasPermission(Permissions.BYPASS_CHAT_LOCK.getPermission())) {
+        if(plugin.services().lockChat().getChatLock() && !event.getPlayer().hasPermission(Permissions.BYPASS_CHAT_LOCK.getPermission())) {
             event.setCancelled(true);
         }
     }
@@ -53,7 +53,7 @@ public class ChatListener implements Listener {
     @EventHandler
     private void onPlayerChat(AsyncPlayerChatEvent event) {
         FileConfiguration config = plugin.getConfig();
-        if(config.getBoolean("blocked_words.enabled") && !plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) {
+        if(config.getBoolean("blocked_words.enabled") && !plugin.services().disabledWorlds().inDisabledWorld(event.getPlayer().getWorld())) {
             List<String> blockedWords = plugin.getConfig().getStringList("blocked_words.words").stream().map(String::toLowerCase).toList();
 
             if (blockedWords.isEmpty()) {

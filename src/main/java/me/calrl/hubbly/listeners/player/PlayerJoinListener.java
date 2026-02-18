@@ -92,7 +92,7 @@ public class PlayerJoinListener implements Listener {
         pvManager.setHideMode(player, data.visibility().getMode());
         pvManager.handleJoin(player);
 
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         boolean inDisabledWorld = disabledWorlds.inDisabledWorld(player.getWorld());
 
         if(!inDisabledWorld) {
@@ -117,7 +117,7 @@ public class PlayerJoinListener implements Listener {
     }
 
     private void sendUpdateMessage(Player player) {
-        UpdateUtil updateUtil = plugin.getUpdateUtil();
+        UpdateUtil updateUtil = plugin.services().updateUtil();
         if(updateUtil == null) {
             return;
         }

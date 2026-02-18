@@ -1,10 +1,7 @@
 package me.calrl.hubbly.service;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.managers.LockChat;
-import me.calrl.hubbly.managers.PlayerVisibilityManager;
-import me.calrl.hubbly.managers.SpawnTaskManager;
-import me.calrl.hubbly.managers.TridentDataManager;
+import me.calrl.hubbly.managers.*;
 import me.calrl.hubbly.utils.update.UpdateUtil;
 
 public class Services extends AbstractService {
@@ -16,6 +13,8 @@ public class Services extends AbstractService {
     private SpawnTaskManager spawnTaskManager;
     private UpdateUtil updateUtil;
     private PlayerVisibilityManager playerVisibilityManager;
+    private DisabledWorlds disabledWorlds;
+    private LocaleManager localeManager;
     public Services(Hubbly plugin) {
         super(plugin);
     }
@@ -25,10 +24,12 @@ public class Services extends AbstractService {
         this.configService = register(new ConfigService(plugin));
         this.updateUtil = register(new UpdateUtil(plugin));
 
+        this.localeManager = register(new LocaleManager(plugin));
         this.lockChat = register(new LockChat(plugin));
         this.tridentManager = register(new TridentDataManager());
         this.spawnTaskManager = register(new SpawnTaskManager());
         this.playerVisibilityManager = register(new PlayerVisibilityManager(this.plugin));
+        this.disabledWorlds = register(new DisabledWorlds(plugin));
 
         super.onEnable();
     }
@@ -55,5 +56,9 @@ public class Services extends AbstractService {
 
     public PlayerVisibilityManager playerVisibilityManager() {
         return this.playerVisibilityManager;
+    }
+
+    public DisabledWorlds disabledWorlds() {
+        return this.disabledWorlds;
     }
 }

@@ -41,32 +41,25 @@ import java.io.File;
 import java.util.logging.Logger;
 
 public class Hubbly extends JavaPlugin {
-
-    private static boolean testMode = false;
+    
     private final Logger logger = getLogger();
     private static Hubbly instance;
     private FileConfiguration config;
     private FileConfiguration itemsConfig;
-    private FileConfiguration serverSelectorConfig;
     private ActionManager actionManager;
-    private DisabledWorlds disabledWorlds;
     private CooldownManager cooldownManager;
     private DebugMode debugMode;
     private AnnouncementsManager announcementsManager;
     private LockChat lockChat;
-    private Utils utils;
     private BossBarManager bossBarManager;
     private ItemsManager itemsManager;
     private FileManager fileManager;
     private LocaleManager localeManager;
     private SubCommandManager subCommandManager;
     private HookManager hookManager;
-    private ManagerFactory managerFactory;
     private StorageManager storageManager = null;
     private Services services;
-    private boolean isLoaded;
 
-    public final NamespacedKey FLY_KEY = new NamespacedKey(this, "hubbly.canfly");
     private String prefix;
 
     private UpdateUtil updateUtil = null;
@@ -78,7 +71,6 @@ public class Hubbly extends JavaPlugin {
         this.saveConfig();
         config = this.getConfig();
 
-        disabledWorlds.reload();
         subCommandManager.reload();
         fileManager.reloadFiles();
         itemsManager.reload();
@@ -119,7 +111,6 @@ public class Hubbly extends JavaPlugin {
         services.onEnable();
         this.services = services;
 
-        disabledWorlds = new DisabledWorlds(this);
         cooldownManager = new CooldownManager();
         actionManager = new ActionManager(this);
 
@@ -131,7 +122,6 @@ public class Hubbly extends JavaPlugin {
         bossBarManager = new BossBarManager(this);
         subCommandManager = new SubCommandManager(this);
         localeManager = new LocaleManager(this);
-        managerFactory = new ManagerFactory(this);
 
         new CommandRegistrar(this);
         new ListenerRegistrar(this);
@@ -165,7 +155,6 @@ public class Hubbly extends JavaPlugin {
         }
 
         logger.info("Hubbly has been enabled!");
-        this.isLoaded = true;
     }
 
     @Override
@@ -180,12 +169,14 @@ public class Hubbly extends JavaPlugin {
         }
 
         bossBarManager.removeAllBossBars();
-        logger.info("Hubbly has been disabled!");
+
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "wdl:init");
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "wdl:control");
 
         Bukkit.getScheduler().cancelTasks(this);
+
+        logger.info("Hubbly has been disabled!");
     }
 
 
@@ -232,21 +223,20 @@ public class Hubbly extends JavaPlugin {
     public ActionManager getActionManager() {
         return actionManager;
     }
-    public DisabledWorlds getDisabledWorldsManager() {
-        return disabledWorlds;
-    }
     public CooldownManager getCooldownManager() {
         return cooldownManager;
     }
-    public DebugMode getDebugMode() { return debugMode; }
-    public AnnouncementsManager getAnnouncementsManager() { return announcementsManager; }
-    public LockChat getLockChat() {return lockChat;}
-    public UpdateUtil getUpdateUtil() { return updateUtil; }
-    public BossBarManager getBossBarManager() { return bossBarManager; }
-    public String getPrefix() {
-        return prefix;
+    public DebugMode getDebugMode() {
+        return debugMode;
     }
-    public ItemsManager getItemsManager() {return itemsManager;}
+    public AnnouncementsManager getAnnouncementsManager() {
+        return announcementsManager;
+    }
+    public LockChat getLockChat() {
+        return lockChat;
+    }
+    public BossBarManager getBossBarManager() { return bossBarManager; }
+    public ItemsManager getItemsManager() { return itemsManager; }
     public FileManager getFileManager() { return fileManager; }
     public LocaleManager getLocaleManager() {
         return localeManager;
@@ -258,7 +248,6 @@ public class Hubbly extends JavaPlugin {
     public void setHookManager(HookManager hookManager) {
         this.hookManager = hookManager;
     }
-    public ManagerFactory getManagerFactory() { return this.managerFactory; }
     public StorageManager getStorageManager() { return this.storageManager; }
     public static void setInstance(Hubbly hubbly) {
         instance = hubbly;
