@@ -20,7 +20,6 @@ package me.calrl.hubbly.commands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
-import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.enums.data.PlayerMovementMode;
 import me.calrl.hubbly.handlers.PlayerMovementHandler;
 import me.calrl.hubbly.utils.ChatUtils;
@@ -43,7 +42,6 @@ public class FlyCommand implements CommandExecutor {
 
     private final Hubbly plugin;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
-    private static final String FLY_METADATA_KEY = "hubbly.canFly";
 
     public FlyCommand(Hubbly plugin) {
         this.plugin = plugin;
@@ -69,20 +67,19 @@ public class FlyCommand implements CommandExecutor {
             builder.setKey("no_permission_command").send();
             return true;
         }
+        PlayerMovementHandler handler = new PlayerMovementHandler(player, plugin);
+        PlayerMovementMode mode = handler.getMovementMode();
 
-        PersistentDataContainer container = player.getPersistentDataContainer();
-
-        String modeString = container.get(PluginKeys.MOVEMENT_KEY.getKey(), PersistentDataType.STRING);
-        PlayerMovementMode mode = PlayerMovementMode.valueOf(modeString);
-
-        if(mode == PlayerMovementMode.DOUBLEJUMP || mode == PlayerMovementMode.NONE) {
-            builder.setKey("fly.enable").send();
-            new PlayerMovementHandler(player, plugin).setMovementMode(PlayerMovementMode.FLY);
-            return true;
+        if(mode == PlayerMovementMode.FLY) {
+            handler.setMovementMode(PlayerMovementMode.NONE);
+            builder.setKey("fly.disable");
+        } else {
+            handler.setMovementMode(PlayerMovementMode.FLY);
+            builder.setKey("fly.enable");
         }
 
-        builder.setKey("fly.disable").send();
-        new PlayerMovementHandler(player, plugin).setMovementMode(PlayerMovementMode.NONE);
+        builder.send();
+
         return true;
     }
 }

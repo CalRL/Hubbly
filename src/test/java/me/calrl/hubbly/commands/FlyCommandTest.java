@@ -59,12 +59,13 @@ public class FlyCommandTest extends PluginTestBase {
         player.setOp(true);
 
         flyCommand.onCommand(player, mockCommand(), "fly", new String[0]);
-        PlayerMovementMode mode = new PlayerMovementHandler(player, plugin).getMovementMode();
+        PlayerMovementHandler handler = new PlayerMovementHandler(player, plugin);
+        PlayerMovementMode mode = handler.getMovementMode();
         assertEquals(PlayerMovementMode.FLY, mode);
 
         flyCommand.onCommand(player, mockCommand(), "fly", new String[0]);
-        mode = new PlayerMovementHandler(player, plugin).getMovementMode();
-        assertEquals(PlayerMovementMode.NONE, mode);
+        PlayerMovementMode newMode = handler.getMovementMode();
+        assertEquals(PlayerMovementMode.NONE, newMode);
     }
 
     @Test
