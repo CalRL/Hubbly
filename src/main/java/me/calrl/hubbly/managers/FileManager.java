@@ -1,6 +1,9 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.Result;
+import me.calrl.hubbly.handlers.FileHandler;
+import me.calrl.hubbly.service.ILifecycle;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
@@ -15,9 +18,8 @@ import java.nio.channels.FileLock;
 import java.nio.file.Path;
 import java.util.*;
 
-public class FileManager {
-    private FileConfiguration serverSelectorConfig;
-    private FileConfiguration itemsConfig;
+public class FileManager implements ILifecycle {
+
     private Hubbly plugin;
     private final File baseFolder;
     private final Map<String, YamlConfiguration> loadedConfigs = new HashMap<>();
@@ -66,15 +68,15 @@ public class FileManager {
 
     }
 
-    public void loadFiles(String relativePath) {
-
-    }
-
     public void saveDefaultFiles() {
-        plugin.saveResourceIfNotExists("menus/selector.yml");
-        plugin.saveResourceIfNotExists("menus/socials.yml");
-        plugin.saveResourceIfNotExists("languages/en.yml");
+        FileHandler handler = new FileHandler();
+        handler.saveResourceIfNotExists(this.plugin, "items.yml");
+        handler.saveResourceIfNotExists(this.plugin, "menus/selector.yml");
+        handler.saveResourceIfNotExists(this.plugin, "menus/socials.yml");
+        handler.saveResourceIfNotExists(this.plugin, "languages/en.yml");
+
     }
+
 
     public void reload(String relativePath) {
         if (lockedFiles.contains(relativePath)) {
@@ -148,4 +150,18 @@ public class FileManager {
     }
 
 
+    @Override
+    public void onEnable() {
+        this.saveDefaultFiles();
+    }
+
+    @Override
+    public void onReload() {
+        this.reloadFiles();
+    }
+
+    @Override
+    public void onDisable() {
+
+    }
 }

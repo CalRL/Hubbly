@@ -72,7 +72,7 @@ public class FlyCommandTest extends PluginTestBase {
     public void testHubbly() {
         Hubbly plugin = Hubbly.getInstance();
 
-        LocaleManager manager = plugin.getLocaleManager();
+        LocaleManager manager = plugin.services().config().localeManager();
 
         String lang = manager.getDefaultLanguage();
 

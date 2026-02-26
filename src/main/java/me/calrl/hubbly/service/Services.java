@@ -14,7 +14,6 @@ public class Services extends AbstractService {
     private UpdateUtil updateUtil;
     private PlayerVisibilityManager playerVisibilityManager;
     private DisabledWorlds disabledWorlds;
-    private LocaleManager localeManager;
     public Services(Hubbly plugin) {
         super(plugin);
     }
@@ -24,7 +23,6 @@ public class Services extends AbstractService {
         this.configService = register(new ConfigService(plugin));
         this.updateUtil = register(new UpdateUtil(plugin));
 
-        this.localeManager = register(new LocaleManager(plugin));
         this.lockChat = register(new LockChat(plugin));
         this.tridentManager = register(new TridentDataManager());
         this.spawnTaskManager = register(new SpawnTaskManager());

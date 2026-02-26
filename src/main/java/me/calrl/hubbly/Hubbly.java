@@ -184,10 +184,6 @@ public class Hubbly extends JavaPlugin {
     public static Hubbly getInstance() {
         return instance;
     }
-    @Override
-    public @NotNull FileConfiguration getConfig() {
-        return super.getConfig();
-    }
 
     private void loadFiles() {
         File itemsFile = new File(getDataFolder(), "items.yml");
