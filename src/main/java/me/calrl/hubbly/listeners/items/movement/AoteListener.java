@@ -32,7 +32,7 @@ public class AoteListener implements Listener {
         ItemMeta meta = item.getItemMeta();
         if(meta != null && meta.getPersistentDataContainer().has(PluginKeys.AOTE.getKey())) {
             FileConfiguration config = plugin.getConfig();
-            if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.AOTE, config.getLong("movementitems.aote.cooldown"))) return;
+            if(!plugin.services().cooldowns().tryCooldown(player.getUniqueId(), CooldownType.AOTE, config.getLong("movementitems.aote.cooldown"))) return;
             if(!player.hasPermission(Permissions.USE_AOTE.getPermission())) return;
             player.teleport(this.getLocationInFront(player, 10));
         }

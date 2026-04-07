@@ -2,6 +2,7 @@ package me.calrl.hubbly.service;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.managers.*;
+import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.utils.update.UpdateUtil;
 
 public class Services extends AbstractService {
@@ -14,6 +15,7 @@ public class Services extends AbstractService {
     private UpdateUtil updateUtil;
     private PlayerVisibilityManager playerVisibilityManager;
     private DisabledWorlds disabledWorlds;
+    private CooldownManager cooldownManager;
     public Services(Hubbly plugin) {
         super(plugin);
     }
@@ -28,6 +30,7 @@ public class Services extends AbstractService {
         this.spawnTaskManager = register(new SpawnTaskManager());
         this.playerVisibilityManager = register(new PlayerVisibilityManager(this.plugin));
         this.disabledWorlds = register(new DisabledWorlds(plugin));
+        this.cooldownManager = new CooldownManager();
 
         super.onEnable();
     }
@@ -59,4 +62,5 @@ public class Services extends AbstractService {
     public DisabledWorlds disabledWorlds() {
         return this.disabledWorlds;
     }
+    public CooldownManager cooldowns() { return this.cooldownManager; }
 }

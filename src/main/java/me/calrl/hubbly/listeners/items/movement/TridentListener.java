@@ -75,14 +75,14 @@ public class TridentListener implements Listener {
 
         int slot = playerInventory.getHeldItemSlot();
 
-        boolean cooldown = plugin.getCooldownManager()
+        boolean cooldown = plugin.services().cooldowns()
                 .tryCooldown(player.getUniqueId(),
                         CooldownType.TRIDENT,
                         config.getLong("movementitems.trident.cooldown"));
 
         if (!cooldown) {
             new DebugMode(plugin).info(Long.toString(
-                    plugin.getCooldownManager()
+                    plugin.services().cooldowns()
                             .getCooldown(player.getUniqueId(), CooldownType.TRIDENT)));
             event.setCancelled(true);
             return;

@@ -127,7 +127,7 @@ public class EnderbowListener implements Listener {
         PersistentDataContainer bowContainer = meta.getPersistentDataContainer();
         if (!bowContainer.has(PluginKeys.ENDER_BOW.getKey())) return;
 
-        if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.ENDER_BOW, config.getLong("movementitems.enderbow.cooldown"))) {
+        if(!plugin.services().cooldowns().tryCooldown(player.getUniqueId(), CooldownType.ENDER_BOW, config.getLong("movementitems.enderbow.cooldown"))) {
             plugin.getDebugMode().info("Cooldown not expired, cancelling shot.");
             event.setCancelled(true);
             return;

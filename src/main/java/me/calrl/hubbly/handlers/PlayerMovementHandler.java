@@ -41,7 +41,7 @@ public class PlayerMovementHandler {
         player.setAllowFlight(false);
         UUID uuid = player.getUniqueId();
         new DebugMode(plugin).info("cooldown");
-        if(!plugin.getCooldownManager().tryCooldown(uuid, CooldownType.DOUBLE_JUMP, config.getLong("double_jump.cooldown"))) return;
+        if(!plugin.services().cooldowns().tryCooldown(uuid, CooldownType.DOUBLE_JUMP, config.getLong("double_jump.cooldown"))) return;
 
         Vector direction = player.getLocation().getDirection();
         direction.setY(config.getDouble("double_jump.power_y"));

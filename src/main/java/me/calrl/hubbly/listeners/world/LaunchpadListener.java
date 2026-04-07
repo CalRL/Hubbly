@@ -69,7 +69,7 @@ public class LaunchpadListener implements Listener {
         }
 
         long cooldown = config.getLong("launchpad.cooldown");
-        CooldownManager cooldownManager = plugin.getCooldownManager();
+        CooldownManager cooldownManager = plugin.services().cooldowns();
         boolean cooldownResult = cooldownManager.tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, cooldown);
 
         if(!cooldownResult) return;
