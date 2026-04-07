@@ -20,22 +20,19 @@ package me.calrl.hubbly;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.managers.BossBarManager;
 import me.calrl.hubbly.hooks.HookManager;
-import me.calrl.hubbly.listeners.world.AntiWDL;
 import me.calrl.hubbly.managers.*;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.managers.LockChat;
 import me.calrl.hubbly.metrics.Metrics;
 import me.calrl.hubbly.managers.StorageManager;
 import me.calrl.hubbly.service.Services;
-import me.calrl.hubbly.utils.Utils;
+import me.calrl.hubbly.utils.AntiWDLSetup;
 import me.calrl.hubbly.utils.update.UpdateUtil;
 import org.bukkit.Bukkit;
-import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.jetbrains.annotations.NotNull;
 
 import java.io.File;
 import java.util.logging.Logger;
@@ -114,7 +111,6 @@ public class Hubbly extends JavaPlugin {
         services.onEnable();
         this.services = services;
 
-        cooldownManager = new CooldownManager();
         actionManager = new ActionManager(this);
 
         itemsManager = new ItemsManager(this);
@@ -132,16 +128,9 @@ public class Hubbly extends JavaPlugin {
         prefix = this.getConfig().getString("prefix");
 
         config = this.getConfig();
-        try {
-            if(config.getBoolean("anti_world_download.enabled")) {
-                this.getServer().getMessenger().registerIncomingPluginChannel(this, "wdl:init", new AntiWDL(this));
-                this.getServer().getMessenger().registerOutgoingPluginChannel(this, "wdl:control");
-            }
 
-            bossBarManager.reAddAllBossBars();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        new AntiWDLSetup(this, config);
+        bossBarManager.reAddAllBossBars();
 
         logger.info("Components loaded");
 
