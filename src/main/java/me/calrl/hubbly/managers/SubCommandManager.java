@@ -7,12 +7,13 @@ import me.calrl.hubbly.commands.subcommands.*;
 import me.calrl.hubbly.commands.visibility.VisibilityCommand;
 import me.calrl.hubbly.commands.worlds.WorldsCommand;
 import me.calrl.hubbly.interfaces.SubCommand;
+import me.calrl.hubbly.service.ILifecycle;
 import me.calrl.hubbly.utils.CommandNode;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class SubCommandManager {
+public class SubCommandManager implements ILifecycle {
     private final Map<String, SubCommand> subCommands;
     private final Map<String, CommandNode> nodes;
     private final Hubbly plugin;
@@ -20,9 +21,6 @@ public class SubCommandManager {
         this.plugin = plugin;
         this.subCommands = new HashMap<>();
         this.nodes = new HashMap<>();
-
-        this.load();
-        this.loadNodes();
     }
 
     public void register(SubCommand subCommand) {
@@ -73,4 +71,23 @@ public class SubCommandManager {
     }
 
     public Map<String, CommandNode> getNodes() { return this.nodes; }
+
+    @Override
+    public void onEnable() {
+        this.load();
+        this.loadNodes();
+    }
+
+    @Override
+    public void onReload() {
+        this.onDisable();
+        this.onEnable();
+
+    }
+
+    @Override
+    public void onDisable() {
+        this.nodes.clear();
+        this.subCommands.clear();
+    }
 }

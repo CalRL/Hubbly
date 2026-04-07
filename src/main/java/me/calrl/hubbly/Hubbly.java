@@ -25,6 +25,7 @@ import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.managers.LockChat;
 import me.calrl.hubbly.metrics.Metrics;
 import me.calrl.hubbly.managers.StorageManager;
+import me.calrl.hubbly.service.GameplayService;
 import me.calrl.hubbly.service.Services;
 import me.calrl.hubbly.utils.AntiWDLSetup;
 import me.calrl.hubbly.utils.update.UpdateUtil;
@@ -41,21 +42,16 @@ public class Hubbly extends JavaPlugin {
     
     private final Logger logger = getLogger();
     private static Hubbly instance;
-    private FileConfiguration config;
     private FileConfiguration itemsConfig;
     private ActionManager actionManager;
-    private CooldownManager cooldownManager;
     private DebugMode debugMode;
     private AnnouncementsManager announcementsManager;
-    private LockChat lockChat;
-    private BossBarManager bossBarManager;
-    private ItemsManager itemsManager;
     private FileManager fileManager;
     private LocaleManager localeManager;
-    private SubCommandManager subCommandManager;
     private HookManager hookManager;
     private StorageManager storageManager = null;
     private Services services;
+    private GameplayService gameplayService;
 
     private String prefix;
 
@@ -66,11 +62,8 @@ public class Hubbly extends JavaPlugin {
 
         this.reloadConfig();
         this.saveConfig();
-        config = this.getConfig();
 
-        subCommandManager.reload();
         fileManager.reloadFiles();
-        itemsManager.reload();
         localeManager.reload();
 
         services().onReload();
@@ -113,11 +106,10 @@ public class Hubbly extends JavaPlugin {
 
         actionManager = new ActionManager(this);
 
-        itemsManager = new ItemsManager(this);
+        this.gameplayService = new GameplayService(this);
+        this.gameplayService.onEnable();
+
         announcementsManager = new AnnouncementsManager(this);
-        lockChat = new LockChat(this);
-        bossBarManager = new BossBarManager(this);
-        subCommandManager = new SubCommandManager(this);
         localeManager = new LocaleManager(this);
 
         new CommandRegistrar(this);
@@ -126,11 +118,6 @@ public class Hubbly extends JavaPlugin {
         logger.info("Instances created");
 
         prefix = this.getConfig().getString("prefix");
-
-        config = this.getConfig();
-
-        new AntiWDLSetup(this, config);
-        bossBarManager.reAddAllBossBars();
 
         logger.info("Components loaded");
 
@@ -158,7 +145,7 @@ public class Hubbly extends JavaPlugin {
             this.storageManager.shutdown();
         }
 
-        bossBarManager.removeAllBossBars();
+        this.gameplayService.bossBarManager().removeAllBossBars();
 
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "BungeeCord");
         this.getServer().getMessenger().unregisterIncomingPluginChannel(this, "wdl:init");
@@ -209,23 +196,15 @@ public class Hubbly extends JavaPlugin {
     public ActionManager getActionManager() {
         return actionManager;
     }
-    public CooldownManager getCooldownManager() {
-        return cooldownManager;
-    }
     public DebugMode getDebugMode() {
         return debugMode;
     }
     public AnnouncementsManager getAnnouncementsManager() {
         return announcementsManager;
     }
-    public BossBarManager getBossBarManager() { return bossBarManager; }
-    public ItemsManager getItemsManager() { return itemsManager; }
     public FileManager getFileManager() { return fileManager; }
     public LocaleManager getLocaleManager() {
         return localeManager;
-    }
-    public SubCommandManager getSubCommandManager() {
-        return subCommandManager;
     }
     public HookManager getHookManager() {return this.hookManager;}
     public void setHookManager(HookManager hookManager) {
@@ -236,6 +215,7 @@ public class Hubbly extends JavaPlugin {
         instance = hubbly;
     }
     public Services services() { return this.services; }
+    public GameplayService gameplay() { return this.gameplayService; }
 
     private boolean isTestEnvironment() {
         return Boolean.getBoolean("hubbly.test");

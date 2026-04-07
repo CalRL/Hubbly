@@ -26,7 +26,7 @@ public class GiveCommand implements SubCommand {
 
     public GiveCommand(Hubbly plugin) {
         this.plugin = plugin;
-        this.items = plugin.getItemsManager().getItems();
+        this.items = plugin.gameplay().itemsManager().getItems();
         this.debugMode = plugin.getDebugMode();
     }
 

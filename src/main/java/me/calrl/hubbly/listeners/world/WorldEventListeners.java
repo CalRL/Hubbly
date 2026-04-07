@@ -53,7 +53,7 @@ public class WorldEventListeners implements Listener {
     public WorldEventListeners(Hubbly plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
-        this.bossBarManager = plugin.getBossBarManager();
+        this.bossBarManager = plugin.gameplay().bossBarManager();
         this.plugin.getLogger().info("Loaded WorldEventListeners");
     }
 

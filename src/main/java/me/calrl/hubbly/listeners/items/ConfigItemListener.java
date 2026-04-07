@@ -65,7 +65,7 @@ public class ConfigItemListener implements Listener {
         this.customActionsKey = new NamespacedKey(plugin, "customActions");
         this.actionManager = plugin.getActionManager();
         this.debugMode = plugin.getDebugMode();
-        this.itemsManager = plugin.getItemsManager();
+        this.itemsManager = plugin.gameplay().itemsManager();
     }
 
     @EventHandler

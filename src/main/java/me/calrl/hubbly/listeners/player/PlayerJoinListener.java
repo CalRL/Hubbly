@@ -107,7 +107,7 @@ public class PlayerJoinListener implements Listener {
         }
 
         if (config.getBoolean("player.bossbar.enabled") && !inDisabledWorld) {
-            bossBarManager = plugin.getBossBarManager();
+            bossBarManager = plugin.gameplay().bossBarManager();
             bossBarManager.createBossBar(player);
         }
 
@@ -166,7 +166,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        bossBarManager = plugin.getBossBarManager();
+        bossBarManager = plugin.gameplay().bossBarManager();
         bossBarManager.removeBossBar(player);
 
         StorageManager storage = plugin.getStorageManager();

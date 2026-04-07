@@ -61,7 +61,7 @@ public class ReloadCommand implements SubCommand {
             return;
         }
         try {
-            bossBarManager = plugin.getBossBarManager();
+            bossBarManager = plugin.gameplay().bossBarManager();
             if (bossBarManager != null) {
                 bossBarManager.removeAllBossBars();
             }
@@ -72,7 +72,7 @@ public class ReloadCommand implements SubCommand {
                     .setKey("reload")
                     .send();
 
-            bossBarManager = plugin.getBossBarManager();
+            bossBarManager = plugin.gameplay().bossBarManager();
             bossBarManager.reAddAllBossBars();
         } catch (Exception e) {
             plugin.getLogger().info(String.valueOf(e));

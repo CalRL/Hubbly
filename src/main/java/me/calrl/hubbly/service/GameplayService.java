@@ -1,30 +1,36 @@
 package me.calrl.hubbly.service;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.managers.LockChat;
-import me.calrl.hubbly.managers.TridentDataManager;
+import me.calrl.hubbly.managers.*;
+import net.minecraft.world.item.Item;
 
 public class GameplayService extends AbstractService {
-    private LockChat lockChat;
-    private TridentDataManager tridentManager;
+    private ItemsManager itemsManager;
+    private BossBarManager bossBarManager;
+    private SubCommandManager subCommandManager;
     public GameplayService(Hubbly plugin) {
         super(plugin);
     }
     @Override
     public void onEnable() {
-        this.lockChat = register(new LockChat(plugin));
-        this.tridentManager = register(new TridentDataManager());
+        this.itemsManager = register(new ItemsManager(this.plugin));
+        this.bossBarManager = register(new BossBarManager(this.plugin));
+        this.subCommandManager = register(new SubCommandManager(this.plugin));
 
+        this.bossBarManager.reAddAllBossBars();
         super.onEnable();
     }
 
-
-    public LockChat lockChat() {
-        return this.lockChat;
+    public ItemsManager itemsManager() {
+        return this.itemsManager;
     }
 
-    public TridentDataManager tridentDataManager() {
-        return this.tridentManager;
+    public BossBarManager bossBarManager() {
+        return this.bossBarManager;
+    }
+
+    public SubCommandManager subCommandManager() {
+        return this.subCommandManager;
     }
 
 

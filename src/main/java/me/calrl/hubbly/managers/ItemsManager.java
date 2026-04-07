@@ -10,6 +10,7 @@ import me.calrl.hubbly.listeners.items.movement.AoteListener;
 import me.calrl.hubbly.listeners.items.movement.EnderbowListener;
 import me.calrl.hubbly.listeners.items.movement.RodListener;
 import me.calrl.hubbly.listeners.items.movement.TridentListener;
+import me.calrl.hubbly.service.ILifecycle;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -27,29 +28,20 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
-public class ItemsManager {
+public class ItemsManager implements ILifecycle {
 
     private Hubbly plugin;
     private FileConfiguration config;
     private FileConfiguration itemsConfig;
     private DebugMode debugMode;
     private final Map<String, CustomItem> items = new HashMap<>();
-    private final Map<String, Listener> listeners;
+    private Map<String, Listener> listeners;
     private File itemsFile;
-    private final ActionManager actionManager;
+    private ActionManager actionManager;
     private Player player;
 
     public ItemsManager(Hubbly plugin) {
         this.plugin = plugin;
-        this.debugMode = plugin.getDebugMode();
-        this.config = plugin.getConfig();
-        this.itemsFile =  new File(plugin.getDataFolder(), "items.yml");
-        this.actionManager = plugin.getActionManager();
-        this.itemsConfig = plugin.getItemsConfig();
-
-        this.listeners = new HashMap<>();
-
-        this.registerItems();
     }
 
     private void setConfig(FileConfiguration config) {
@@ -168,4 +160,27 @@ public class ItemsManager {
 
     }
 
+    @Override
+    public void onEnable() {
+        this.debugMode = plugin.getDebugMode();
+        this.config = plugin.getConfig();
+        this.itemsFile =  new File(plugin.getDataFolder(), "items.yml");
+        this.actionManager = plugin.getActionManager();
+        this.itemsConfig = plugin.getItemsConfig();
+
+        this.listeners = new HashMap<>();
+
+        this.registerItems();
+    }
+
+    @Override
+    public void onReload() {
+        this.reload();
+    }
+
+    @Override
+    public void onDisable() {
+        this.clear();
+        this.clean();
+    }
 }

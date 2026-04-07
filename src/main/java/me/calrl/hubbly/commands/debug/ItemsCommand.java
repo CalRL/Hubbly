@@ -19,7 +19,7 @@ public class ItemsCommand extends CommandNode {
 
     @Override
     public Result execute(CommandSender sender, String[] args, int depth) {
-        ItemsManager manager = plugin.getItemsManager();
+        ItemsManager manager = plugin.gameplay().itemsManager();
         if(!sender.hasPermission(Permissions.COMMAND_DEBUG.getPermission())) {
             return Result.NO_PERMISSION;
         }

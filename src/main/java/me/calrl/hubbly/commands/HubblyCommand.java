@@ -49,7 +49,7 @@ public class HubblyCommand implements TabExecutor {
     public HubblyCommand(Hubbly plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
-        this.subCommandManager = plugin.getSubCommandManager();
+        this.subCommandManager = plugin.gameplay().subCommandManager();
 
         this.subCommands = subCommandManager.getSubCommands();
         this.commandNodes = subCommandManager.getNodes();

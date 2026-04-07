@@ -28,7 +28,7 @@ public class WorldChangeListener implements Listener {
 
         plugin.getDebugMode().info(player.getName() + " switched worlds: " + player.getWorld());
 
-        BossBarManager bossBarManager = plugin.getBossBarManager();
+        BossBarManager bossBarManager = plugin.gameplay().bossBarManager();
         if(disabledWorlds.inDisabledWorld(player.getWorld())) {
             bossBarManager.removeBossBar(player);
         }

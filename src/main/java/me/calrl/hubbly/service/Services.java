@@ -3,6 +3,7 @@ package me.calrl.hubbly.service;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.managers.*;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
+import me.calrl.hubbly.utils.AntiWDLSetup;
 import me.calrl.hubbly.utils.update.UpdateUtil;
 
 public class Services extends AbstractService {
@@ -31,6 +32,8 @@ public class Services extends AbstractService {
         this.playerVisibilityManager = register(new PlayerVisibilityManager(this.plugin));
         this.disabledWorlds = register(new DisabledWorlds(plugin));
         this.cooldownManager = new CooldownManager();
+
+        new AntiWDLSetup(this.plugin, this.plugin.getConfig());
 
         super.onEnable();
     }
