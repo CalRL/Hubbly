@@ -56,7 +56,7 @@ public class CustomMetrics {
         ));
 
         metrics.addCustomChart(new Metrics.SimplePie("doublejump", () ->
-                plugin.getConfig().getBoolean("doublejump.enabled") ? "Enabled" : "Disabled"
+                plugin.getConfig().getBoolean("double_jump.enabled") ? "Enabled" : "Disabled"
         ));
 
         metrics.addCustomChart(new Metrics.SimplePie("antivoid", () ->
