@@ -9,10 +9,7 @@ import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.TridentDataManager;
 import me.calrl.hubbly.managers.cooldown.CooldownType;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.damage.DamageSource;
 import org.bukkit.damage.DamageType;
@@ -186,6 +183,10 @@ public class TridentListener implements Listener {
 
             player.teleport(trident.getLocation().setDirection(player.getLocation().getDirection()));
             player.playSound(player.getLocation(), this.getRandomSound().getSound(), 1.0F, 1.0F);
+
+            if(player.getGameMode() == GameMode.CREATIVE) {
+                return;
+            }
 
             this.replace(player);
         }
