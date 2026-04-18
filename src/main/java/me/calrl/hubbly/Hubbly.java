@@ -23,6 +23,7 @@ import me.calrl.hubbly.hooks.HookManager;
 import me.calrl.hubbly.managers.*;
 import me.calrl.hubbly.managers.cooldown.CooldownManager;
 import me.calrl.hubbly.managers.LockChat;
+import me.calrl.hubbly.metrics.CustomMetrics;
 import me.calrl.hubbly.metrics.Metrics;
 import me.calrl.hubbly.managers.StorageManager;
 import me.calrl.hubbly.service.GameplayService;
@@ -123,8 +124,8 @@ public class Hubbly extends JavaPlugin {
 
         if (!this.isTestEnvironment()) {
             logger.info("Plugin is not in test mode");
-            final int pluginId = 22219;
-            new Metrics(this, pluginId);
+            new CustomMetrics(this);
+
             this.services().updateUtil().checkForUpdate(this);
 
             this.getServer().getMessenger().registerOutgoingPluginChannel(this, "BungeeCord");
