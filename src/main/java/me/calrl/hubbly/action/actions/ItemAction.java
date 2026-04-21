@@ -18,6 +18,8 @@ package me.calrl.hubbly.action.actions;
 
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.Action;
+import me.calrl.hubbly.managers.DebugMode;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
@@ -32,10 +34,22 @@ public class ItemAction implements Action {
         String[] args = data.split(";");
         String item = args[0];
         if(args.length > 1 && args[1] != null) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubbly give " + player.getName() + " " + item + " 1 " +  Integer.parseInt(args[1]));
-        } else {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubbly give " + player.getName() + " " + item);
-        }
+            try {
+                Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubbly give " + player.getName() + " " + item + " 1 " +  Integer.parseInt(args[1]));
+            } catch(NumberFormatException e) {
+                new MessageBuilder(plugin)
+                        .setPlayer(player)
+                        .setKey("failure")
+                        .send();
+                new DebugMode(plugin).info(
+                        String.format("%s was passed into [ITEM] action for slotID, but it is not a number", args[1])
+                );
+                return;
+            }
 
+
+            return;
+        }
+        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "hubbly give " + player.getName() + " " + item);
     }
 }
