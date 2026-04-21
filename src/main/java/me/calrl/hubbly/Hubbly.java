@@ -67,7 +67,9 @@ public class Hubbly extends JavaPlugin {
 
         fileManager.reloadFiles();
 
+        resources().onReload();
         services().onReload();
+        gameplay().onReload();
 
 
         try {
