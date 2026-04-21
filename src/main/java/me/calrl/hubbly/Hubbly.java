@@ -47,7 +47,6 @@ public class Hubbly extends JavaPlugin {
     private FileConfiguration itemsConfig;
     private ActionManager actionManager;
     private DebugMode debugMode;
-    private AnnouncementsManager announcementsManager;
     private FileManager fileManager;
     private HookManager hookManager;
     private StorageManager storageManager = null;
@@ -71,7 +70,6 @@ public class Hubbly extends JavaPlugin {
         services().onReload();
         gameplay().onReload();
 
-
         try {
 //            cleanup();
             loadFiles();
@@ -80,9 +78,6 @@ public class Hubbly extends JavaPlugin {
         }
         debugMode.info("Restarted.");
     }
-
-
-
 
     @Override
     public void onEnable() {
@@ -163,6 +158,9 @@ public class Hubbly extends JavaPlugin {
         return instance;
     }
 
+
+    // todo: this should lowk be done in FileManager instead of here...
+    // itemsConfig should also be moved to FileManager
     private void loadFiles() {
         File itemsFile = new File(getDataFolder(), "items.yml");
         if(!itemsFile.exists()) {
@@ -197,9 +195,6 @@ public class Hubbly extends JavaPlugin {
     }
     public DebugMode getDebugMode() {
         return debugMode;
-    }
-    public AnnouncementsManager getAnnouncementsManager() {
-        return announcementsManager;
     }
     public HookManager getHookManager() {return this.hookManager;}
     public void setHookManager(HookManager hookManager) {
