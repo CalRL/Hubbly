@@ -30,7 +30,7 @@ public class NextAnnouncementCommand implements SubCommand {
     private DisabledWorlds disabledWorlds;
     public NextAnnouncementCommand(Hubbly plugin) {
         this.plugin = plugin;
-        this.announcementsManager = plugin.getAnnouncementsManager();
+        this.announcementsManager = plugin.services().announcementsManager();
         this.disabledWorlds = plugin.services().disabledWorlds();
     }
 
