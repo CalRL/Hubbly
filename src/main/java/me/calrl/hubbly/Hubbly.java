@@ -27,6 +27,7 @@ import me.calrl.hubbly.metrics.CustomMetrics;
 import me.calrl.hubbly.metrics.Metrics;
 import me.calrl.hubbly.managers.StorageManager;
 import me.calrl.hubbly.service.GameplayService;
+import me.calrl.hubbly.service.ResourceService;
 import me.calrl.hubbly.service.Services;
 import me.calrl.hubbly.utils.AntiWDLSetup;
 import me.calrl.hubbly.utils.update.UpdateUtil;
@@ -52,6 +53,7 @@ public class Hubbly extends JavaPlugin {
     private StorageManager storageManager = null;
     private Services services;
     private GameplayService gameplayService;
+    private ResourceService resourceService;
 
     private String prefix;
 
@@ -98,6 +100,9 @@ public class Hubbly extends JavaPlugin {
 
         fileManager = new FileManager(this);
         debugMode = new DebugMode();
+
+        this.resourceService = new ResourceService(this);
+        this.resourceService.onEnable();
 
         this.services = new Services(this);
         this.services.onEnable();
@@ -206,8 +211,10 @@ public class Hubbly extends JavaPlugin {
     public static void setInstance(Hubbly hubbly) {
         instance = hubbly;
     }
+
     public Services services() { return this.services; }
     public GameplayService gameplay() { return this.gameplayService; }
+    public ResourceService resources() { return this.resourceService; }
 
     private boolean isTestEnvironment() {
         return Boolean.getBoolean("hubbly.test");

@@ -49,7 +49,7 @@ public class ConfigItem implements CustomItem {
 
     @Override
     public ItemStack createItem() {
-        FileManager manager = plugin.services().resources().fileManager();
+        FileManager manager = plugin.resources().fileManager();
         FileConfiguration config = manager.getConfig("items.yml");
 
         if (!config.contains("items." + itemKey)) {

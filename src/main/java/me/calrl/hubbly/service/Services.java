@@ -26,7 +26,6 @@ public class Services extends AbstractService {
 
     @Override
     public void onEnable() {
-        this.resourceService = register(new ResourceService(plugin));
         this.updateUtil = register(new UpdateUtil(plugin));
 
         this.lockChat = register(new LockChat(plugin));

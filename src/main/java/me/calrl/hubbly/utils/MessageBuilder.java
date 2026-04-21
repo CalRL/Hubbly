@@ -26,14 +26,14 @@ public class MessageBuilder {
     public MessageBuilder(Hubbly plugin) {
         this.plugin = plugin;
 
-        this.localeManager = plugin.services().resources().localeManager();
+        this.localeManager = plugin.resources().localeManager();
     }
 
     public MessageBuilder(Hubbly plugin, Player player) {
         this.player = player;
         this.plugin = plugin;
 
-        this.localeManager = plugin.services().resources().localeManager();
+        this.localeManager = plugin.resources().localeManager();
     }
 
     public MessageBuilder(Hubbly plugin, Player player, String key) {
@@ -41,7 +41,7 @@ public class MessageBuilder {
         this.player = player;
         this.key = key;
 
-        this.localeManager = plugin.services().resources().localeManager();
+        this.localeManager = plugin.resources().localeManager();
     }
 
     public MessageBuilder setKey(String key) {
@@ -76,7 +76,7 @@ public class MessageBuilder {
 
     public MessageBuilder setPlugin(Hubbly plugin) {
         this.plugin = plugin;
-        if(this.localeManager == null) this.localeManager = plugin.services().resources().localeManager();
+        if(this.localeManager == null) this.localeManager = plugin.resources().localeManager();
         return this;
     }
 

@@ -49,7 +49,7 @@ public class ItemsManager implements ILifecycle {
     }
 
     private void registerItems() {
-        this.setConfig(plugin.services().resources().fileManager().getConfig("items.yml"));
+        this.setConfig(plugin.resources().fileManager().getConfig("items.yml"));
         items.put("playervisibility", new PlayerVisibilityItem());
 
         this.register("trident", new TridentItem(plugin), new TridentListener(plugin));
