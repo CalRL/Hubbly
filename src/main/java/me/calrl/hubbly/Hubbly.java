@@ -193,24 +193,17 @@ public class Hubbly extends JavaPlugin {
     public FileConfiguration getItemsConfig() {
         return itemsConfig;
     }
-    public ActionManager getActionManager() {
-        return actionManager;
-    }
     public DebugMode getDebugMode() {
         return debugMode;
     }
     public AnnouncementsManager getAnnouncementsManager() {
         return announcementsManager;
     }
-    public FileManager getFileManager() { return fileManager; }
     public HookManager getHookManager() {return this.hookManager;}
     public void setHookManager(HookManager hookManager) {
         this.hookManager = hookManager;
     }
     public StorageManager getStorageManager() { return this.storageManager; }
-    public static void setInstance(Hubbly hubbly) {
-        instance = hubbly;
-    }
 
     public Services services() { return this.services; }
     public GameplayService gameplay() { return this.gameplayService; }
