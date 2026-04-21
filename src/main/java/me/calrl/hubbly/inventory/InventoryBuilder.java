@@ -79,7 +79,7 @@ public class InventoryBuilder implements InventoryHolder {
         return inventory;
     }
 
-    @Deprecated(since="3.6.0")
+    @Deprecated(since="3.6.0", forRemoval = true)
     public InventoryBuilder fromLegacySocials(FileConfiguration config) {
         ConfigurationSection socials = config.getConfigurationSection("socials");
         if (socials == null) {
