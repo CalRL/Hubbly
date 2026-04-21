@@ -19,6 +19,7 @@ public class Services extends AbstractService {
     private DisabledWorlds disabledWorlds;
     private CooldownManager cooldownManager;
     private LocaleManager localeManager;
+    private AnnouncementsManager announcementsManager;
     public Services(Hubbly plugin) {
         super(plugin);
     }
@@ -34,6 +35,7 @@ public class Services extends AbstractService {
         this.playerVisibilityManager = register(new PlayerVisibilityManager(this.plugin));
         this.disabledWorlds = register(new DisabledWorlds(plugin));
         this.cooldownManager = register(new CooldownManager());
+        this.announcementsManager = register(new AnnouncementsManager(plugin));
 
         new AntiWDLSetup(this.plugin, this.plugin.getConfig());
 
@@ -68,4 +70,8 @@ public class Services extends AbstractService {
         return this.disabledWorlds;
     }
     public CooldownManager cooldowns() { return this.cooldownManager; }
+
+    public AnnouncementsManager announcementsManager() {
+        return this.announcementsManager;
+    }
 }

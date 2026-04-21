@@ -142,6 +142,6 @@ public class AnnouncementsManager implements ILifecycle {
 
     @Override
     public void onDisable() {
-        
+
     }
 }
