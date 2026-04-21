@@ -37,7 +37,6 @@ public class AnnouncementsManager implements ILifecycle {
     private int currentAnnouncementIndex = 0;
     private BukkitTask task;
     private AtomicBoolean state = new AtomicBoolean(true);
-    private boolean active = false;
 
     public AnnouncementsManager(Hubbly plugin) {
         this.plugin = plugin;
@@ -131,7 +130,6 @@ public class AnnouncementsManager implements ILifecycle {
                 loadAnnouncements();
                 startAnnouncementsTask();
             });
-            this.active = true;
         }
     }
 
