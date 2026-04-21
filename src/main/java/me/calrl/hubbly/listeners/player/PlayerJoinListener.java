@@ -54,7 +54,7 @@ public class PlayerJoinListener implements Listener {
         this.plugin = plugin;
         this.config = plugin.getConfig();
         this.debugMode = plugin.getDebugMode();
-        this.actionManager = plugin.getActionManager();
+        this.actionManager = plugin.gameplay().actionManager();
     }
 
     @EventHandler

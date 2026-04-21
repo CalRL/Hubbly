@@ -99,7 +99,7 @@ class ActionTests extends PluginTestBase {
         PlayerMock player = server.addPlayer();
         MenuAction action = new MenuAction();
 
-        FileManager manager = plugin.getFileManager();
+        FileManager manager = plugin.services().resources().fileManager();
         YamlConfiguration config = manager.getConfig("menus/selector.yml");
 
         action.execute(plugin, player, "selector");

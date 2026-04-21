@@ -51,7 +51,7 @@ public class InventoryListener implements Listener {
             return;
         }
         plugin.getDebugMode().info("Actions string found: " + actionsString);
-        ActionManager actionManager = plugin.getActionManager();
+        ActionManager actionManager = plugin.gameplay().actionManager();
         actionManager.executeActions(player, actionsString);
 
     }

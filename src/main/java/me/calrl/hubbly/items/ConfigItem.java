@@ -43,13 +43,13 @@ public class ConfigItem implements CustomItem {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
         this.itemKey = itemKey;
-        this.actionManager = plugin.getActionManager();
+        this.actionManager = plugin.gameplay().actionManager();
         this.debugMode = plugin.getDebugMode();
     }
 
     @Override
     public ItemStack createItem() {
-        FileManager manager = plugin.getFileManager();
+        FileManager manager = plugin.services().resources().fileManager();
         FileConfiguration config = manager.getConfig("items.yml");
 
         if (!config.contains("items." + itemKey)) {

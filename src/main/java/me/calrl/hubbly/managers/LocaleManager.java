@@ -19,9 +19,7 @@ public class LocaleManager implements ILifecycle {
     private Hubbly plugin;
     public LocaleManager(Hubbly plugin) {
         this.plugin = plugin;
-        this.fileManager = plugin.getFileManager();
-        loadAllLocales();
-        loadFallback();
+        this.fileManager = plugin.services().resources().fileManager();
     }
 
     public void loadFallback() {

@@ -7,7 +7,6 @@ import me.calrl.hubbly.handlers.PlayerMovementHandler;
 import me.calrl.hubbly.managers.LocaleManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.persistence.PersistentDataType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
@@ -72,7 +71,7 @@ public class FlyCommandTest extends PluginTestBase {
     public void testHubbly() {
         Hubbly plugin = Hubbly.getInstance();
 
-        LocaleManager manager = plugin.services().config().localeManager();
+        LocaleManager manager = plugin.services().resources().localeManager();
 
         String lang = manager.getDefaultLanguage();
 

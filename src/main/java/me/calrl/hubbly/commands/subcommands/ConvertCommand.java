@@ -66,7 +66,7 @@ public class ConvertCommand implements SubCommand {
             if(name.equals("selector")) {
                 saveInventoryToFile(
                         new InventoryBuilder().fromLegacySelector(
-                                plugin.getFileManager().getConfig("serverselector.yml")),
+                                plugin.services().resources().fileManager().getConfig("serverselector.yml")),
                         "serverselector"
                 );
 

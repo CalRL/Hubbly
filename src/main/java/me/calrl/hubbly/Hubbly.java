@@ -48,7 +48,6 @@ public class Hubbly extends JavaPlugin {
     private DebugMode debugMode;
     private AnnouncementsManager announcementsManager;
     private FileManager fileManager;
-    private LocaleManager localeManager;
     private HookManager hookManager;
     private StorageManager storageManager = null;
     private Services services;
@@ -65,7 +64,6 @@ public class Hubbly extends JavaPlugin {
         this.saveConfig();
 
         fileManager.reloadFiles();
-        localeManager.reload();
 
         services().onReload();
 
@@ -101,17 +99,13 @@ public class Hubbly extends JavaPlugin {
         fileManager = new FileManager(this);
         debugMode = new DebugMode();
 
-        Services services = new Services(this);
-        services.onEnable();
-        this.services = services;
-
-        actionManager = new ActionManager(this);
+        this.services = new Services(this);
+        this.services.onEnable();
 
         this.gameplayService = new GameplayService(this);
         this.gameplayService.onEnable();
 
         announcementsManager = new AnnouncementsManager(this);
-        localeManager = new LocaleManager(this);
 
         new CommandRegistrar(this);
         new ListenerRegistrar(this);
@@ -204,9 +198,6 @@ public class Hubbly extends JavaPlugin {
         return announcementsManager;
     }
     public FileManager getFileManager() { return fileManager; }
-    public LocaleManager getLocaleManager() {
-        return localeManager;
-    }
     public HookManager getHookManager() {return this.hookManager;}
     public void setHookManager(HookManager hookManager) {
         this.hookManager = hookManager;

@@ -49,7 +49,7 @@ public class ItemsManager implements ILifecycle {
     }
 
     private void registerItems() {
-        this.setConfig(plugin.getFileManager().getConfig("items.yml"));
+        this.setConfig(plugin.services().resources().fileManager().getConfig("items.yml"));
         items.put("playervisibility", new PlayerVisibilityItem());
 
         this.register("trident", new TridentItem(plugin), new TridentListener(plugin));
@@ -165,7 +165,7 @@ public class ItemsManager implements ILifecycle {
         this.debugMode = plugin.getDebugMode();
         this.config = plugin.getConfig();
         this.itemsFile =  new File(plugin.getDataFolder(), "items.yml");
-        this.actionManager = plugin.getActionManager();
+        this.actionManager = plugin.gameplay().actionManager();
         this.itemsConfig = plugin.getItemsConfig();
 
         this.listeners = new HashMap<>();

@@ -82,7 +82,7 @@ public class LaunchpadListener implements Listener {
             return;
         }
 
-        ActionManager actionManager = plugin.getActionManager();
+        ActionManager actionManager = plugin.gameplay().actionManager();
         String soundString = config.getString("launchpad.sound");
         if(soundString != null) {
             Sound sound = Sound.valueOf(soundString);
