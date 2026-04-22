@@ -45,7 +45,6 @@ public class Hubbly extends JavaPlugin {
     private final Logger logger = getLogger();
     private static Hubbly instance;
     private FileConfiguration itemsConfig;
-    private ActionManager actionManager;
     private DebugMode debugMode;
     private FileManager fileManager;
     private HookManager hookManager;
@@ -55,8 +54,6 @@ public class Hubbly extends JavaPlugin {
     private ResourceService resourceService;
 
     private String prefix;
-
-    private UpdateUtil updateUtil = null;
 
     public void reloadPlugin() {
         debugMode.info("Restarting...");
@@ -106,8 +103,6 @@ public class Hubbly extends JavaPlugin {
 
         this.gameplayService = new GameplayService(this);
         this.gameplayService.onEnable();
-
-        announcementsManager = new AnnouncementsManager(this);
 
         new CommandRegistrar(this);
         new ListenerRegistrar(this);
