@@ -17,6 +17,7 @@
 package me.calrl.hubbly.managers;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.service.ILifecycle;
 import me.calrl.hubbly.utils.ChatUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
@@ -28,7 +29,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-public class AnnouncementsManager {
+public class AnnouncementsManager implements ILifecycle {
     private List<String[]> announcements;
     private final Hubbly plugin;
     private final FileConfiguration config;
@@ -42,12 +43,6 @@ public class AnnouncementsManager {
         this.debugMode = plugin.getDebugMode();
         this.announcements = new ArrayList<>();
         this.config = plugin.getConfig();
-        if(config.getBoolean("announcements.enabled")) {
-            Bukkit.getScheduler().runTask(plugin, () -> {
-                loadAnnouncements();
-                startAnnouncementsTask();
-            });
-        }
     }
 
     
@@ -128,4 +123,23 @@ public class AnnouncementsManager {
         sendNextAnnouncement();
     }
 
+    @Override
+    public void onEnable() {
+        if(config.getBoolean("announcements.enabled")) {
+            Bukkit.getScheduler().runTask(plugin, () -> {
+                loadAnnouncements();
+                startAnnouncementsTask();
+            });
+        }
+    }
+
+    @Override
+    public void onReload() {
+        this.reloadAnnouncements();
+    }
+
+    @Override
+    public void onDisable() {
+
+    }
 }

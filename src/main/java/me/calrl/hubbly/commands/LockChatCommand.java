@@ -20,7 +20,6 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import me.calrl.hubbly.managers.LockChat;
-import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
@@ -39,7 +38,7 @@ public class LockChatCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender commandSender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(!commandSender.hasPermission(Permissions.COMMAND_LOCK_CHAT.getPermission())) return true;
-        lockChat = plugin.getLockChat();
+        lockChat = plugin.services().lockChat();
         String key;
         if(lockChat.getChatLock()) {
             key = "chat_unlocked";
@@ -54,7 +53,7 @@ public class LockChatCommand implements CommandExecutor {
                 message = message.replace("%player%", commandSender.getName());
             }
         }
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         MessageBuilder builder = new MessageBuilder(plugin)
                 .setPlayer(commandSender)
                 .setKey(key)
@@ -68,7 +67,7 @@ public class LockChatCommand implements CommandExecutor {
             builder.setPlayer(p).send();
         }
 
-        lockChat.flipChatLock();
+        lockChat.toggle();
 
         return true;
     }

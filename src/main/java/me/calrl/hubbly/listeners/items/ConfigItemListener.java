@@ -63,14 +63,14 @@ public class ConfigItemListener implements Listener {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
         this.customActionsKey = new NamespacedKey(plugin, "customActions");
-        this.actionManager = plugin.getActionManager();
+        this.actionManager = plugin.gameplay().actionManager();
         this.debugMode = plugin.getDebugMode();
-        this.itemsManager = plugin.getItemsManager();
+        this.itemsManager = plugin.gameplay().itemsManager();
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
+        if(plugin.services().disabledWorlds().inDisabledWorld(event.getPlayer().getWorld())) return;
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
@@ -98,7 +98,7 @@ public class ConfigItemListener implements Listener {
 
     //@EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         Player player = event.getPlayer();
         Location location = player.getLocation();
         if(disabledWorlds.inDisabledWorld(location)) return;

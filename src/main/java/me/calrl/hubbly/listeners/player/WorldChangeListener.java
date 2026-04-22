@@ -1,7 +1,7 @@
 package me.calrl.hubbly.listeners.player;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.functions.BossBarManager;
+import me.calrl.hubbly.managers.BossBarManager;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -24,11 +24,11 @@ public class WorldChangeListener implements Listener {
         World world = player.getWorld();
 
         FileConfiguration config = plugin.getConfig();
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
 
         plugin.getDebugMode().info(player.getName() + " switched worlds: " + player.getWorld());
 
-        BossBarManager bossBarManager = plugin.getBossBarManager();
+        BossBarManager bossBarManager = plugin.gameplay().bossBarManager();
         if(disabledWorlds.inDisabledWorld(player.getWorld())) {
             bossBarManager.removeBossBar(player);
         }

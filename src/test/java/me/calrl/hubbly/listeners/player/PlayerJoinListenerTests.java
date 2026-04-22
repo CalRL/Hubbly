@@ -1,6 +1,5 @@
 package me.calrl.hubbly.listeners.player;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.calrl.hubbly.PluginTestBase;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.enums.data.PlayerMovementMode;
@@ -9,6 +8,7 @@ import me.calrl.hubbly.storage.PlayerData;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 import static org.junit.jupiter.api.Assertions.*;
 

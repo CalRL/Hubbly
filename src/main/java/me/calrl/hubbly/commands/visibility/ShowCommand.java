@@ -18,7 +18,7 @@ public class ShowCommand extends CommandNode {
     @Override
     public Result execute(CommandSender sender, String[] args, int depth) {
         if (sender instanceof Player player) {
-            plugin.getManagerFactory().getPlayerVisibilityManager().setHideMode(player, PlayerVisibilityMode.VISIBLE);
+            plugin.services().playerVisibilityManager().setHideMode(player, PlayerVisibilityMode.VISIBLE);
             new MessageBuilder(plugin)
                     .setPlayer(player)
                     .setKey("playervisibility.hide")

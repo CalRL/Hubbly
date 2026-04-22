@@ -56,7 +56,7 @@ public class MenuCommand implements SubCommand {
         }
 
         String menuName = args[1];
-        FileManager fileManager = plugin.getFileManager();
+        FileManager fileManager = plugin.resources().fileManager();
         String filePath = "menus/" + menuName + ".yml";
         FileConfiguration menuConfig = fileManager.getConfig(filePath);
 
@@ -77,7 +77,7 @@ public class MenuCommand implements SubCommand {
     @Override
     public List<String> tabComplete(Player player, String[] args) {
         if (args.length == 1) {
-            FileManager fileManager = plugin.getFileManager();
+            FileManager fileManager = plugin.resources().fileManager();
             return fileManager.listFilesInFolder("menus");
         }
         return Collections.emptyList();

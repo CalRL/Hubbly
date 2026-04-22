@@ -18,17 +18,12 @@
 package me.calrl.hubbly.commands.subcommands;
 
 import me.calrl.hubbly.Hubbly;
-import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
-import me.calrl.hubbly.functions.BossBarManager;
+import me.calrl.hubbly.managers.BossBarManager;
 import me.calrl.hubbly.interfaces.SubCommand;
-import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-
-import java.util.List;
 
 public class ReloadCommand implements SubCommand {
 
@@ -66,7 +61,7 @@ public class ReloadCommand implements SubCommand {
             return;
         }
         try {
-            bossBarManager = plugin.getBossBarManager();
+            bossBarManager = plugin.gameplay().bossBarManager();
             if (bossBarManager != null) {
                 bossBarManager.removeAllBossBars();
             }
@@ -77,7 +72,7 @@ public class ReloadCommand implements SubCommand {
                     .setKey("reload")
                     .send();
 
-            bossBarManager = plugin.getBossBarManager();
+            bossBarManager = plugin.gameplay().bossBarManager();
             bossBarManager.reAddAllBossBars();
         } catch (Exception e) {
             plugin.getLogger().info(String.valueOf(e));

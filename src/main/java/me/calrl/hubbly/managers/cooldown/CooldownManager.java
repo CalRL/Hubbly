@@ -19,10 +19,11 @@ package me.calrl.hubbly.managers.cooldown;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import me.calrl.hubbly.service.ILifecycle;
 
 import java.util.UUID;
 
-public class CooldownManager {
+public class CooldownManager implements ILifecycle {
 
     private Table<String, CooldownType, Long> cooldowns = HashBasedTable.create();
 
@@ -45,4 +46,18 @@ public class CooldownManager {
         return expireTime != null ? expireTime - System.currentTimeMillis() : Long.MIN_VALUE;
     }
 
+    @Override
+    public void onEnable() {
+
+    }
+
+    @Override
+    public void onReload() {
+        this.cooldowns.clear();
+    }
+
+    @Override
+    public void onDisable() {
+        this.cooldowns.clear();
+    }
 }

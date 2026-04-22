@@ -23,6 +23,7 @@ import me.calrl.hubbly.interfaces.CustomItem;
 import me.calrl.hubbly.managers.SpawnTaskManager;
 import me.calrl.hubbly.tasks.spawn.SpawnTeleportTask;
 import me.calrl.hubbly.utils.MessageBuilder;
+import me.calrl.hubbly.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -59,7 +60,7 @@ public class SpawnCommand implements TabExecutor {
             return true;
         }
 
-        Location spawn = plugin.getUtils().getSpawn();
+        Location spawn = Utils.getSpawn(plugin.getConfig());
         HubblySpawnEvent event = new HubblySpawnEvent(player, spawn);
         Bukkit.getPluginManager().callEvent(event);
 
@@ -74,7 +75,7 @@ public class SpawnCommand implements TabExecutor {
 
         if(!event.isCancelled()) {
             long timer = plugin.getConfig().getLong("spawn.timer");
-            SpawnTaskManager manager = plugin.getManagerFactory().getSpawnTaskManager();
+            SpawnTaskManager manager = plugin.services().spawnTaskManager();
             new SpawnTeleportTask(plugin, player, timer).start();
         }
 

@@ -22,20 +22,36 @@ import me.calrl.hubbly.action.actions.*;
 import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.events.ActionEvent;
 import me.calrl.hubbly.managers.DisabledWorlds;
+import me.calrl.hubbly.service.ILifecycle;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 
-public class ActionManager {
+public class ActionManager implements ILifecycle {
     private final Hubbly plugin;
     private final Map<String, Action> actions;
 
     public ActionManager(Hubbly plugin) {
         this.plugin = plugin;
         this.actions = new HashMap<>();
-        load();
+    }
+
+    @Override
+    public void onEnable() {
+        this.load();
+    }
+
+    @Override
+    public void onReload() {
+        this.actions.clear();
+        this.load();
+    }
+
+    @Override
+    public void onDisable() {
+        this.actions.clear();
     }
 
     public void registerActions(Action... actions) {
@@ -47,7 +63,6 @@ public class ActionManager {
                 new PlayerCommandAction(),
                 new ConsoleCommandAction(),
                 new CloseAction(),
-                new SoundAction(),
                 new GamemodeAction(),
                 new SoundAction(),
                 new TitleAction(),
@@ -65,7 +80,7 @@ public class ActionManager {
         );
     }
     public void executeAction(Player player, String actionData) {
-        DisabledWorlds disabledWorldsManager = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorldsManager = plugin.services().disabledWorlds();
         boolean inDisabledWorld = disabledWorldsManager.inDisabledWorld(player.getLocation());
 
         if(inDisabledWorld) return;
@@ -103,7 +118,7 @@ public class ActionManager {
     public Result executeAction(Player player, String actionData, boolean bypass) {
 
         if(!bypass) {
-            DisabledWorlds disabledWorldsManager = plugin.getDisabledWorldsManager();
+            DisabledWorlds disabledWorldsManager = plugin.services().disabledWorlds();
             boolean inDisabledWorld = disabledWorldsManager.inDisabledWorld(player.getLocation());
 
             if(inDisabledWorld) return Result.DISABLED_WORLD;
@@ -174,7 +189,4 @@ public class ActionManager {
         int endIndex = actionData.indexOf("]");
         return actionData.substring(endIndex + 1).trim();
     }
-
-
-
 }

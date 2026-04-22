@@ -1,21 +1,25 @@
 package me.calrl.hubbly.utils.update;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.service.ILifecycle;
 import me.calrl.hubbly.utils.MessageBuilder;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Logger;
 
-public class UpdateUtil {
+public class UpdateUtil implements ILifecycle {
 
     private String updateMessage = null;
     private boolean needsUpdate;
     private String key;
     private String currentVersion;
     private String newVersion;
+    private final Hubbly plugin;
+    public UpdateUtil(Hubbly plugin) {
+        this.plugin = plugin;
+    }
+
     public boolean checkForUpdate(Hubbly plugin) {
         Logger logger = plugin.getLogger();
 
@@ -120,5 +124,20 @@ public class UpdateUtil {
 
     public String getNew() {
         return this.newVersion;
+    }
+
+    @Override
+    public void onEnable() {
+        this.checkForUpdate(plugin);
+    }
+
+    @Override
+    public void onReload() {
+
+    }
+
+    @Override
+    public void onDisable() {
+
     }
 }

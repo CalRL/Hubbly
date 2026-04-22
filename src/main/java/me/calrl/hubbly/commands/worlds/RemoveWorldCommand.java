@@ -42,7 +42,7 @@ public class RemoveWorldCommand extends CommandNode {
             return Result.FAILURE;
         }
 
-        plugin.getDisabledWorldsManager().removeWorld(world);
+        plugin.services().disabledWorlds().removeWorld(world);
 
         new MessageBuilder(plugin)
                 .setKey("subcommands.worlds.remove.message")

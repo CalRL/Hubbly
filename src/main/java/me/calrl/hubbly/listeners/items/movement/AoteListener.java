@@ -25,14 +25,14 @@ public class AoteListener implements Listener {
     private void onInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();
 
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
 
         ItemStack item = player.getInventory().getItemInMainHand();
         ItemMeta meta = item.getItemMeta();
         if(meta != null && meta.getPersistentDataContainer().has(PluginKeys.AOTE.getKey())) {
             FileConfiguration config = plugin.getConfig();
-            if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.AOTE, config.getLong("movementitems.aote.cooldown"))) return;
+            if(!plugin.services().cooldowns().tryCooldown(player.getUniqueId(), CooldownType.AOTE, config.getLong("movementitems.aote.cooldown"))) return;
             if(!player.hasPermission(Permissions.USE_AOTE.getPermission())) return;
             player.teleport(this.getLocationInFront(player, 10));
         }

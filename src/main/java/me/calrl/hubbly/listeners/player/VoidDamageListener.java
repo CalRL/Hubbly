@@ -50,7 +50,7 @@ public class VoidDamageListener implements Listener {
         if (!(entity instanceof Player player)) return;
 
         Location playerLocation = player.getLocation();
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(playerLocation)) return;
 
         GameMode gameMode = player.getGameMode();
@@ -66,8 +66,7 @@ public class VoidDamageListener implements Listener {
         DamageCause damageCause = event.getCause();
         if(damageCause == DamageCause.VOID) {
             plugin.getDebugMode().info(player.getName() + " was hit by the void.. teleporting..");
-            Utils utils = plugin.getUtils();
-            Location spawn = utils.getSpawn();
+            Location spawn = Utils.getSpawn(plugin.getConfig());
 
             player.setVelocity(player.getVelocity().setY(0));
             player.setFallDistance(0f);

@@ -26,7 +26,7 @@ public class RodListener implements Listener {
         if (!config.getBoolean("movementitems.grappling_hook.enabled")) return;
 
         Player player = event.getPlayer();
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(player.getLocation())) return;
 
         if(!player.hasPermission(Permissions.USE_GRAPPLING_HOOK.getPermission())) return;
@@ -37,7 +37,7 @@ public class RodListener implements Listener {
                 && event.getState() != PlayerFishEvent.State.REEL_IN) return;
 
         if (meta != null && meta.getPersistentDataContainer().has(PluginKeys.GRAPPLING_HOOK.getKey())) {
-            if(!plugin.getCooldownManager().tryCooldown(player.getUniqueId(), CooldownType.GRAPPLING_HOOK, config.getLong("movementitems.grappling_hook.cooldown"))) return;
+            if(!plugin.services().cooldowns().tryCooldown(player.getUniqueId(), CooldownType.GRAPPLING_HOOK, config.getLong("movementitems.grappling_hook.cooldown"))) return;
 
             Location hookLocation = event.getHook().getLocation();
             Location playerLocation = player.getLocation();

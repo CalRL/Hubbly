@@ -6,6 +6,7 @@ import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.SpawnTaskManager;
 import me.calrl.hubbly.tasks.ITask;
 import me.calrl.hubbly.utils.MessageBuilder;
+import me.calrl.hubbly.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.Registry;
@@ -26,8 +27,8 @@ public class SpawnTeleportTask  implements ITask {
         this.plugin = plugin;
         this.player = player;
         this.startLocation = player.getLocation();
-        this.spawn = plugin.getUtils().getSpawn();
-        this.registry = plugin.getManagerFactory().getSpawnTaskManager();
+        this.spawn = Utils.getSpawn(plugin.getConfig());
+        this.registry = plugin.services().spawnTaskManager();
         this.task = new BukkitRunnable() {
             @Override
             public void run() {

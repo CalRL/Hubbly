@@ -20,8 +20,7 @@ package me.calrl.hubbly.listeners.player;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.ActionManager;
 import me.calrl.hubbly.enums.Permissions;
-import me.calrl.hubbly.enums.data.PlayerVisibilityMode;
-import me.calrl.hubbly.functions.BossBarManager;
+import me.calrl.hubbly.managers.BossBarManager;
 import me.calrl.hubbly.handlers.PlayerMovementHandler;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
@@ -55,7 +54,7 @@ public class PlayerJoinListener implements Listener {
         this.plugin = plugin;
         this.config = plugin.getConfig();
         this.debugMode = plugin.getDebugMode();
-        this.actionManager = plugin.getActionManager();
+        this.actionManager = plugin.gameplay().actionManager();
     }
 
     @EventHandler
@@ -88,12 +87,12 @@ public class PlayerJoinListener implements Listener {
 
         new PlayerMovementHandler(player, plugin).handleJoin(data);
 
-        PlayerVisibilityManager pvManager =  plugin.getManagerFactory().getPlayerVisibilityManager();
+        PlayerVisibilityManager pvManager = plugin.services().playerVisibilityManager();
 
         pvManager.setHideMode(player, data.visibility().getMode());
         pvManager.handleJoin(player);
 
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         boolean inDisabledWorld = disabledWorlds.inDisabledWorld(player.getWorld());
 
         if(!inDisabledWorld) {
@@ -108,7 +107,7 @@ public class PlayerJoinListener implements Listener {
         }
 
         if (config.getBoolean("player.bossbar.enabled") && !inDisabledWorld) {
-            bossBarManager = plugin.getBossBarManager();
+            bossBarManager = plugin.gameplay().bossBarManager();
             bossBarManager.createBossBar(player);
         }
 
@@ -118,7 +117,7 @@ public class PlayerJoinListener implements Listener {
     }
 
     private void sendUpdateMessage(Player player) {
-        UpdateUtil updateUtil = plugin.getUpdateUtil();
+        UpdateUtil updateUtil = plugin.services().updateUtil();
         if(updateUtil == null) {
             return;
         }
@@ -167,7 +166,7 @@ public class PlayerJoinListener implements Listener {
     @EventHandler
     private void onPlayerLeave(PlayerQuitEvent event) {
         Player player = event.getPlayer();
-        bossBarManager = plugin.getBossBarManager();
+        bossBarManager = plugin.gameplay().bossBarManager();
         bossBarManager.removeBossBar(player);
 
         StorageManager storage = plugin.getStorageManager();

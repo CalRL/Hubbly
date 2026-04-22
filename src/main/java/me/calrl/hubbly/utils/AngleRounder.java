@@ -15,7 +15,7 @@
  * along with Hubbly. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package me.calrl.hubbly.functions;
+package me.calrl.hubbly.utils;
 public class AngleRounder {
     private float angle;
     public AngleRounder(float angle) {

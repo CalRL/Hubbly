@@ -21,11 +21,13 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.regex.Matcher;
@@ -35,17 +37,15 @@ import java.util.stream.Collectors;
 
 public class ChatListener implements Listener {
     private final Hubbly plugin;
-    private final List<String> blockedWords;
     private final DebugMode debugMode;
     public ChatListener(Hubbly plugin) {
         this.plugin = plugin;
-        blockedWords = plugin.getConfig().getStringList("blocked_words.words").stream().map(String::toLowerCase).collect(Collectors.toList());
         debugMode = plugin.getDebugMode();
     }
 
     @EventHandler
     private void checkChatLock(AsyncPlayerChatEvent event) {
-        if(plugin.getLockChat().getChatLock() && !event.getPlayer().hasPermission(Permissions.BYPASS_CHAT_LOCK.getPermission())) {
+        if(plugin.services().lockChat().getChatLock() && !event.getPlayer().hasPermission(Permissions.BYPASS_CHAT_LOCK.getPermission())) {
             event.setCancelled(true);
         }
     }
@@ -53,7 +53,12 @@ public class ChatListener implements Listener {
     @EventHandler
     private void onPlayerChat(AsyncPlayerChatEvent event) {
         FileConfiguration config = plugin.getConfig();
-        if(config.getBoolean("blocked_words.enabled") && !plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) {
+        if(config.getBoolean("blocked_words.enabled") && !plugin.services().disabledWorlds().inDisabledWorld(event.getPlayer().getWorld())) {
+            List<String> blockedWords = plugin.getConfig().getStringList("blocked_words.words").stream().map(String::toLowerCase).toList();
+
+            if (blockedWords.isEmpty()) {
+                return;
+            }
 
             String playerName = event.getPlayer().getName();
             String message = event.getMessage().toLowerCase();
@@ -63,22 +68,21 @@ public class ChatListener implements Listener {
             Pattern pattern = Pattern.compile(regex);
             Matcher matcher = pattern.matcher(message);
 
-            if (matcher.find()) {
-                String blockedWord = matcher.group();
-
-                if (Objects.equals(method.toUpperCase(), "CANCEL")) {
-                    event.setCancelled(true);
-                    event.getPlayer().sendMessage(
-                            Objects.requireNonNull(config.getString("messages.blocked_message"))
-                    );
-                    debugMode.info(playerName + " sent a blocked word: " + blockedWord);
-                } else if (Objects.equals(method.toUpperCase(), "STAR")) {
-                    message = matcher.replaceAll(match -> ChatUtils.repeat("*", match.group().length()));
-                    event.setMessage(message);
-                    debugMode.info(playerName + " sent a blocked word: " + blockedWord);
-                }
-
+            if(!matcher.find()) {
+                return;
             }
+
+            String blockedWord = matcher.group();
+            debugMode.info(playerName + " message: " + blockedWord);
+            if (Objects.equals(method.toUpperCase(), "CANCEL")) {
+                event.setCancelled(true);
+                new MessageBuilder(plugin, event.getPlayer()).setKey("blocked_message").send();
+            } else if (Objects.equals(method.toUpperCase(), "STAR")) {
+                message = matcher.replaceAll(match -> ChatUtils.repeat("*", match.group().length()));
+                event.setMessage(message);
+            }
+
+            debugMode.info(playerName + " sent a blocked word: " + blockedWord);
         }
     }
 }

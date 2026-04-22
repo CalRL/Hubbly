@@ -92,7 +92,7 @@ public class XPListener implements Listener {
 
     private boolean inDisabledWorld(Player player) {
         World world = player.getWorld();
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(world)) {
             return true;
         }

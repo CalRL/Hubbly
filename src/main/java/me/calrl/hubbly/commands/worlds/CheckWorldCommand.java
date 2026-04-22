@@ -44,7 +44,7 @@ public class CheckWorldCommand extends CommandNode {
 
         MessageBuilder builder = new MessageBuilder(plugin);
 
-        boolean inDisabledWorld = plugin.getDisabledWorldsManager().inDisabledWorld(world);
+        boolean inDisabledWorld = plugin.services().disabledWorlds().inDisabledWorld(world);
         if(inDisabledWorld) {
              builder.setKey("subcommands.worlds.check.disabled")
                      .setPlayer(sender)

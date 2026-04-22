@@ -10,6 +10,7 @@ import me.calrl.hubbly.listeners.items.movement.AoteListener;
 import me.calrl.hubbly.listeners.items.movement.EnderbowListener;
 import me.calrl.hubbly.listeners.items.movement.RodListener;
 import me.calrl.hubbly.listeners.items.movement.TridentListener;
+import me.calrl.hubbly.service.ILifecycle;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.NamespacedKey;
@@ -27,29 +28,20 @@ import java.io.File;
 import java.lang.reflect.Constructor;
 import java.util.*;
 
-public class ItemsManager {
+public class ItemsManager implements ILifecycle {
 
     private Hubbly plugin;
     private FileConfiguration config;
     private FileConfiguration itemsConfig;
     private DebugMode debugMode;
     private final Map<String, CustomItem> items = new HashMap<>();
-    private final Map<String, Listener> listeners;
+    private Map<String, Listener> listeners;
     private File itemsFile;
-    private final ActionManager actionManager;
+    private ActionManager actionManager;
     private Player player;
 
     public ItemsManager(Hubbly plugin) {
         this.plugin = plugin;
-        this.debugMode = plugin.getDebugMode();
-        this.config = plugin.getConfig();
-        this.itemsFile =  new File(plugin.getDataFolder(), "items.yml");
-        this.actionManager = plugin.getActionManager();
-        this.itemsConfig = plugin.getItemsConfig();
-
-        this.listeners = new HashMap<>();
-
-        this.registerItems();
     }
 
     private void setConfig(FileConfiguration config) {
@@ -57,32 +49,25 @@ public class ItemsManager {
     }
 
     private void registerItems() {
-        this.setConfig(plugin.getFileManager().getConfig("items.yml"));
-        items.put("playervisibility", new PlayerVisibilityItem());
+        this.debugMode.info("Registering Items");
+        this.setConfig(plugin.resources().fileManager().getConfig("items.yml"));
+
+        this.registerPlayerVisibility();
 
         this.register("trident", new TridentItem(plugin), new TridentListener(plugin));
         this.register("enderbow", new EnderbowItem(plugin) , new EnderbowListener(plugin));
         this.register("aote", new AoteItem(plugin), new AoteListener(plugin));
         this.register("grappling_hook", new RodItem(plugin), new RodListener(plugin));
 
-        if (itemsConfig.getConfigurationSection("items") != null) {
-            ConfigurationSection section = itemsConfig.getConfigurationSection("items");
-            if(section == null) {
-                throw new NullPointerException("items key not found in the items config");
-            }
-
-            for (String itemKey : section.getKeys(false)) {
-                items.put(ChatColor.stripColor(itemKey.toLowerCase()), new ConfigItem(itemKey, plugin));
-                debugMode.info("Registered item: " + itemKey);
-            }
-        } else {
-            debugMode.warn("No items found in items.yml");
-        }
-        for(String row : itemsConfig.getStringList("")) {
-            debugMode.warn(row);
+        ConfigurationSection section = itemsConfig.getConfigurationSection("items");
+        if(section == null) {
+            debugMode.info("No items found in items.yml");
+            return;
         }
 
-
+        for (String itemKey : section.getKeys(false)) {
+            this.register(itemKey);
+        }
     }
 
     private void register(String itemName, CustomItem item, Listener listener) {
@@ -100,6 +85,23 @@ public class ItemsManager {
         debugMode.info("Registered item: " + itemName);
     }
 
+    /**
+     * Registers the player visibility item if it is enabled in config.
+     */
+    private void registerPlayerVisibility() {
+        if(!plugin.getConfig().getBoolean("playervisibility.enabled")) {
+            return;
+        }
+
+        items.put("playervisibility", new PlayerVisibilityItem());
+        this.debugMode.info("Registering Items");
+    }
+
+    private void register(String itemKey) {
+        this.items.put(itemKey.toLowerCase(), new ConfigItem(itemKey, plugin));
+        this.debugMode.info("Registered item: " + itemKey);
+    }
+
     private void register(String itemName, CustomItem item) {
         this.config = plugin.getConfig();
         String enabledPath = "movementitems." + itemName + ".enabled";
@@ -111,11 +113,6 @@ public class ItemsManager {
 
         items.put(itemName, item);
         debugMode.info("Registered item: " + itemName);
-    }
-
-    public void reload() {
-        this.clear();
-        this.registerItems();
     }
 
     public void clean() {
@@ -146,10 +143,12 @@ public class ItemsManager {
             return null;
         }
         ItemMeta meta = item.getItemMeta();
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        if(container == null) {
+
+        if(meta == null) {
             return null;
         }
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
         String actionsString = container.get(new NamespacedKey(plugin, "customActions"), PersistentDataType.STRING);
 
         if (actionsString == null || actionsString.isEmpty()) {
@@ -164,8 +163,32 @@ public class ItemsManager {
         if(actions == null || actions.isEmpty()) {
             return;
         }
-        actionManager.executeActions(player, actions);
 
+        actionManager.executeActions(player, actions);
     }
 
+    @Override
+    public void onEnable() {
+        this.debugMode = plugin.getDebugMode();
+        this.config = plugin.getConfig();
+        this.itemsFile =  new File(plugin.getDataFolder(), "items.yml");
+        this.actionManager = plugin.gameplay().actionManager();
+        this.itemsConfig = plugin.getItemsConfig();
+
+        this.listeners = new HashMap<>();
+
+        this.registerItems();
+    }
+
+    @Override
+    public void onReload() {
+        this.clear();
+        this.registerItems();
+    }
+
+    @Override
+    public void onDisable() {
+        this.clear();
+        this.clean();
+    }
 }

@@ -1,14 +1,15 @@
 package me.calrl.hubbly.commands;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.PluginTestBase;
+import me.calrl.hubbly.enums.data.PlayerMovementMode;
+import me.calrl.hubbly.handlers.PlayerMovementHandler;
 import me.calrl.hubbly.managers.LocaleManager;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.persistence.PersistentDataType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -41,18 +42,14 @@ public class FlyCommandTest extends PluginTestBase {
 
     @Test
     public void testPlayerWithoutPermissionIsBlocked() {
-        System.out.println("Starting");
         PlayerMock player = server.addPlayer("NoPerms");
         player.setOp(false);
 
-        System.out.println("commanding");
         flyCommand.onCommand(player, mockCommand(), "fly", new String[0]);
         String message = player.nextMessage();
 
-        System.out.println("asserting");
         assertNotNull(message);
         assertTrue(message.toLowerCase().contains("permission"));
-        System.out.println("chat is this real?");
     }
 
     @Test
@@ -61,19 +58,20 @@ public class FlyCommandTest extends PluginTestBase {
         player.setOp(true);
 
         flyCommand.onCommand(player, mockCommand(), "fly", new String[0]);
-        byte state = player.getPersistentDataContainer().get(plugin.FLY_KEY, PersistentDataType.BYTE);
-        assertEquals((byte) 1, state);
+        PlayerMovementHandler handler = new PlayerMovementHandler(player, plugin);
+        PlayerMovementMode mode = handler.getMovementMode();
+        assertEquals(PlayerMovementMode.FLY, mode);
 
         flyCommand.onCommand(player, mockCommand(), "fly", new String[0]);
-        byte newState = player.getPersistentDataContainer().get(plugin.FLY_KEY, PersistentDataType.BYTE);
-        assertEquals((byte) 0, newState);
+        PlayerMovementMode newMode = handler.getMovementMode();
+        assertEquals(PlayerMovementMode.NONE, newMode);
     }
 
     @Test
     public void testHubbly() {
         Hubbly plugin = Hubbly.getInstance();
 
-        LocaleManager manager = plugin.getLocaleManager();
+        LocaleManager manager = plugin.resources().localeManager();
 
         String lang = manager.getDefaultLanguage();
 

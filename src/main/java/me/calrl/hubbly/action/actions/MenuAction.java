@@ -17,7 +17,7 @@ public class MenuAction implements Action {
 
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
-        FileManager manager = plugin.getFileManager();
+        FileManager manager = plugin.resources().fileManager();
         String path = data;
         if(!data.startsWith("menus/")) {
             path = "menus/" + data;

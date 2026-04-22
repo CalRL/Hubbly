@@ -6,6 +6,7 @@ plugins {
     `java-library`
     `maven-publish`
     id("com.gradleup.shadow") version "9.3.0"
+    jacoco
 }
 
 repositories {
@@ -41,13 +42,14 @@ dependencies {
 
     implementation("com.zaxxer:HikariCP:7.0.2")
 
+    testImplementation("commons-lang:commons-lang:2.6")
     testImplementation("org.junit.jupiter:junit-jupiter:5.9.3")
-    testImplementation("com.github.seeseemelk:MockBukkit-v1.20:3.93.2")
+    testImplementation("org.mockbukkit.mockbukkit:mockbukkit-v1.21:4.0.0")
     testImplementation("org.slf4j:slf4j-simple:2.0.9")
 }
 
 group = "me.calrl"
-version = "3.5.1"
+version = "3.6.0"
 description = "Hubbly"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
@@ -82,6 +84,31 @@ tasks.test {
     // Disable parallel forks for MockBukkit stability
     maxParallelForks = 1
 
+}
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+
+    classDirectories.setFrom(
+        files(
+            classDirectories.files.map {
+                fileTree(it) {
+                    exclude(
+                        "me/calrl/hubbly/utils/xseries/**",
+                        "me/calrl/hubbly/metrics/**",
+                        "me/calrl/hubbly/utils/update/UpdateChecker.class",
+                        "me/calrl/hubbly/utils/update/UpdateChecker$*.class",
+                        "me/calrl/hubbly/interfaces/**"
+                    )
+                }
+            }
+        )
+    )
 }
 
 tasks.processResources {

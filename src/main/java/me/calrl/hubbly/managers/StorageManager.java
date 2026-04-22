@@ -33,10 +33,10 @@ public class StorageManager {
         this.logger = plugin.getLogger();
         this.map = new ConcurrentHashMap<UUID, PlayerData>();
         logger.info("Initializing storage manager");
-        this.start();
+        this.startIfEnabled();
     }
 
-    public void start() {
+    private void startIfEnabled() {
         FileConfiguration config = plugin.getConfig();
 
         if (!config.getBoolean("database.enabled", false)) {
@@ -44,6 +44,12 @@ public class StorageManager {
             active = false;
             return;
         }
+
+        this.start();
+    }
+
+    public void start() {
+        FileConfiguration config = plugin.getConfig();
 
         Credentials credentials = Credentials.fromConfig(config);
         database = new Database(credentials);

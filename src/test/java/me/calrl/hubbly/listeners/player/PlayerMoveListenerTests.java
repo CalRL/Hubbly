@@ -1,13 +1,14 @@
 package me.calrl.hubbly.listeners.player;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.calrl.hubbly.PluginTestBase;
 import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.managers.SpawnTaskManager;
 import me.calrl.hubbly.tasks.spawn.SpawnTeleportTask;
+import me.calrl.hubbly.utils.Utils;
 import org.bukkit.Location;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -17,7 +18,7 @@ class PlayerMoveListenerTests extends PluginTestBase {
         PlayerMock player = server.addPlayer();
         SpawnTeleportTask task = new SpawnTeleportTask(plugin, player, 5);
         Location loc = player.getLocation();
-        SpawnTaskManager registry = plugin.getManagerFactory().getSpawnTaskManager();
+        SpawnTaskManager registry = plugin.services().spawnTaskManager();
         assertEquals(Result.SUCCESS, registry.register(player.getUniqueId(), loc, task));
         assertEquals(Result.SUCCESS, registry.unregister(player.getUniqueId()));
     }
@@ -30,11 +31,11 @@ class PlayerMoveListenerTests extends PluginTestBase {
 
         task.start();
 
-        Location newLoc = start.clone().add(20, 0, 0);
+        Location newLoc = start.clone().add(20, 0, -20);
         player.simulatePlayerMove(newLoc);
 
         server.getScheduler().performTicks(20 * 5);
-        Location spawn = plugin.getUtils().getSpawn();
+        Location spawn = Utils.getSpawn(plugin.getConfig());
         System.out.println(newLoc);
         System.out.println(player.getLocation());
         System.out.println(spawn);
@@ -47,7 +48,7 @@ class PlayerMoveListenerTests extends PluginTestBase {
         SpawnTeleportTask task = new SpawnTeleportTask(plugin, player, 2);
         Location start = player.getLocation();
 
-        SpawnTaskManager registry = plugin.getManagerFactory().getSpawnTaskManager();
+        SpawnTaskManager registry = plugin.services().spawnTaskManager();
 
         registry.register(player.getUniqueId(), start, task);
         task.start();
@@ -57,6 +58,6 @@ class PlayerMoveListenerTests extends PluginTestBase {
 
         server.getScheduler().performTicks(20 * 2);
 
-        assertEquals(plugin.getUtils().getSpawn(), player.getLocation(), "Teleport should NOT have been cancelled");
+        assertEquals(new Utils(plugin).getSpawn(), player.getLocation(), "Teleport should NOT have been cancelled");
     }
 }

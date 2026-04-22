@@ -1,9 +1,5 @@
 package me.calrl.hubbly.listeners.world;
 
-import be.seeseemelk.mockbukkit.MockBukkit;
-import be.seeseemelk.mockbukkit.ServerMock;
-import be.seeseemelk.mockbukkit.WorldMock;
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import org.bukkit.Location;
@@ -11,6 +7,9 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockState;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
+import org.bukkit.event.Event;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -18,6 +17,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.permissions.PermissionAttachment;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockbukkit.mockbukkit.MockBukkit;
+import org.mockbukkit.mockbukkit.ServerMock;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
+import org.mockbukkit.mockbukkit.world.WorldMock;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,7 +52,7 @@ public class WorldEventListenersTest {
         server.getPluginManager().registerEvents(listener, plugin);
 
         // Mock disabled worlds manager
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         World disabledWorld = server.getWorld("disabled_world");
         disabledWorlds.addWorld(disabledWorld);
     }
@@ -166,11 +169,13 @@ public class WorldEventListenersTest {
     @Test
     public void testCancelDamage_BypassPermission() {
         player.addAttachment(plugin, "hubbly.bypass.damage", true);
+
         EntityDamageEvent event = new EntityDamageEvent(
                 player,
                 EntityDamageEvent.DamageCause.FALL,
                 10.0
         );
+        event.setDamage(10);
 
         server.getPluginManager().callEvent(event);
         assertFalse(event.isCancelled());

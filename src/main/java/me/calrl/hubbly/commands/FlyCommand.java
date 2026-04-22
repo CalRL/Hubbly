@@ -20,6 +20,8 @@ package me.calrl.hubbly.commands;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.LocaleKey;
 import me.calrl.hubbly.enums.Permissions;
+import me.calrl.hubbly.enums.data.PlayerMovementMode;
+import me.calrl.hubbly.handlers.PlayerMovementHandler;
 import me.calrl.hubbly.utils.ChatUtils;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.ChatColor;
@@ -33,11 +35,13 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FlyCommand implements CommandExecutor {
 
     private final Hubbly plugin;
     private FileConfiguration config = Hubbly.getInstance().getConfig();
-    private static final String FLY_METADATA_KEY = "hubbly.canFly";
 
     public FlyCommand(Hubbly plugin) {
         this.plugin = plugin;
@@ -63,23 +67,18 @@ public class FlyCommand implements CommandExecutor {
             builder.setKey("no_permission_command").send();
             return true;
         }
+        PlayerMovementHandler handler = new PlayerMovementHandler(player, plugin);
+        PlayerMovementMode mode = handler.getMovementMode();
 
-        PersistentDataContainer dataContainer = player.getPersistentDataContainer();
-
-        Byte canFly = dataContainer.get(plugin.FLY_KEY, PersistentDataType.BYTE);
-
-        if (canFly == null) {
-            canFly = 0;
-        }
-
-        if (canFly == 1) {
-            player.setFlying(false);
-            builder.setKey("fly.disable").send();
-            dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 0);
+        if(mode == PlayerMovementMode.FLY) {
+            handler.setMovementMode(PlayerMovementMode.NONE);
+            builder.setKey("fly.disable");
         } else {
-            builder.setKey("fly.enable").send();
-            dataContainer.set(plugin.FLY_KEY, PersistentDataType.BYTE, (byte) 1);
+            handler.setMovementMode(PlayerMovementMode.FLY);
+            builder.setKey("fly.enable");
         }
+
+        builder.send();
 
         return true;
     }

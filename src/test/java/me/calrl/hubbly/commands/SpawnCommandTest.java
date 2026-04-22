@@ -1,6 +1,5 @@
 package me.calrl.hubbly.commands;
 
-import be.seeseemelk.mockbukkit.entity.PlayerMock;
 import me.calrl.hubbly.PluginTestBase;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -9,6 +8,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.junit.jupiter.api.*;
+import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
 import static org.junit.jupiter.api.Assertions.*;
 

@@ -46,7 +46,7 @@ public class PlayerVisibilityListener implements Listener {
 
     @EventHandler
     public void onItemClick(PlayerInteractEvent event) {
-        if(plugin.getDisabledWorldsManager().inDisabledWorld(event.getPlayer().getWorld())) return;
+        if(plugin.services().disabledWorlds().inDisabledWorld(event.getPlayer().getWorld())) return;
 
         ItemStack itemInHand = event.getItem();
         if (itemInHand == null) {
@@ -97,7 +97,7 @@ public class PlayerVisibilityListener implements Listener {
 
         String oppositeKey = oppositeMode.toString();
         ItemStack newDye = new DyeItem(oppositeKey).build(config);
-        PlayerVisibilityManager manager = plugin.getManagerFactory().getPlayerVisibilityManager();
+        PlayerVisibilityManager manager = plugin.services().playerVisibilityManager();
         manager.setHideMode(player, oppositeMode);
 
         player.getInventory().setItemInMainHand(newDye);

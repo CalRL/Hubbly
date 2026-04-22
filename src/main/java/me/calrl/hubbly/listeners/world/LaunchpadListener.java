@@ -51,7 +51,7 @@ public class LaunchpadListener implements Listener {
 
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         if(disabledWorlds.inDisabledWorld(event.getPlayer().getLocation())) return;
         
         config = plugin.getConfig();
@@ -69,7 +69,7 @@ public class LaunchpadListener implements Listener {
         }
 
         long cooldown = config.getLong("launchpad.cooldown");
-        CooldownManager cooldownManager = plugin.getCooldownManager();
+        CooldownManager cooldownManager = plugin.services().cooldowns();
         boolean cooldownResult = cooldownManager.tryCooldown(player.getUniqueId(), CooldownType.LAUNCHPAD, cooldown);
 
         if(!cooldownResult) return;
@@ -82,7 +82,7 @@ public class LaunchpadListener implements Listener {
             return;
         }
 
-        ActionManager actionManager = plugin.getActionManager();
+        ActionManager actionManager = plugin.gameplay().actionManager();
         String soundString = config.getString("launchpad.sound");
         if(soundString != null) {
             Sound sound = Sound.valueOf(soundString);

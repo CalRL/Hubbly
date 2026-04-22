@@ -64,7 +64,7 @@ public class HelpCommand implements SubCommand {
                     .send();
         }
 
-        Map<String, SubCommand> subCommands = plugin.getSubCommandManager().getSubCommands();
+        Map<String, SubCommand> subCommands = plugin.gameplay().subCommandManager().getSubCommands();
         for(Map.Entry<String, SubCommand> entry : subCommands.entrySet()) {
             SubCommand command = entry.getValue();
             new MessageBuilder()

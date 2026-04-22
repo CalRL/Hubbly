@@ -16,7 +16,7 @@ public class PlayerMoveListener implements Listener {
     private SpawnTaskManager registry;
 
     public PlayerMoveListener(Hubbly plugin) {
-        this.registry = plugin.getManagerFactory().getSpawnTaskManager();
+        this.registry = plugin.services().spawnTaskManager();
     }
     @EventHandler
     private void onPlayerMove(PlayerMoveEvent event) {

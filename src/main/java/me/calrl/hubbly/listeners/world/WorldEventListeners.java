@@ -19,7 +19,7 @@ package me.calrl.hubbly.listeners.world;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.enums.PluginKeys;
-import me.calrl.hubbly.functions.BossBarManager;
+import me.calrl.hubbly.managers.BossBarManager;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.managers.DisabledWorlds;
 import org.bukkit.Location;
@@ -33,7 +33,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.hanging.HangingBreakEvent;
 import org.bukkit.event.player.*;
 import org.bukkit.event.weather.ThunderChangeEvent;
 import org.bukkit.event.weather.WeatherChangeEvent;
@@ -54,7 +53,7 @@ public class WorldEventListeners implements Listener {
     public WorldEventListeners(Hubbly plugin) {
         this.plugin = plugin;
         this.config = plugin.getConfig();
-        this.bossBarManager = plugin.getBossBarManager();
+        this.bossBarManager = plugin.gameplay().bossBarManager();
         this.plugin.getLogger().info("Loaded WorldEventListeners");
     }
 
@@ -65,7 +64,7 @@ public class WorldEventListeners implements Listener {
      * @return return true if the player is in a disabled world
      */
     private boolean inDisabledWorld(Player player) {
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         return disabledWorlds.inDisabledWorld(player.getLocation());
     }
 
@@ -76,7 +75,7 @@ public class WorldEventListeners implements Listener {
      * @return return true if the world is a disabled world
      */
     private boolean inDisabledWorld(World world) {
-        DisabledWorlds disabledWorlds = plugin.getDisabledWorldsManager();
+        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         return disabledWorlds.inDisabledWorld(world);
     }
 

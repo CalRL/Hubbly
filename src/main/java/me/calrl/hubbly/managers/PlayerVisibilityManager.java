@@ -4,6 +4,7 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.enums.PluginKeys;
 import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.enums.data.PlayerVisibilityMode;
+import me.calrl.hubbly.service.ILifecycle;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -15,7 +16,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
-public class PlayerVisibilityManager{
+public class PlayerVisibilityManager implements ILifecycle {
     private final Set<UUID> players = new HashSet<>();
     private final NamespacedKey hideKey;
     private final Hubbly plugin;
@@ -23,10 +24,6 @@ public class PlayerVisibilityManager{
     public PlayerVisibilityManager(Hubbly plugin) {
         this.plugin = plugin;
         this.hideKey = PluginKeys.PLAYER_VISIBILITY.getKey();
-    }
-
-    public void reload() {
-        this.plugin.getServer().getOnlinePlayers().forEach(this::applyHideState);
     }
 
     private void applyHideState(Player player) {
@@ -140,5 +137,20 @@ public class PlayerVisibilityManager{
 
     public boolean contains(UUID uuid) {
         return this.players.contains(uuid);
+    }
+
+    @Override
+    public void onEnable() {
+
+    }
+
+    @Override
+    public void onReload() {
+        this.plugin.getServer().getOnlinePlayers().forEach(this::applyHideState);
+    }
+
+    @Override
+    public void onDisable() {
+
     }
 }
