@@ -67,12 +67,6 @@ public class Hubbly extends JavaPlugin {
         services().onReload();
         gameplay().onReload();
 
-        try {
-//            cleanup();
-            loadFiles();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
         debugMode.info("Restarted.");
     }
 
@@ -80,11 +74,6 @@ public class Hubbly extends JavaPlugin {
     public void onEnable() {
         logger.info("Starting Hubbly...");
         this.saveDefaultConfig();
-        try {
-            loadFiles();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
 
         instance = this;
 
@@ -114,7 +103,6 @@ public class Hubbly extends JavaPlugin {
         logger.info("Components loaded");
 
         if (!this.isTestEnvironment()) {
-            logger.info("Plugin is not in test mode");
             new CustomMetrics(this);
 
             this.services().updateUtil().checkForUpdate(this);
@@ -148,42 +136,14 @@ public class Hubbly extends JavaPlugin {
         logger.info("Hubbly has been disabled!");
     }
 
-
     public static Hubbly getInstance() {
         return instance;
-    }
-
-
-    // todo: this should lowk be done in FileManager instead of here...
-    // itemsConfig should also be moved to FileManager
-    private void loadFiles() {
-        File itemsFile = new File(getDataFolder(), "items.yml");
-        if(!itemsFile.exists()) {
-            saveResource("items.yml", false);
-        }
-        itemsConfig = YamlConfiguration.loadConfiguration(itemsFile);
-
-        /*
-        todo: remove this asap
-         */
-        saveResourceIfNotExists("menus/selector.yml");
-        saveResourceIfNotExists("menus/socials.yml");
-        saveResourceIfNotExists("languages/en.yml");
-
-    }
-
-    public void saveResourceIfNotExists(String path) {
-        File file = new File(this.getDataFolder(), path);
-        if(!file.exists()) {
-            saveResource(path, false);
-        }
     }
 
     private void cleanup() {
         HandlerList.unregisterAll(this);
         Bukkit.getScheduler().cancelTasks(this);
     }
-
 
     public FileConfiguration getItemsConfig() {
         return itemsConfig;
