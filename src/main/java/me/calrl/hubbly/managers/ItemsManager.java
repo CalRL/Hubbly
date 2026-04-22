@@ -49,32 +49,25 @@ public class ItemsManager implements ILifecycle {
     }
 
     private void registerItems() {
+        this.debugMode.info("Registering Items");
         this.setConfig(plugin.resources().fileManager().getConfig("items.yml"));
-        items.put("playervisibility", new PlayerVisibilityItem());
+
+        this.registerPlayerVisibility();
 
         this.register("trident", new TridentItem(plugin), new TridentListener(plugin));
         this.register("enderbow", new EnderbowItem(plugin) , new EnderbowListener(plugin));
         this.register("aote", new AoteItem(plugin), new AoteListener(plugin));
         this.register("grappling_hook", new RodItem(plugin), new RodListener(plugin));
 
-        if (itemsConfig.getConfigurationSection("items") != null) {
-            ConfigurationSection section = itemsConfig.getConfigurationSection("items");
-            if(section == null) {
-                throw new NullPointerException("items key not found in the items config");
-            }
-
-            for (String itemKey : section.getKeys(false)) {
-                items.put(ChatColor.stripColor(itemKey.toLowerCase()), new ConfigItem(itemKey, plugin));
-                debugMode.info("Registered item: " + itemKey);
-            }
-        } else {
-            debugMode.warn("No items found in items.yml");
-        }
-        for(String row : itemsConfig.getStringList("")) {
-            debugMode.warn(row);
+        ConfigurationSection section = itemsConfig.getConfigurationSection("items");
+        if(section == null) {
+            debugMode.info("No items found in items.yml");
+            return;
         }
 
-
+        for (String itemKey : section.getKeys(false)) {
+            this.register(itemKey);
+        }
     }
 
     private void register(String itemName, CustomItem item, Listener listener) {
@@ -92,6 +85,23 @@ public class ItemsManager implements ILifecycle {
         debugMode.info("Registered item: " + itemName);
     }
 
+    /**
+     * Registers the player visibility item if it is enabled in config.
+     */
+    private void registerPlayerVisibility() {
+        if(!plugin.getConfig().getBoolean("playervisibility.enabled")) {
+            return;
+        }
+
+        items.put("playervisibility", new PlayerVisibilityItem());
+        this.debugMode.info("Registering Items");
+    }
+
+    private void register(String itemKey) {
+        this.items.put(itemKey.toLowerCase(), new ConfigItem(itemKey, plugin));
+        this.debugMode.info("Registered item: " + itemKey);
+    }
+
     private void register(String itemName, CustomItem item) {
         this.config = plugin.getConfig();
         String enabledPath = "movementitems." + itemName + ".enabled";
@@ -103,11 +113,6 @@ public class ItemsManager implements ILifecycle {
 
         items.put(itemName, item);
         debugMode.info("Registered item: " + itemName);
-    }
-
-    public void reload() {
-        this.clear();
-        this.registerItems();
     }
 
     public void clean() {
@@ -138,10 +143,12 @@ public class ItemsManager implements ILifecycle {
             return null;
         }
         ItemMeta meta = item.getItemMeta();
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        if(container == null) {
+
+        if(meta == null) {
             return null;
         }
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
         String actionsString = container.get(new NamespacedKey(plugin, "customActions"), PersistentDataType.STRING);
 
         if (actionsString == null || actionsString.isEmpty()) {
@@ -156,8 +163,8 @@ public class ItemsManager implements ILifecycle {
         if(actions == null || actions.isEmpty()) {
             return;
         }
-        actionManager.executeActions(player, actions);
 
+        actionManager.executeActions(player, actions);
     }
 
     @Override
@@ -175,7 +182,8 @@ public class ItemsManager implements ILifecycle {
 
     @Override
     public void onReload() {
-        this.reload();
+        this.clear();
+        this.registerItems();
     }
 
     @Override
