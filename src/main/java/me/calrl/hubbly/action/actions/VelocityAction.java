@@ -13,6 +13,7 @@ public class VelocityAction implements Action {
 
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
-        // todo
+        final BungeeAction action = new BungeeAction();
+        action.execute(plugin, player, data);
     }
 }
