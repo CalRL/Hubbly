@@ -43,7 +43,7 @@ Need help?
 
 - Check the Wiki
 - Open an issue
-- Join the Discord (if applicable)
+- Join the [Discord](https://discord.com/invite/tM5JVsGWnY)
 
 
 ## 📜 License
