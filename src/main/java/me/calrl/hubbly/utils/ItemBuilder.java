@@ -229,7 +229,7 @@ public class ItemBuilder {
         String materialValue = section.getString("material").toUpperCase();
 
         Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(materialValue);
-        if(!xMaterial.isPresent()) return null;
+        if(xMaterial.isEmpty()) return null;
 
         Material material = xMaterial.get().parseMaterial();
 
