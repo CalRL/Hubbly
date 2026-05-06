@@ -2304,11 +2304,26 @@ public enum XMaterial {
         private static final int VERSION;
 
         static { // This needs to be right below VERSION because of initialization order.
-            String version = Bukkit.getVersion();
-            Matcher matcher = Pattern.compile("MC: \\d\\.(\\d+)").matcher(version);
+            String version = Bukkit.getBukkitVersion();
+            String[] parts = version.split("\\.");
 
-            if (matcher.find()) VERSION = Integer.parseInt(matcher.group(1));
-            else throw new IllegalArgumentException("Failed to parse server version from: " + version);
+            try {
+                int major = Integer.parseInt(parts[0]);
+
+                // Legacy versioning scheme: 1.x.x
+                if (major == 1 && parts.length > 1) {
+                    VERSION = Integer.parseInt(parts[1]);
+                }
+                // New Mojang versioning scheme: 26.x.x
+                else {
+                    VERSION = major;
+                }
+            } catch (NumberFormatException ex) {
+                throw new IllegalArgumentException(
+                        "Failed to parse server version from: " + version,
+                        ex
+                );
+            }
         }
 
         /**
