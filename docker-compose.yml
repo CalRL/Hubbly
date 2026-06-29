@@ -1,0 +1,17 @@
+services:
+  minecraft:
+    image: itzg/minecraft-server:latest
+    container_name: papermc
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      VERSION: "26.2"
+      MEMORY: "6G"
+      MOTD: "PaperMC Docker Server"
+      DIFFICULTY: "normal"
+      ONLINE_MODE: "TRUE"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
