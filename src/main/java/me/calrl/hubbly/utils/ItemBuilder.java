@@ -226,9 +226,11 @@ public class ItemBuilder {
      * @return
      */
     public ItemBuilder fromConfig(Player player, ConfigurationSection section) {
-        String materialValue = section.getString("material").toUpperCase();
+        String materialValue = section.getString("material");
+        if(materialValue == null) return null;
 
-        Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(materialValue);
+        String upper = materialValue.toUpperCase();
+        Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(upper);
         if(xMaterial.isEmpty()) return null;
 
         Material material = xMaterial.get().parseMaterial();
@@ -243,9 +245,11 @@ public class ItemBuilder {
             HeadHook headHook = (HeadHook) Hubbly.getInstance().getHookManager().getHook("HEAD_DATABASE");
             if(headHook == null) {
                 debugMode.info("HeadHook is null...");
+                return null;
             }
-
-            ItemStack hdbHead = headHook.getApi().getItemHead(section.getString("hdb"));
+            HeadDatabaseAPI api = headHook.getApi();
+            ItemStack hdbHead = api.getItemHead(section.getString("hdb"));
+            
             builder.setItemStack(hdbHead);
             builder.setItemMeta(hdbHead.getItemMeta());
 
