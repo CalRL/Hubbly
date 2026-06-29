@@ -131,10 +131,7 @@ public class ItemsManager implements ILifecycle {
     }
 
     public Set<String> getItemNames() {
-        Set<String> itemNames = items.keySet();
-
-        System.out.println(itemNames);
-        return itemNames;
+        return items.keySet();
     }
 
     public List<String> getActions(ItemStack item) {
