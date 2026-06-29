@@ -242,14 +242,14 @@ public class ItemBuilder {
         if(material == XMaterial.PLAYER_HEAD.parseMaterial() && section.contains("hdb")) {
             debugMode.info("Trying HDB...");
 
-            HeadHook headHook = (HeadHook) Hubbly.getInstance().getHookManager().getHook("HEAD_DATABASE");
+            final HeadHook headHook = (HeadHook) Hubbly.getInstance().getHookManager().getHook("HEAD_DATABASE");
             if(headHook == null) {
                 debugMode.info("HeadHook is null...");
                 return null;
             }
-            HeadDatabaseAPI api = headHook.getApi();
-            ItemStack hdbHead = api.getItemHead(section.getString("hdb"));
-            
+            final HeadDatabaseAPI api = headHook.getApi();
+            final ItemStack hdbHead = api.getItemHead(section.getString("hdb"));
+
             builder.setItemStack(hdbHead);
             builder.setItemMeta(hdbHead.getItemMeta());
 
