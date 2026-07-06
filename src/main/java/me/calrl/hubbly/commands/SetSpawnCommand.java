@@ -32,11 +32,9 @@ import org.jetbrains.annotations.NotNull;
 public class SetSpawnCommand implements CommandExecutor {
 
     private final Hubbly plugin;
-    private FileConfiguration config;
 
     public SetSpawnCommand(Hubbly plugin) {
         this.plugin = plugin;
-        this.config = plugin.getConfig();
     }
 
     public double spawnRound(double value) {
@@ -78,6 +76,8 @@ public class SetSpawnCommand implements CommandExecutor {
 
             throw new NullPointerException("World is null?");
         }
+
+        FileConfiguration config = plugin.getConfig();
 
         config.set("spawn.world", world.getName());
         config.set("spawn.x", spawnRound(x));
