@@ -194,9 +194,12 @@ public class WorldEventListeners implements Listener {
 
     public boolean doesPlayerHaveItemWithKey(Player player) {
         ItemStack item = player.getInventory().getItemInMainHand(); // Or offhand if you want to check both
-        if (item == null || !item.hasItemMeta()) return false;
+        if (!item.hasItemMeta()) return false;
 
         ItemMeta meta = item.getItemMeta();
+
+        if(meta == null) return false;
+
         PersistentDataContainer container = meta.getPersistentDataContainer();
 
         // Loop through the subset of keys and check if the item has any of these keys
