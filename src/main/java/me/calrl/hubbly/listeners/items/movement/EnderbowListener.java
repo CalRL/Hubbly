@@ -29,21 +29,34 @@ public class EnderbowListener implements Listener {
         this.plugin = plugin;
     }
 
-    @EventHandler
-    private void onPlayerJoin(PlayerJoinEvent event) {
-        FileConfiguration config = plugin.getConfig();
-        if(!config.getBoolean("movementitems.enderbow.enabled")) return;
+    private ItemStack createFakeArrow() {
+        ItemStack arrow = new ItemStack(Material.ARROW);
+        ItemMeta meta = arrow.getItemMeta();
 
-        DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
+        meta.getPersistentDataContainer().set(
+                PluginKeys.ENDER_BOW.getKey(),
+                PersistentDataType.STRING,
+                "fake_arrow"
+        );
 
-        final Player player = event.getPlayer();
-        if(disabledWorlds.inDisabledWorld(player.getWorld())) return;
+        arrow.setItemMeta(meta);
+        return arrow;
+    }
 
-        if(!player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())) {
-            return;
+    private void removeFakeArrow(Player player) {
+        PlayerInventory inventory = player.getInventory();
+
+        for (ItemStack stack : inventory.getContents()) {
+            if (stack == null || stack.getType() != Material.ARROW) continue;
+
+            ItemMeta meta = stack.getItemMeta();
+            if (meta == null) continue;
+
+            if (meta.getPersistentDataContainer().has(PluginKeys.ENDER_BOW.getKey())) {
+                stack.setAmount(stack.getAmount() - 1);
+                return;
+            }
         }
-
-        player.getInventory().setItem(17, new ItemStack(Material.ARROW));
     }
 
     @EventHandler
@@ -91,7 +104,7 @@ public class EnderbowListener implements Listener {
         }
 
         ItemStack slotItem = inventory.getItem(17);
-        ItemStack arrow = new ItemStack(Material.ARROW);
+        ItemStack arrow = this.createFakeArrow();
 
         if(slotItem == null) {
             plugin.getDebugMode().info("Slot 17 is empty, placing arrow.");
@@ -150,7 +163,13 @@ public class EnderbowListener implements Listener {
         container.set(PluginKeys.ENDER_BOW.getKey(), PersistentDataType.STRING, "arrow");
 
         plugin.getDebugMode().info("Giving player a new arrow in slot 17.");
-        player.getInventory().setItem(17, new ItemStack(Material.ARROW));
+        this.removeFakeArrow(player);
+
+        if (player.getInventory().getItem(17) == null) {
+            player.getInventory().setItem(17, createFakeArrow());
+        } else {
+            player.getInventory().addItem(createFakeArrow());
+        }
 
     }
 
