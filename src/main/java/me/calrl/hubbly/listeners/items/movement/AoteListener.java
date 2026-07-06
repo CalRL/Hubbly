@@ -81,7 +81,6 @@ public class AoteListener implements Listener {
         );
 
         if (hit == null) {
-            player.sendMessage("Null");
             return getLocationAhead(player, distance);
         }
 
