@@ -148,7 +148,6 @@ public class EnderbowListener implements Listener {
 
         if(!player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())) {
             plugin.getDebugMode().info("Player does not have permission to shoot Ender Bow.");
-            player.sendMessage(String.valueOf(player.hasPermission(Permissions.USE_ENDER_BOW.getPermission())));
             event.setCancelled(true);
             return;
         }
