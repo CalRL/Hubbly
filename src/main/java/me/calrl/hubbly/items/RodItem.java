@@ -48,11 +48,11 @@ public class RodItem implements CustomItem {
         }
         new DebugMode().info(section.getKeys(false).toString());
         ItemBuilder builder = new ItemBuilder();
-        ItemStack item = builder
+        return builder
                 .fromConfig(this.player, section)
                 .addPersistentData(PluginKeys.GRAPPLING_HOOK.getKey(), PersistentDataType.STRING, "rod")
+                .setUnbreakable()
                 .build();
-        return item;
     }
 
     @Override
