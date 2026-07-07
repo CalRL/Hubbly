@@ -52,11 +52,11 @@ public class SpawnCommand implements TabExecutor {
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] args) {
-        config = plugin.getConfig();
-
-
         if(!(sender instanceof Player player)) {
-            sender.sendMessage(ChatColor.RED + config.getString("messages.no_console"));
+            new MessageBuilder(plugin)
+                    .setPlayer(sender)
+                    .setKey("no_console")
+                    .send();
             return true;
         }
 

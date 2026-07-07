@@ -43,6 +43,8 @@ public class ListenerRegistrar {
         registerListener(new EnderbowListener(plugin));
         registerListener(new AoteListener(plugin));
         registerListener(new RodListener(plugin));
+        registerListener(new TridentListener(plugin));
+
 
         registerListener(new WorldEventListeners(plugin));
         registerListener(new ConfigItemListener(plugin));
