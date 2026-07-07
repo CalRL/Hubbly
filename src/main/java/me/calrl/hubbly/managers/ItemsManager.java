@@ -35,7 +35,6 @@ public class ItemsManager implements ILifecycle {
     private FileConfiguration itemsConfig;
     private DebugMode debugMode;
     private final Map<String, CustomItem> items = new HashMap<>();
-    private Map<String, Listener> listeners;
     private File itemsFile;
     private ActionManager actionManager;
     private Player player;
@@ -54,10 +53,10 @@ public class ItemsManager implements ILifecycle {
 
         this.registerPlayerVisibility();
 
-        this.register("trident", new TridentItem(plugin), new TridentListener(plugin));
-        this.register("enderbow", new EnderbowItem(plugin) , new EnderbowListener(plugin));
-        this.register("aote", new AoteItem(plugin), new AoteListener(plugin));
-        this.register("grappling_hook", new RodItem(plugin), new RodListener(plugin));
+        this.register("trident", new TridentItem(plugin));
+        this.register("enderbow", new EnderbowItem(plugin));
+        this.register("aote", new AoteItem(plugin));
+        this.register("grappling_hook", new RodItem(plugin));
 
         ConfigurationSection section = itemsConfig.getConfigurationSection("items");
         if(section == null) {
@@ -68,21 +67,6 @@ public class ItemsManager implements ILifecycle {
         for (String itemKey : section.getKeys(false)) {
             this.register(itemKey);
         }
-    }
-
-    private void register(String itemName, CustomItem item, Listener listener) {
-        this.config = plugin.getConfig();
-        String enabledPath = "movementitems." + itemName + ".enabled";
-        boolean isEnabled = config.getBoolean(enabledPath);
-        if(!isEnabled) {
-            debugMode.info("Item: " + itemName + " not registered.");
-            return;
-        }
-
-        Bukkit.getPluginManager().registerEvents(listener, plugin);
-        items.put(itemName, item);
-        listeners.put(itemName, listener);
-        debugMode.info("Registered item: " + itemName);
     }
 
     /**
@@ -113,13 +97,6 @@ public class ItemsManager implements ILifecycle {
 
         items.put(itemName, item);
         debugMode.info("Registered item: " + itemName);
-    }
-
-    public void clean() {
-        Collection<Listener> collection = this.listeners.values();
-        for(Listener listener : collection) {
-            HandlerList.unregisterAll(listener);
-        }
     }
 
     public void clear() {
@@ -172,8 +149,6 @@ public class ItemsManager implements ILifecycle {
         this.actionManager = plugin.gameplay().actionManager();
         this.itemsConfig = plugin.getItemsConfig();
 
-        this.listeners = new HashMap<>();
-
         this.registerItems();
     }
 
@@ -186,6 +161,5 @@ public class ItemsManager implements ILifecycle {
     @Override
     public void onDisable() {
         this.clear();
-        this.clean();
     }
 }

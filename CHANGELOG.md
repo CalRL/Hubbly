@@ -40,3 +40,13 @@
   - `/hubbly pv hide` to enable hide mode
 - Added `playervisibility.hide` and `playervisibility.show` keys in the messages file
   (available on github in english and portuguese)
+
+## [3.6.2] - 07-07-2026
+- Fix Enderbow / Trident not firing
+- `/setspawn` no longer breaks after running `/hubbly reload`
+- revamped the AOTE system: no longer teleports into unsafe location
+- Plugin's first start now adds movement.yml file
+- Enderbow now gives arrow on first pull
+- Grappling Hook is now unbreakable
+- /spawn now uses new locale system for the no_console message
+- WorldEvents no longer throws an exception when player is holding a metaless item

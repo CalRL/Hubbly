@@ -73,6 +73,7 @@ public class FileManager implements ILifecycle {
         handler.saveResourceIfNotExists(this.plugin, "items.yml");
         handler.saveResourceIfNotExists(this.plugin, "menus/selector.yml");
         handler.saveResourceIfNotExists(this.plugin, "menus/socials.yml");
+        handler.saveResourceIfNotExists(this.plugin, "menus/movement.yml");
         handler.saveResourceIfNotExists(this.plugin, "languages/en.yml");
 
     }
