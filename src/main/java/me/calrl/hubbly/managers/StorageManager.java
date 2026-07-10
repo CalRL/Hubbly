@@ -23,11 +23,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 public class StorageManager {
-    private AsyncPlayerSaveQueue saveQueue;
-    private Database database;
+    private volatile AsyncPlayerSaveQueue saveQueue;
+    private volatile Database database;
     private final Logger logger;
     private final Hubbly plugin;
-    private boolean active;
+    private volatile boolean active;
+    private volatile boolean shuttingDown;
     private final ConcurrentHashMap<UUID, PlayerData> map;
 
     public StorageManager(Hubbly plugin) {
@@ -54,51 +55,97 @@ public class StorageManager {
         FileConfiguration config = plugin.getConfig();
 
         Credentials credentials = Credentials.fromConfig(config);
-        database = new Database(credentials);
+        Database startupDatabase = new Database(credentials);
+        database = startupDatabase;
+        active = false;
+        shuttingDown = false;
 
         logger.info("Database enabled, attempting connection...");
 
-        try {
-            database.connect();
+        CompletableFuture
+                .runAsync(() -> connectAndInitialize(startupDatabase))
+                .whenComplete((ignored, error) -> {
+                    if (error != null) {
+                        handleStartupFailure(error, startupDatabase);
+                        return;
+                    }
 
-            try (Connection conn = database.getConnection()) {
-                if (!conn.isValid(2)) {
-                    throw new SQLException("Connection validation failed");
-                }
-            }
-
-            logger.info("Successfully connected to MySQL database");
-            initializeTables().join();
-
-            saveQueue = new AsyncPlayerSaveQueue(this::savePlayer);
-            active = true;
-
-        } catch (SQLException | CompletionException e) {
-            logger.warning("Failed to start database storage: " + getRootMessage(e));
-            logger.warning("Falling back to PersistentDataContainer storage");
-            active = false;
-            if (database != null) {
-                database.disconnect();
-            }
-            database = null;
-        }
+                    finishStartup(startupDatabase);
+                });
     }
 
     /**
      * Fire-and-forget save
      */
     public void enqueueSave(PlayerData snapshot) {
-        if (!active) return;
+        AsyncPlayerSaveQueue queue = saveQueue;
+        if (!active || queue == null) return;
 
-        saveQueue.enqueue(snapshot);
+        queue.enqueue(snapshot);
+    }
+
+    private void initializeTables(Database startupDatabase) throws SQLException {
+        try (Connection conn = startupDatabase.getConnection()) {
+            String sql = """
+                CREATE TABLE IF NOT EXISTS player_data (
+                    uuid VARCHAR(36) PRIMARY KEY,
+                    name VARCHAR(16) NOT NULL,
+                    movement VARCHAR(16),
+                    visibility VARCHAR(16),
+                    last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    INDEX idx_name (name)
+                )
+                """;
+
+            conn.createStatement().execute(sql);
+            logger.info("Database tables initialized successfully");
+        }
+    }
+
+    private void handleStartupFailure(Throwable error, Database startupDatabase) {
+        logger.warning("Failed to start database storage: " + getRootMessage(error));
+        logger.warning("Falling back to PersistentDataContainer storage");
+        active = false;
+        startupDatabase.disconnect();
+        if (database == startupDatabase) {
+            database = null;
+        }
+    }
+
+    private void finishStartup(Database startupDatabase) {
+        if (shuttingDown || database != startupDatabase) {
+            startupDatabase.disconnect();
+            return;
+        }
+
+        saveQueue = new AsyncPlayerSaveQueue(this::savePlayer);
+        active = true;
+        logger.info("Database storage is active");
+    }
+
+    private void connectAndInitialize(Database startupDatabase) {
+        try {
+            startupDatabase.connect();
+
+            try (Connection conn = startupDatabase.getConnection()) {
+                if (!conn.isValid(2)) {
+                    throw new SQLException("Connection validation failed");
+                }
+            }
+
+            initializeTables(startupDatabase);
+        } catch (SQLException e) {
+            throw new CompletionException(e);
+        }
     }
 
     public @NotNull PlayerData loadPlayer(UUID uuid, String name) {
-        if (!active) {
+        Database currentDatabase = database;
+        if (!active || currentDatabase == null) {
             return defaultPlayer(uuid, name);
         }
 
-        try (Connection con = database.getConnection();
+        try (Connection con = currentDatabase.getConnection();
              PreparedStatement ps = con.prepareStatement(
                      "SELECT movement, visibility FROM player_data WHERE uuid = ?"
              )) {
@@ -124,6 +171,11 @@ public class StorageManager {
     }
 
     private void savePlayer(PlayerData data) {
+        Database currentDatabase = database;
+        if (currentDatabase == null) {
+            return;
+        }
+
         new DebugMode(plugin).info(String.format("Saving PlayerData for player: %s, %s", data.getName(), data));
         final String sql = """
         INSERT INTO player_data (uuid, name, movement, visibility, last_seen)
@@ -135,7 +187,7 @@ public class StorageManager {
             last_seen = CURRENT_TIMESTAMP
         """;
 
-        try (Connection con = database.getConnection();
+        try (Connection con = currentDatabase.getConnection();
              PreparedStatement ps = con.prepareStatement(sql)) {
 
             ps.setString(1, data.getUuid().toString());
@@ -148,30 +200,6 @@ public class StorageManager {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-    }
-
-    private CompletableFuture<Void> initializeTables() {
-        return CompletableFuture.runAsync(() -> {
-            try (Connection conn = database.getConnection()) {
-                String sql = """
-                    CREATE TABLE IF NOT EXISTS player_data (
-                        uuid VARCHAR(36) PRIMARY KEY,
-                        name VARCHAR(16) NOT NULL,
-                        movement VARCHAR(16),
-                        visibility VARCHAR(16),
-                        last_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        INDEX idx_name (name)
-                    )
-                    """;
-
-                conn.createStatement().execute(sql);
-                logger.info("Database tables initialized successfully");
-
-            } catch (SQLException e) {
-                logger.severe("Failed to initialize database tables!");
-                throw new CompletionException(e);
-            }
-        });
     }
 
     private PlayerMovementMode parseMovementMode(String value) {
@@ -264,13 +292,20 @@ public class StorageManager {
     }
 
     public void shutdown() {
-        if (saveQueue != null) {
-            saveQueue.shutdownAndFlush();
-        }
-        if (database != null) {
-            database.disconnect();
-        }
+        shuttingDown = true;
         active = false;
+
+        AsyncPlayerSaveQueue queue = saveQueue;
+        saveQueue = null;
+        if (queue != null) {
+            queue.shutdownAndFlush();
+        }
+
+        Database currentDatabase = database;
+        database = null;
+        if (currentDatabase != null) {
+            currentDatabase.disconnect();
+        }
         logger.info("StorageManager shut down");
     }
 
