@@ -61,8 +61,7 @@ public class PlayerJoinListener implements Listener {
     private void onPlayerPreJoin(AsyncPlayerPreLoginEvent event) {
         UUID uuid = event.getUniqueId();
         StorageManager storage = plugin.getStorageManager();
-        FileConfiguration config = plugin.getConfig();
-        if(config.getBoolean("database.enabled") && storage != null && storage.isActive()) {
+        if(storage != null && storage.isActive()) {
             PlayerData data = storage.loadPlayer(uuid, event.getName());
             storage.addToMap(uuid, data);
         }
