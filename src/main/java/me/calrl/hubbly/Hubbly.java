@@ -121,7 +121,7 @@ public class Hubbly extends JavaPlugin {
         cleanup();
         logger.info("Cleanup success");
 
-        if(this.storageManager != null && this.storageManager.isActive()) {
+        if(this.storageManager != null) {
             this.storageManager.shutdown();
         }
 

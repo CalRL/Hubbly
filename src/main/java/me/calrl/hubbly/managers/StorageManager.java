@@ -25,6 +25,7 @@ import java.util.logging.Logger;
 public class StorageManager {
     private volatile AsyncPlayerSaveQueue saveQueue;
     private volatile Database database;
+    private volatile CompletableFuture<Void> startupFuture;
     private final Logger logger;
     private final Hubbly plugin;
     private volatile boolean active;
@@ -62,7 +63,7 @@ public class StorageManager {
 
         logger.info("Database enabled, attempting connection...");
 
-        CompletableFuture
+        startupFuture = CompletableFuture
                 .runAsync(() -> connectAndInitialize(startupDatabase))
                 .whenComplete((ignored, error) -> {
                     if (error != null) {
@@ -115,6 +116,9 @@ public class StorageManager {
     private void finishStartup(Database startupDatabase) {
         if (shuttingDown || database != startupDatabase) {
             startupDatabase.disconnect();
+            if (database == startupDatabase) {
+                database = null;
+            }
             return;
         }
 
@@ -294,6 +298,15 @@ public class StorageManager {
     public void shutdown() {
         shuttingDown = true;
         active = false;
+
+        CompletableFuture<Void> future = startupFuture;
+        if (future != null && !future.isDone()) {
+            try {
+                future.join();
+            } catch (CompletionException e) {
+                logger.warning("Database startup finished during shutdown: " + getRootMessage(e));
+            }
+        }
 
         AsyncPlayerSaveQueue queue = saveQueue;
         saveQueue = null;
