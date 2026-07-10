@@ -92,7 +92,7 @@ public class PlayerJoinListener implements Listener {
 
         PlayerVisibilityManager pvManager = plugin.services().playerVisibilityManager();
 
-        pvManager.setHideMode(player, data.visibility().getMode());
+        pvManager.setHideMode(player, data.visibility().getMode(), false);
         pvManager.handleJoin(player);
 
         DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();

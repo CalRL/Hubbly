@@ -26,7 +26,7 @@ public class DyeItemHandler {
         // get state in db
         // change item to what appears in db
         StorageManager storage = this.plugin.getStorageManager();
-        if(storage.isActive() && plugin.getConfig().getBoolean("database.enabled")) {
+        if(storage != null && storage.isActive() && plugin.getConfig().getBoolean("database.enabled")) {
 
             return;
         }

@@ -70,6 +70,10 @@ public class PlayerMovementHandler {
     }
 
     public void setMovementMode(PlayerMovementMode mode) {
+        this.setMovementMode(mode, true);
+    }
+
+    public void setMovementMode(PlayerMovementMode mode, boolean persist) {
         new DebugMode(plugin).info(String.format("Setting movement mode: %s", mode.toString()));
         PersistentDataContainer container = this.player.getPersistentDataContainer();
 
@@ -77,9 +81,13 @@ public class PlayerMovementHandler {
         player.setAllowFlight(mode != PlayerMovementMode.NONE);
         player.setFlying(false);
 
+        if (!persist) {
+            return;
+        }
+
         FileConfiguration config = plugin.getConfig();
         StorageManager storage = plugin.getStorageManager();
-        if(config.getBoolean("database.enabled") && storage.isActive()) {
+        if(config.getBoolean("database.enabled") && storage != null && storage.isActive()) {
             new DebugMode(plugin).info(String.format("Saving snapshot for player: %s", player.getName()));
             storage.enqueueSave(PlayerData.from(player));
         }
@@ -105,10 +113,10 @@ public class PlayerMovementHandler {
         FileConfiguration config = plugin.getConfig();
         StorageManager storage = plugin.getStorageManager();
 
-        if(config.getBoolean("database.enabled") && storage.isActive()) {
+        if(config.getBoolean("database.enabled") && storage != null && storage.isActive()) {
             if(data != null) {
                 PlayerMovementData mvData = data.movement();
-                this.setMovementMode(mvData.getMode());
+                this.setMovementMode(mvData.getMode(), false);
                 return;
             }
         } else {
@@ -119,6 +127,6 @@ public class PlayerMovementHandler {
                 return;
             }
         }
-        this.setMovementMode(PlayerMovementMode.NONE);
+        this.setMovementMode(PlayerMovementMode.NONE, false);
     }
 }
