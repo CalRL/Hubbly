@@ -1,22 +1,20 @@
 package me.calrl.hubbly.storage;
 
-import org.jetbrains.annotations.Async;
-
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
 
 public class AsyncPlayerSaveQueue {
-    private final BlockingQueue<PlayerData> queue = new LinkedBlockingQueue<>();
+    private final BlockingQueue<UUID> queue = new LinkedBlockingQueue<>();
+    private final ConcurrentMap<UUID, PlayerData> latestSnapshots = new ConcurrentHashMap<>();
     private final Set<UUID> pending = ConcurrentHashMap.newKeySet();
     private final ExecutorService worker;
     private final Consumer<PlayerData> saveFunction;
     private volatile boolean running = true;
 
     public AsyncPlayerSaveQueue(Consumer<PlayerData> saveFunction) {
-        this. saveFunction = saveFunction;
+        this.saveFunction = saveFunction;
         this.worker = Executors.newSingleThreadExecutor(r -> {
             Thread t = new Thread(r, "Hubbly-PlayerSaveWorker");
             t.setDaemon(true);
@@ -28,17 +26,28 @@ public class AsyncPlayerSaveQueue {
 
     private void startWorker() {
         worker.submit(() -> {
-            while (running || !queue.isEmpty()) {
+            while (running || !queue.isEmpty() || !latestSnapshots.isEmpty()) {
+                UUID uuid = null;
                 try {
-                    PlayerData data = queue.poll(1, TimeUnit.SECONDS);
-                    if (data == null) continue;
+                    uuid = queue.poll(1, TimeUnit.SECONDS);
+                    if (uuid == null) continue;
+
+                    PlayerData data = latestSnapshots.remove(uuid);
+                    if (data == null) {
+                        pending.remove(uuid);
+                        continue;
+                    }
 
                     saveFunction.accept(data);
-                    pending.remove(data.getUuid());
 
                 } catch (InterruptedException ignored) {
                 } catch (Exception e) {
                     e.printStackTrace();
+                } finally {
+                    if (uuid != null) {
+                        pending.remove(uuid);
+                        queueLatestSnapshot(uuid);
+                    }
                 }
             }
         });
@@ -49,11 +58,16 @@ public class AsyncPlayerSaveQueue {
      */
     public void enqueue(PlayerData snapshot) {
         UUID uuid = snapshot.getUuid();
-        if (!pending.add(uuid)) {
+        latestSnapshots.put(uuid, snapshot);
+        queueLatestSnapshot(uuid);
+    }
+
+    private void queueLatestSnapshot(UUID uuid) {
+        if (!latestSnapshots.containsKey(uuid) || !pending.add(uuid)) {
             return;
         }
 
-        boolean success = queue.offer(snapshot);
+        boolean success = queue.offer(uuid);
 
         if (!success) {
             pending.remove(uuid);
