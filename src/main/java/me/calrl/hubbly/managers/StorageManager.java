@@ -11,12 +11,14 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.jetbrains.annotations.Async;
+import org.jetbrains.annotations.NotNull;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.UUID;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
@@ -65,16 +67,19 @@ public class StorageManager {
                 }
             }
 
+            logger.info("Successfully connected to MySQL database");
+            initializeTables().join();
+
             saveQueue = new AsyncPlayerSaveQueue(this::savePlayer);
             active = true;
 
-            logger.info("Successfully connected to MySQL database");
-            initializeTables();
-
-        } catch (SQLException e) {
-            logger.warning("Failed to connect to database: " + e.getMessage());
+        } catch (SQLException | CompletionException e) {
+            logger.warning("Failed to start database storage: " + getRootMessage(e));
             logger.warning("Falling back to PersistentDataContainer storage");
             active = false;
+            if (database != null) {
+                database.disconnect();
+            }
             database = null;
         }
     }
@@ -88,7 +93,7 @@ public class StorageManager {
         saveQueue.enqueue(snapshot);
     }
 
-    public PlayerData loadPlayer(UUID uuid, String name) {
+    public @NotNull PlayerData loadPlayer(UUID uuid, String name) {
         if (!active) {
             return defaultPlayer(uuid, name);
         }
@@ -105,18 +110,14 @@ public class StorageManager {
                     return new PlayerData(
                             uuid,
                             name,
-                            new PlayerMovementData(
-                                    PlayerMovementMode.valueOf(rs.getString("movement"))
-                            ),
-                            new PlayerVisibilityData(
-                                    PlayerVisibilityMode.valueOf(rs.getString("visibility"))
-                            )
+                            new PlayerMovementData(parseMovementMode(rs.getString("movement"))),
+                            new PlayerVisibilityData(parseVisibilityMode(rs.getString("visibility")))
                     );
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
+            return defaultPlayer(uuid, name);
         }
 
         return defaultPlayer(uuid, name);
@@ -149,8 +150,8 @@ public class StorageManager {
         }
     }
 
-    private void initializeTables() {
-        plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
+    private CompletableFuture<Void> initializeTables() {
+        return CompletableFuture.runAsync(() -> {
             try (Connection conn = database.getConnection()) {
                 String sql = """
                     CREATE TABLE IF NOT EXISTS player_data (
@@ -168,9 +169,43 @@ public class StorageManager {
 
             } catch (SQLException e) {
                 logger.severe("Failed to initialize database tables!");
-                e.printStackTrace();
+                throw new CompletionException(e);
             }
         });
+    }
+
+    private PlayerMovementMode parseMovementMode(String value) {
+        if (value == null) {
+            return PlayerMovementMode.NONE;
+        }
+
+        try {
+            return PlayerMovementMode.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            logger.warning("Invalid stored player movement mode: " + value);
+            return PlayerMovementMode.NONE;
+        }
+    }
+
+    private PlayerVisibilityMode parseVisibilityMode(String value) {
+        if (value == null) {
+            return PlayerVisibilityMode.VISIBLE;
+        }
+
+        try {
+            return PlayerVisibilityMode.valueOf(value);
+        } catch (IllegalArgumentException e) {
+            logger.warning("Invalid stored player visibility mode: " + value);
+            return PlayerVisibilityMode.VISIBLE;
+        }
+    }
+
+    private String getRootMessage(Throwable throwable) {
+        Throwable current = throwable;
+        while (current.getCause() != null) {
+            current = current.getCause();
+        }
+        return current.getMessage();
     }
 
     public Result updateMovementMode(Player player, PlayerMovementMode mode) {
