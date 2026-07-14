@@ -32,6 +32,10 @@ repositories {
     maven {
         url = uri("https://repo.codemc.io/repository/maven-public/")
     }
+    maven {
+        name = "faststatsReleases"
+        url = uri("https://repo.faststats.dev/releases")
+    }
 }
 
 dependencies {
@@ -40,6 +44,7 @@ dependencies {
     compileOnly("org.spigotmc:spigot:1.20.6-R0.1-SNAPSHOT")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("com.arcaniax:HeadDatabase-API:1.3.2")
+    implementation("dev.faststats.metrics:bukkit:0.27.2")
 
     implementation("com.zaxxer:HikariCP:7.0.2")
 
@@ -50,7 +55,7 @@ dependencies {
 }
 
 group = "me.calrl"
-version = "3.6.2"
+version = "3.6.3"
 description = "Hubbly"
 java.sourceCompatibility = JavaVersion.VERSION_21
 
