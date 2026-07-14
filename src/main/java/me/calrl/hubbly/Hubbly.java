@@ -17,27 +17,20 @@
 
 package me.calrl.hubbly;
 
-import me.calrl.hubbly.action.ActionManager;
-import me.calrl.hubbly.managers.BossBarManager;
+import dev.faststats.ErrorTracker;
+import dev.faststats.bukkit.BukkitContext;
 import me.calrl.hubbly.hooks.HookManager;
 import me.calrl.hubbly.managers.*;
-import me.calrl.hubbly.managers.cooldown.CooldownManager;
-import me.calrl.hubbly.managers.LockChat;
 import me.calrl.hubbly.metrics.CustomMetrics;
-import me.calrl.hubbly.metrics.Metrics;
 import me.calrl.hubbly.managers.StorageManager;
 import me.calrl.hubbly.service.GameplayService;
 import me.calrl.hubbly.service.ResourceService;
 import me.calrl.hubbly.service.Services;
-import me.calrl.hubbly.utils.AntiWDLSetup;
-import me.calrl.hubbly.utils.update.UpdateUtil;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.io.File;
 import java.util.logging.Logger;
 
 public class Hubbly extends JavaPlugin {
@@ -52,6 +45,10 @@ public class Hubbly extends JavaPlugin {
     private Services services;
     private GameplayService gameplayService;
     private ResourceService resourceService;
+    public static final ErrorTracker ERROR_TRACKER = ErrorTracker.contextAware();
+    private final BukkitContext context = new BukkitContext.Factory(this, "78d983069ea79304be9a7cd64fefa32e")
+            .errorTrackerService(ERROR_TRACKER)
+            .create();
 
     private String prefix;
 
@@ -74,6 +71,10 @@ public class Hubbly extends JavaPlugin {
     public void onEnable() {
         logger.info("Starting Hubbly...");
         this.saveDefaultConfig();
+
+        if(!this.isTestEnvironment()) {
+            context.ready();
+        }
 
         instance = this;
 
@@ -132,6 +133,10 @@ public class Hubbly extends JavaPlugin {
         this.getServer().getMessenger().unregisterOutgoingPluginChannel(this, "wdl:control");
 
         Bukkit.getScheduler().cancelTasks(this);
+
+        if(!this.isTestEnvironment()) {
+            context.shutdown();
+        }
 
         logger.info("Hubbly has been disabled!");
     }
