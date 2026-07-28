@@ -18,7 +18,9 @@
 package me.calrl.hubbly;
 
 import dev.faststats.ErrorTracker;
+import dev.faststats.Metrics;
 import dev.faststats.bukkit.BukkitContext;
+import me.calrl.hubbly.enums.Result;
 import me.calrl.hubbly.hooks.HookManager;
 import me.calrl.hubbly.managers.*;
 import me.calrl.hubbly.metrics.CustomMetrics;
@@ -27,10 +29,16 @@ import me.calrl.hubbly.service.GameplayService;
 import me.calrl.hubbly.service.ResourceService;
 import me.calrl.hubbly.service.Services;
 import org.bukkit.Bukkit;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.Objects;
 import java.util.logging.Logger;
 
 public class Hubbly extends JavaPlugin {
@@ -48,23 +56,13 @@ public class Hubbly extends JavaPlugin {
     public static final ErrorTracker ERROR_TRACKER = ErrorTracker.contextAware();
     private final BukkitContext context = new BukkitContext.Factory(this, "78d983069ea79304be9a7cd64fefa32e")
             .errorTrackerService(ERROR_TRACKER)
+            .metrics(Metrics.Factory::create)
             .create();
 
     private String prefix;
 
-    public void reloadPlugin() {
-        debugMode.info("Restarting...");
-
-        this.reloadConfig();
-        this.saveConfig();
-
-        fileManager.reloadFiles();
-
-        resources().onReload();
-        services().onReload();
-        gameplay().onReload();
-
-        debugMode.info("Restarted.");
+    public boolean reloadPlugin() {
+        return PluginReloader.reload(this);
     }
 
     @Override
@@ -165,6 +163,7 @@ public class Hubbly extends JavaPlugin {
     public Services services() { return this.services; }
     public GameplayService gameplay() { return this.gameplayService; }
     public ResourceService resources() { return this.resourceService; }
+    public FileManager fileManager() { return this.fileManager; }
 
     private boolean isTestEnvironment() {
         return Boolean.getBoolean("hubbly.test");

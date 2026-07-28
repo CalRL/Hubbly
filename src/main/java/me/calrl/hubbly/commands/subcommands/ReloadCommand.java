@@ -60,22 +60,13 @@ public class ReloadCommand implements SubCommand {
                     .send();
             return;
         }
-        try {
-            bossBarManager = plugin.gameplay().bossBarManager();
-            if (bossBarManager != null) {
-                bossBarManager.removeAllBossBars();
-            }
-            plugin.reloadPlugin();
 
-            new MessageBuilder(plugin)
-                    .setPlayer(sender)
-                    .setKey("reload")
-                    .send();
-
-            bossBarManager = plugin.gameplay().bossBarManager();
-            bossBarManager.reAddAllBossBars();
-        } catch (Exception e) {
-            plugin.getLogger().info(String.valueOf(e));
+        boolean success = plugin.reloadPlugin();
+        MessageBuilder builder = new MessageBuilder(plugin).setPlayer(sender);
+        if(success) {
+            builder.setKey("reload").send();
+        } else {
+            builder.setKey("failure").send();
         }
     }
 }
