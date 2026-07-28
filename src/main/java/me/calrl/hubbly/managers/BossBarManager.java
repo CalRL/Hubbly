@@ -141,7 +141,8 @@ public class BossBarManager implements ILifecycle {
 
     @Override
     public void onReload() {
-
+        this.removeAllBossBars();
+        this.reAddAllBossBars();
     }
 
     @Override
