@@ -76,7 +76,8 @@ public class ActionManager implements ILifecycle {
                 new ClearAction(),
                 new LinkAction(),
                 new MenuAction(),
-                new EffectAction()
+                new EffectAction(),
+                new VelocityAction()
         );
     }
     public void executeAction(Player player, String actionData) {
