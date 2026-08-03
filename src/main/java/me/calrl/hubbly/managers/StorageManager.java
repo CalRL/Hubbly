@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.*;
@@ -97,7 +98,10 @@ public class StorageManager {
                 )
                 """;
 
-            conn.createStatement().execute(sql);
+            try(Statement statement = conn.createStatement()) {
+                statement.execute(sql);
+            }
+
             logger.info("Database tables initialized successfully");
         }
     }
