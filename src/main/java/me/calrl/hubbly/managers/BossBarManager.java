@@ -117,9 +117,9 @@ public class BossBarManager implements ILifecycle {
         DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
         FileConfiguration config = plugin.getConfig();
         boolean isEnaled = config.getBoolean("player.bossbar.enabled");
+        if(!isEnaled) return;
         for (Player player : Bukkit.getOnlinePlayers()) {
-            if(disabledWorlds.inDisabledWorld(player.getWorld())) return;
-            if(!isEnaled) return;
+            if(disabledWorlds.inDisabledWorld(player.getWorld())) continue;
             this.createBossBar(player);
         }
     }
