@@ -17,9 +17,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.UUID;
-import java.util.concurrent.CompletionException;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.*;
 import java.util.logging.Logger;
 
 public class StorageManager {
@@ -302,9 +300,14 @@ public class StorageManager {
         CompletableFuture<Void> future = startupFuture;
         if (future != null && !future.isDone()) {
             try {
-                future.join();
-            } catch (CompletionException e) {
+                future.get(10, TimeUnit.SECONDS);
+            } catch (ExecutionException e) {
                 logger.warning("Database startup finished during shutdown: " + getRootMessage(e));
+            } catch (TimeoutException e) {
+                logger.warning("Database startup did not finish within 10s; continuing shutdown");
+                future.cancel(true);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
             }
         }
 
