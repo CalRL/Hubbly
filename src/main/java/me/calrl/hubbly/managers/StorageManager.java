@@ -16,6 +16,7 @@ import org.jetbrains.annotations.NotNull;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.*;
 import java.util.logging.Logger;
@@ -209,12 +210,12 @@ public class StorageManager {
             return PlayerMovementMode.NONE;
         }
 
-        try {
-            return PlayerMovementMode.valueOf(value);
-        } catch (IllegalArgumentException e) {
+        Optional<PlayerMovementMode> mode = PlayerMovementMode.fromString(value);
+        if (mode.isEmpty()) {
             logger.warning("Invalid stored player movement mode: " + value);
             return PlayerMovementMode.NONE;
         }
+        return mode.get();
     }
 
     private PlayerVisibilityMode parseVisibilityMode(String value) {
@@ -260,7 +261,7 @@ public class StorageManager {
         PlayerMovementMode movementMode = PlayerMovementMode.NONE;
         String movementValue = this.getMovementMode(player);
         if (movementValue != null) {
-            movementMode = PlayerMovementMode.valueOf(movementValue);
+            movementMode = parseMovementMode(movementValue);
         }
         PlayerMovementData mvData = new PlayerMovementData(movementMode);
         PlayerData data = new PlayerData(

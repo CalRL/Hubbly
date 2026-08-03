@@ -63,10 +63,9 @@ public class PlayerMovementHandler {
     public PlayerMovementMode getMovementMode() {
         PersistentDataContainer container = player.getPersistentDataContainer();
         NamespacedKey key = PluginKeys.MOVEMENT_KEY.getKey();
-        assert container.has(key);
 
         String value = container.get(key, PersistentDataType.STRING);
-        return PlayerMovementMode.valueOf(value);
+        return PlayerMovementMode.fromString(value).orElse(PlayerMovementMode.NONE);
     }
 
     public void setMovementMode(PlayerMovementMode mode) {
@@ -94,16 +93,8 @@ public class PlayerMovementHandler {
     }
 
     public void applyMode() {
-        PersistentDataContainer container = this.player.getPersistentDataContainer();
-        NamespacedKey key = PluginKeys.MOVEMENT_KEY.getKey();
-        assert container.has(key);
-
-        String val = container.get(key, PersistentDataType.STRING);
-        PlayerMovementMode mode = PlayerMovementMode.valueOf(val);
-
-        player.setAllowFlight(mode != PlayerMovementMode.NONE);
-        player.setFlying(false);
-
+        PlayerMovementMode mode = getMovementMode();
+        setMovementMode(mode, false);
     }
 
     public void handleJoin(PlayerData data) {
