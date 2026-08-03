@@ -256,10 +256,8 @@ public class WorldEventListeners implements Listener {
     private void onItemThrow(PlayerDropItemEvent event) {
         Player player = event.getPlayer();
         if(config.getBoolean("cancel_events.item_throw", true)) {
-            if (player.hasPermission("hubbly.bypass.item.throw") ) return;
+            if (player.hasPermission("hubbly.bypass.item.throw")) return;
             if (inDisabledWorld(player)) return;
-
-        } else {
             event.setCancelled(true);
         }
 

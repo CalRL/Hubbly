@@ -114,6 +114,42 @@ public class PlayerMovementHandlerTest extends PluginTestBase {
     }
 
     @Test
+    void applyMode_normalizesInvalidPdcMovement() {
+        PlayerMock player = server.addPlayer();
+        PlayerMovementHandler handler = new PlayerMovementHandler(player, plugin);
+
+        player.getPersistentDataContainer().set(
+                PluginKeys.MOVEMENT_KEY.getKey(),
+                PersistentDataType.STRING,
+                "bad-mode"
+        );
+
+        handler.applyMode();
+
+        String stored = player.getPersistentDataContainer()
+                .get(PluginKeys.MOVEMENT_KEY.getKey(), PersistentDataType.STRING);
+
+        assertEquals(PlayerMovementMode.NONE.getString(), stored);
+        assertFalse(player.getAllowFlight());
+        assertFalse(player.isFlying());
+    }
+
+    @Test
+    void getMovementMode_defaultsMissingPdcMovementWithoutWriting() {
+        PlayerMock player = server.addPlayer();
+        PlayerMovementHandler handler = new PlayerMovementHandler(player, plugin);
+
+        player.getPersistentDataContainer().remove(PluginKeys.MOVEMENT_KEY.getKey());
+
+        assertEquals(PlayerMovementMode.NONE, handler.getMovementMode());
+
+        String stored = player.getPersistentDataContainer()
+                .get(PluginKeys.MOVEMENT_KEY.getKey(), PersistentDataType.STRING);
+
+        assertNull(stored);
+    }
+
+    @Test
     void setMovementMode_setsPdcAndFlight() {
         PlayerMock player = server.addPlayer();
         PlayerMovementHandler handler = new PlayerMovementHandler(player, plugin);

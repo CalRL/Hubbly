@@ -1,0 +1,20 @@
+services:
+  minecraft:
+    image: itzg/minecraft-server:latest
+    stdin_open: true
+    container_name: papermc
+    ports:
+      - "25565:25565"
+    environment:
+      EULA: "TRUE"
+      TYPE: "PAPER"
+      VERSION: "26.2"
+      MEMORY: "6G"
+      MOTD: "PaperMC Docker Server"
+      DIFFICULTY: "normal"
+      ONLINE_MODE: "TRUE"
+      ENABLE_RCON: "TRUE"
+      RCON_PASSWORD: "supersecretpassword"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped

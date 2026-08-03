@@ -61,8 +61,7 @@ public class PlayerJoinListener implements Listener {
     private void onPlayerPreJoin(AsyncPlayerPreLoginEvent event) {
         UUID uuid = event.getUniqueId();
         StorageManager storage = plugin.getStorageManager();
-        FileConfiguration config = plugin.getConfig();
-        if(config.getBoolean("database.enabled") && storage.isActive()) {
+        if(storage != null && storage.isActive()) {
             PlayerData data = storage.loadPlayer(uuid, event.getName());
             storage.addToMap(uuid, data);
         }
@@ -80,16 +79,20 @@ public class PlayerJoinListener implements Listener {
 
         StorageManager storage = plugin.getStorageManager();
         FileConfiguration config = plugin.getConfig();
-        if(config.getBoolean("database.enabled") && storage.isActive()) {
-            data = storage.loadPlayer(uuid, player.getName());
-            storage.addToMap(uuid, data);
+        if(config.getBoolean("database.enabled") && storage != null && storage.isActive()) {
+            PlayerData loadedData = storage.getAndRemove(uuid);
+            if (loadedData != null) {
+                data = loadedData;
+            } else {
+                plugin.getLogger().warning("No preloaded player data found for " + player.getName() + "; using local defaults");
+            }
         }
 
         new PlayerMovementHandler(player, plugin).handleJoin(data);
 
         PlayerVisibilityManager pvManager = plugin.services().playerVisibilityManager();
 
-        pvManager.setHideMode(player, data.visibility().getMode());
+        pvManager.setHideMode(player, data.visibility().getMode(), false);
         pvManager.handleJoin(player);
 
         DisabledWorlds disabledWorlds = plugin.services().disabledWorlds();
@@ -170,7 +173,7 @@ public class PlayerJoinListener implements Listener {
         bossBarManager.removeBossBar(player);
 
         StorageManager storage = plugin.getStorageManager();
-        if(plugin.getConfig().getBoolean("database.enabled") && storage.isActive()) {
+        if(plugin.getConfig().getBoolean("database.enabled") && storage != null && storage.isActive()) {
             PlayerData data = PlayerData.from(player);
             storage.enqueueSave(data);
         }

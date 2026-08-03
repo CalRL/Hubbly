@@ -226,26 +226,36 @@ public class ItemBuilder {
      * @return
      */
     public ItemBuilder fromConfig(Player player, ConfigurationSection section) {
-        String materialValue = section.getString("material").toUpperCase();
+        final String materialValue = section.getString("material");
+        if(materialValue == null) return null;
 
-        Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(materialValue);
+        final String upper = materialValue.toUpperCase();
+        Optional<XMaterial> xMaterial;
+        try {
+            xMaterial = XMaterial.matchXMaterial(upper);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+
         if(xMaterial.isEmpty()) return null;
 
-        Material material = xMaterial.get().parseMaterial();
+        final Material material = xMaterial.get().parseMaterial();
 
-        ItemBuilder builder = new ItemBuilder(material);
+        final ItemBuilder builder = new ItemBuilder(material);
 
-        DebugMode debugMode = new DebugMode();
+        final DebugMode debugMode = new DebugMode();
 
         if(material == XMaterial.PLAYER_HEAD.parseMaterial() && section.contains("hdb")) {
             debugMode.info("Trying HDB...");
 
-            HeadHook headHook = (HeadHook) Hubbly.getInstance().getHookManager().getHook("HEAD_DATABASE");
+            final HeadHook headHook = (HeadHook) Hubbly.getInstance().getHookManager().getHook("HEAD_DATABASE");
             if(headHook == null) {
                 debugMode.info("HeadHook is null...");
+                return null;
             }
+            final HeadDatabaseAPI api = headHook.getApi();
+            final ItemStack hdbHead = api.getItemHead(section.getString("hdb"));
 
-            ItemStack hdbHead = headHook.getApi().getItemHead(section.getString("hdb"));
             builder.setItemStack(hdbHead);
             builder.setItemMeta(hdbHead.getItemMeta());
 

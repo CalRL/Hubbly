@@ -53,11 +53,7 @@ public final class PlayerData {
         PlayerMovementMode movementMode = PlayerMovementMode.NONE;
         if (container.has(PluginKeys.MOVEMENT_KEY.getKey(), PersistentDataType.STRING)) {
             String movementString = container.get(PluginKeys.MOVEMENT_KEY.getKey(), PersistentDataType.STRING);
-            if (movementString != null) {
-                try {
-                    movementMode = PlayerMovementMode.valueOf(movementString);
-                } catch (IllegalArgumentException ignored) {}
-            }
+            movementMode = PlayerMovementMode.fromString(movementString).orElse(PlayerMovementMode.NONE);
         }
 
         PlayerVisibilityMode visibilityMode = PlayerVisibilityMode.VISIBLE;

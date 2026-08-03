@@ -18,6 +18,7 @@
 package me.calrl.hubbly.commands;
 
 import me.calrl.hubbly.Hubbly;
+import me.calrl.hubbly.enums.Permissions;
 import me.calrl.hubbly.utils.AngleRounder;
 import me.calrl.hubbly.utils.MessageBuilder;
 import org.bukkit.Location;
@@ -49,7 +50,7 @@ public class SetSpawnCommand implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String s, @NotNull String[] strings) {
         if(!(sender instanceof Player player)) return true;
-        if (!sender.hasPermission("hubbly.command.setspawn")) {
+        if (!sender.hasPermission(Permissions.COMMAND_SETSPAWN.getPermission())) {
             new MessageBuilder(plugin)
                     .setPlayer(player)
                     .setKey("no_permission_command")

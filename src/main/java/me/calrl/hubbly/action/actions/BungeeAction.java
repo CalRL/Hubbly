@@ -33,18 +33,19 @@ public class BungeeAction implements Action {
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
         final DebugMode debugMode = plugin.getDebugMode();
-        if (plugin.getServer().getMessenger().isOutgoingChannelRegistered(plugin, "BungeeCord")) {
-            if(data.contains("server ")) {
-                data = data.replace("server ", "");
-            }
-            final ByteArrayDataOutput out = ByteStreams.newDataOutput();
-            out.writeUTF("Connect");
-            out.writeUTF(data);
-            player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
-            debugMode.info("Server: " + data);
-        } else {
-            debugMode.warn("Channel BungeeCord is not registered!");
+        if (!plugin.getServer().getMessenger().isOutgoingChannelRegistered(plugin, "BungeeCord")) {
+            return;
         }
+        String server = data;
+        if(data.contains("server ")) {
+            server = data.replace("server ", "");
+        }
+
+        final ByteArrayDataOutput out = ByteStreams.newDataOutput();
+        out.writeUTF("Connect");
+        out.writeUTF(server);
+        player.sendPluginMessage(plugin, "BungeeCord", out.toByteArray());
+        debugMode.info("Server: " + server);
 
 
     }

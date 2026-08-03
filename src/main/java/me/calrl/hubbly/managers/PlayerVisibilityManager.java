@@ -64,6 +64,10 @@ public class PlayerVisibilityManager implements ILifecycle {
     }
 
     public void setHideMode(Player player, PlayerVisibilityMode mode) {
+        this.setHideMode(player, mode, true);
+    }
+
+    public void setHideMode(Player player, PlayerVisibilityMode mode, boolean persist) {
         PersistentDataContainer container = player.getPersistentDataContainer();
         container.set(this.hideKey, PersistentDataType.STRING, mode.name());
 
@@ -73,9 +77,13 @@ public class PlayerVisibilityManager implements ILifecycle {
             this.revealAll(player);
         }
 
+        if (!persist) {
+            return;
+        }
+
         FileConfiguration config = this.plugin.getConfig();
         StorageManager storage = this.plugin.getStorageManager();
-        if(config.getBoolean("database.enabled") && storage.isActive()) {
+        if(config.getBoolean("database.enabled") && storage != null && storage.isActive()) {
             storage.updateVisibilityMode(player, mode);
         }
     }

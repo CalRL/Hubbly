@@ -76,7 +76,8 @@ public class ActionManager implements ILifecycle {
                 new ClearAction(),
                 new LinkAction(),
                 new MenuAction(),
-                new EffectAction()
+                new EffectAction(),
+                new VelocityAction()
         );
     }
     public void executeAction(Player player, String actionData) {
@@ -90,14 +91,15 @@ public class ActionManager implements ILifecycle {
             String data = this.getData(actionData);
 
             Action action = actions.get(identifier);
-            ActionEvent event = new ActionEvent(player, action, data);
-            Bukkit.getPluginManager().callEvent(event);
 
             if (action == null) {
                 String errorMessage = String.format("Action %s not found...", identifier);
                 plugin.getLogger().warning(errorMessage);
                 return;
             }
+
+            ActionEvent event = new ActionEvent(player, action, data);
+            Bukkit.getPluginManager().callEvent(event);
 
             plugin.getDebugMode().info("Checking if ActionEvent is cancelled...");
             if(event.isCancelled()) {
@@ -133,8 +135,6 @@ public class ActionManager implements ILifecycle {
         String data = this.getData(actionData);
 
         Action action = actions.get(identifier);
-        ActionEvent event = new ActionEvent(player, action, data);
-        Bukkit.getPluginManager().callEvent(event);
 
         if (action == null) {
             String errorMessage = new MessageBuilder(plugin)
@@ -145,6 +145,9 @@ public class ActionManager implements ILifecycle {
             plugin.getLogger().warning(errorMessage);
             return Result.NOT_FOUND;
         }
+
+        ActionEvent event = new ActionEvent(player, action, data);
+        Bukkit.getPluginManager().callEvent(event);
 
         plugin.getDebugMode().info("Checking if ActionEvent is cancelled...");
         if(event.isCancelled()) {

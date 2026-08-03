@@ -41,7 +41,7 @@ public class PlayerJoinListenerTests extends PluginTestBase {
         player.getPersistentDataContainer().set(
                 PluginKeys.MOVEMENT_KEY.getKey(),
                 PersistentDataType.STRING,
-                PlayerMovementMode.FLY.name()
+                PlayerMovementMode.FLY.getString()
         );
 
         PlayerData data = PlayerData.from(player);
@@ -49,6 +49,22 @@ public class PlayerJoinListenerTests extends PluginTestBase {
         assertTrue(data.isValid());
         assertEquals(PlayerMovementMode.FLY, data.movement().getMode());
         assertEquals(PlayerVisibilityMode.VISIBLE, data.visibility().getMode());
+    }
+
+    @Test
+    void playerData_defaultsInvalidMovementPdc() {
+        PlayerMock player = server.addPlayer();
+
+        player.getPersistentDataContainer().set(
+                PluginKeys.MOVEMENT_KEY.getKey(),
+                PersistentDataType.STRING,
+                "bad-mode"
+        );
+
+        PlayerData data = PlayerData.from(player);
+
+        assertTrue(data.isValid());
+        assertEquals(PlayerMovementMode.NONE, data.movement().getMode());
     }
 
     @Test
