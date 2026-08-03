@@ -226,18 +226,24 @@ public class ItemBuilder {
      * @return
      */
     public ItemBuilder fromConfig(Player player, ConfigurationSection section) {
-        String materialValue = section.getString("material");
+        final String materialValue = section.getString("material");
         if(materialValue == null) return null;
 
-        String upper = materialValue.toUpperCase();
-        Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(upper);
+        final String upper = materialValue.toUpperCase();
+        Optional<XMaterial> xMaterial;
+        try {
+            xMaterial = XMaterial.matchXMaterial(upper);
+        } catch (IllegalArgumentException e) {
+            return null;
+        }
+
         if(xMaterial.isEmpty()) return null;
 
-        Material material = xMaterial.get().parseMaterial();
+        final Material material = xMaterial.get().parseMaterial();
 
-        ItemBuilder builder = new ItemBuilder(material);
+        final ItemBuilder builder = new ItemBuilder(material);
 
-        DebugMode debugMode = new DebugMode();
+        final DebugMode debugMode = new DebugMode();
 
         if(material == XMaterial.PLAYER_HEAD.parseMaterial() && section.contains("hdb")) {
             debugMode.info("Trying HDB...");
