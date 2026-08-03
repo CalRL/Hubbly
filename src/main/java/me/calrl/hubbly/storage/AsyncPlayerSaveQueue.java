@@ -38,7 +38,12 @@ public class AsyncPlayerSaveQueue {
                         continue;
                     }
 
-                    saveFunction.accept(data);
+                    try {
+                        saveFunction.accept(data);
+                    } catch (Exception e) {
+                        latestSnapshots.putIfAbsent(uuid, data);
+                        throw e;
+                    }
 
                 } catch (InterruptedException ignored) {
                 } catch (Exception e) {
