@@ -3,7 +3,9 @@ package me.calrl.hubbly.action.actions;
 import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.Action;
 import me.calrl.hubbly.utils.ChatUtils;
+import me.calrl.hubbly.utils.Utils;
 import net.md_5.bungee.api.chat.ClickEvent;
+import net.md_5.bungee.api.chat.ComponentBuilder;
 import net.md_5.bungee.api.chat.HoverEvent;
 import net.md_5.bungee.api.chat.TextComponent;
 import net.md_5.bungee.api.chat.hover.content.Text;
@@ -21,18 +23,18 @@ public class LinkAction implements Action {
 
     @Override
     public void execute(Hubbly plugin, Player player, String data) {
-        List<String> texts = List.of(data.split(";"));
+        String[] texts = data.split(";", 3);
         Logger logger = plugin.getLogger();
-        if(texts.size() != 3) {
+        if(texts.length != 3) {
             logger.warning("Error: LINK action does not have 3 arguments");
             return;
         }
 
-        String message = texts.get(0);
-        String hoverText = texts.get(1);
-        String link = texts.get(2);
+        String message = texts[0].trim();
+        String hoverText = texts[1].trim();
+        String link = texts[2].trim();
 
-        TextComponent component = ChatUtils.textLinkBuilder(message, link, hoverText, player);
+        TextComponent component = ChatUtils.textLinkBuilder(message, Utils.normalizeUrl(link), hoverText, player);
         player.spigot().sendMessage(component);
     }
 }

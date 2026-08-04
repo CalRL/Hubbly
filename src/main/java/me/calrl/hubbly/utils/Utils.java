@@ -46,4 +46,14 @@ public class Utils {
 
         return new Location(world, x, y, z, yaw, pitch);
     }
+
+    public static String normalizeUrl(String url) {
+        String trimmed = url.trim();
+
+        if (!trimmed.startsWith("http://") && !trimmed.startsWith("https://")) {
+            return "https://" + trimmed;
+        }
+
+        return trimmed;
+    }
 }
