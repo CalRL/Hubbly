@@ -12,6 +12,8 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
+import java.util.Optional;
+
 public class Utils {
 
     private Hubbly plugin;
@@ -34,17 +36,20 @@ public class Utils {
         return new Location(world, x, y, z, yaw, pitch);
     }
 
-    public static Location getSpawn(FileConfiguration config) {
+    public static Optional<Location> getSpawn(FileConfiguration config) {
         String worldName = config.getString("spawn.world", "world");
 
         World world = Bukkit.getWorld(worldName);
+        if(world == null) {
+            return Optional.empty();
+        }
         double x = config.getDouble("spawn.x");
         double y = config.getDouble("spawn.y");
         double z = config.getDouble("spawn.z");
         float yaw = (float) config.getDouble("spawn.yaw");
         float pitch = (float) config.getDouble("spawn.pitch");
 
-        return new Location(world, x, y, z, yaw, pitch);
+        return Optional.of(new Location(world, x, y, z, yaw, pitch));
     }
 
     public static String normalizeUrl(String url) {

@@ -10,6 +10,8 @@ import org.bukkit.event.player.PlayerMoveEvent;
 import org.junit.jupiter.api.Test;
 import org.mockbukkit.mockbukkit.entity.PlayerMock;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PlayerMoveListenerTests extends PluginTestBase {
@@ -35,11 +37,11 @@ class PlayerMoveListenerTests extends PluginTestBase {
         player.simulatePlayerMove(newLoc);
 
         server.getScheduler().performTicks(20 * 5);
-        Location spawn = Utils.getSpawn(plugin.getConfig());
+        Optional<Location> spawn = Utils.getSpawn(plugin.getConfig());
         System.out.println(newLoc);
         System.out.println(player.getLocation());
         System.out.println(spawn);
-        assertNotEquals(spawn, player.getLocation(), "Teleport should have been cancelled");
+        assertNotEquals(spawn.get(), player.getLocation(), "Teleport should have been cancelled");
     }
 
     @Test
