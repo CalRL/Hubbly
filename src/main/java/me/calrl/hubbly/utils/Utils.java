@@ -1,22 +1,22 @@
 package me.calrl.hubbly.utils;
 
 import me.calrl.hubbly.Hubbly;
-import net.minecraft.nbt.NBTTagCompound;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.craftbukkit.v1_20_R4.inventory.CraftItemStack;
-import org.bukkit.enchantments.Enchantment;
-import org.bukkit.inventory.ItemFlag;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
+import javax.annotation.Nullable;
+import java.net.URI;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 public class Utils {
 
     private Hubbly plugin;
+    private static final Pattern URL_PATTERN = Pattern.compile(
+            "^https?://(?:www\\.)?[-a-zA-Z0-9@:%._+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b(?:[-a-zA-Z0-9()@:%_+.~#?&/=]*)$"
+    );
     public Utils(Hubbly plugin){
         this.plugin = plugin;
     }
@@ -60,5 +60,17 @@ public class Utils {
         }
 
         return trimmed;
+    }
+
+    public static Boolean isValidUrl(@Nullable String url) {
+        if (url == null) {
+            return false;
+        }
+        try {
+            URI uri = URI.create(url);
+            return ("http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme()) && uri.getHost() != null);
+        } catch (IllegalArgumentException e) {
+            return false;
+        }
     }
 }
