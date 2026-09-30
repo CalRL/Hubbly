@@ -34,6 +34,7 @@ import org.bukkit.event.entity.EntityDamageEvent.DamageCause;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class VoidDamageListener implements Listener {
@@ -66,13 +67,16 @@ public class VoidDamageListener implements Listener {
         DamageCause damageCause = event.getCause();
         if(damageCause == DamageCause.VOID) {
             plugin.getDebugMode().info(player.getName() + " was hit by the void.. teleporting..");
-            Location spawn = Utils.getSpawn(plugin.getConfig());
+            Optional<Location> spawn = Utils.getSpawn(plugin.getConfig());
+            if(spawn.isEmpty()) {
+                return;
+            }
 
             player.setVelocity(player.getVelocity().setY(0));
             player.setFallDistance(0f);
 
             Bukkit.getScheduler().runTaskLater(plugin, () -> {
-                player.teleport(spawn, TeleportCause.PLUGIN);
+                player.teleport(spawn.get(), TeleportCause.PLUGIN);
             }, 1L);
 
             event.setCancelled(true);

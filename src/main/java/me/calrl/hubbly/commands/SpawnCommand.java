@@ -35,10 +35,7 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class SpawnCommand implements TabExecutor {
 
@@ -60,8 +57,15 @@ public class SpawnCommand implements TabExecutor {
             return true;
         }
 
-        Location spawn = Utils.getSpawn(plugin.getConfig());
-        HubblySpawnEvent event = new HubblySpawnEvent(player, spawn);
+        Optional<Location> spawn = Utils.getSpawn(plugin.getConfig());
+        if(spawn.isEmpty()) {
+            new MessageBuilder(plugin)
+                    .setPlayer(player)
+                    .setKey("failure")
+                    .send();
+            return true;
+        }
+        HubblySpawnEvent event = new HubblySpawnEvent(player, spawn.get());
         Bukkit.getPluginManager().callEvent(event);
 
         if(!player.hasPermission("hubbly.command.spawn")) {
