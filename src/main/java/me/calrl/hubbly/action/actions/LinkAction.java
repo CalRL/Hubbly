@@ -34,7 +34,20 @@ public class LinkAction implements Action {
         String hoverText = texts[1].trim();
         String link = texts[2].trim();
 
-        TextComponent component = ChatUtils.textLinkBuilder(message, Utils.normalizeUrl(link), hoverText, player);
-        player.spigot().sendMessage(component);
+        String url = Utils.normalizeUrl(link);
+        Boolean isValid = Utils.isValidUrl(url);
+        if(isValid) {
+            TextComponent component = ChatUtils.textLinkBuilder(message, url, hoverText, player);
+            player.spigot().sendMessage(component);
+            return;
+        }
+
+        plugin.getLogger().warning(
+                String.format(
+                        "Provided URL in action [LINK] is invalid: %s",
+                        url
+                )
+        );
+
     }
 }
