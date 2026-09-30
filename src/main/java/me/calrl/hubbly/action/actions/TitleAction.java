@@ -20,8 +20,9 @@ import me.calrl.hubbly.Hubbly;
 import me.calrl.hubbly.action.Action;
 import me.calrl.hubbly.managers.DebugMode;
 import me.calrl.hubbly.utils.ChatUtils;
-import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+
+import java.util.logging.Level;
 
 public class TitleAction implements Action {
     @Override
@@ -39,9 +40,13 @@ public class TitleAction implements Action {
         int stay;
         int fadeOut;
 
-        String[] args = data.split(";");
+        String[] args = data.split(";", 5);
         if(args.length != 5) {
-            debugMode.warn("Invalid data format, expected 4 args, got " + args.length);
+            plugin.getLogger().warning(
+                    "TITLE: invalid format, expected 5 args: " + data
+            );
+            sendDefault(player);
+            return;
         }
 
         title = ChatUtils.processMessage(player, args[0]);
@@ -54,15 +59,22 @@ public class TitleAction implements Action {
             fadeOut = Integer.parseInt(args[4]);
             player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
 
-        } catch(NumberFormatException e) {
-            debugMode.warn("Invalid data format, sending defaults");
-            title = "Hubbly";
-            subtitle = "";
-            fadeIn = 20;
-            stay = 200;
-            fadeOut = 20;
-            player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
+        } catch (NumberFormatException e) {
+            plugin.getLogger().log(
+                    Level.WARNING,
+                    "TITLE: invalid numeric format: " + data,
+                    e
+            );
+            sendDefault(player);
         }
 
+    }
+    private void sendDefault(Player player) {
+        String title = "Hubbly";
+        String subtitle = "";
+        int fadeIn = 20;
+        int stay = 200;
+        int fadeOut = 20;
+        player.sendTitle(title, subtitle, fadeIn, stay, fadeOut);
     }
 }
