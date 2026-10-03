@@ -32,6 +32,11 @@ public class StorageManager {
     private volatile boolean shuttingDown;
     private final ConcurrentHashMap<UUID, PlayerData> map;
 
+    /**
+     * TODO: this should be refactored to take a jdbcdatabase in the constructor for testability and good DI
+     * {@link JdbcDatabase}
+      */
+
     public StorageManager(Hubbly plugin) {
         this.plugin = plugin;
         this.logger = plugin.getLogger();
